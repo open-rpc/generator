@@ -1,0 +1,93 @@
+{
+  "openrpc": "1.0.0",
+  "methods": {
+    "create_pet": {
+      "parameters": {
+        "name": "pet",
+        "schema": {
+          "$ref": "#/components/schemas/NewPet"
+        }
+      },
+      "results": {}
+    },
+    "get_pet": {
+      "parameters": [
+        {
+          "name": "petId",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        }
+      ],
+      "results": {
+        "schema": {
+          "$ref": "#/components/schemas/Pet"
+        }
+      }
+    },
+    "list_pets": {
+      "parameters": [
+        {
+          "name": "limit",
+          "description": "how many items to return at one time (max 100)",
+          "required": false,
+          "schema": {
+            "type": "integer",
+            "format": "int32",
+            "maximum": 100,
+            "minimum": 1
+          }
+        }
+      ],
+      "results": {
+        "name": "Pet",
+        "description": "a paged array of pets",
+        "schema": {
+          "$ref": "#/components/schemas/Pets"
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Pet": {
+       "allOf": [
+          {
+            "$ref": "#/components/schemas/NewPet"
+          },
+          {
+            "required": [
+              "id"
+            ],
+            "properties": {
+              "id": {
+                "type": "integer",
+                "format": "int64"
+              }
+            }
+          }
+        ]
+      },
+      "NewPet": {
+        "required": [
+          "name"
+        ],
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "tag": {
+            "type": "string"
+          }
+        }
+      },
+      "Pets": {
+        "type": "array",
+        "items": {
+          "$ref": "#/components/schemas/Pet"
+        }
+      }
+    }
+  }
+}

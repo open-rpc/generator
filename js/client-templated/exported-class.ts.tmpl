@@ -1,0 +1,14 @@
+import JsonRpc, { TJsonRpcResponse } from './rpc/index';
+
+export default class <%= className %> {
+  rpc: JsonRpc;
+
+  constructor(options) {
+    this.rpc = new JsonRpc(options);
+  }
+  <% methodNames.forEach((methodName, i) => { %>
+  <%= methodName %>(...params: Array<any>): Promise<TJsonRpcResponse> {
+    return this.rpc.call('<%= methodName %>', ...params);
+  }
+  <% }) %>
+};
