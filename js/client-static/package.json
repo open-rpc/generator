@@ -1,0 +1,19 @@
+{
+  "name": "template-client",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build": "tsc"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "jayson": "^2.1.1",
+    "node-fetch": "^2.3.0"
+  },
+  "devDependencies": {
+    "typescript": "^3.2.4",
+    "@types/node-fetch": "^2.1.4"
+  }
+}

@@ -1,0 +1,55 @@
+#!/usr/bin/env node
+const _ = require('lodash');
+const { promisify } = require('util');
+const fs = require('fs');
+const readFile = promisify(fs.readFile);
+const writeFile = promisify(fs.writeFile);
+const mkdir = promisify(fs.mkdir);
+const fsx = require('fs-extra');
+const refParser = require('json-schema-ref-parser');
+const { exec } = require('child_process');
+const fetch = require('node-fetch');
+const path = require('path');
+const getSchema = require('./get-schema');
+
+const cwd = process.cwd();
+
+const cleanBuildDir = async (destinationDirectoryName) => {
+  await fsx.ensureDir(destinationDirectoryName);
+  await fsx.emptyDir(destinationDirectoryName);
+};
+
+const compileTemplate = async (name, schema) => {
+  const templatePath = path.join(__dirname, '../', '/client-templated/exported-class.ts.tmpl');
+  const templates = await readFile(templatePath, 'utf8');
+
+  const compile = _.template(templates);
+  const result = compile({ className: name, methodNames: Object.keys(schema.methods) });
+}
+
+const copyStatic = async (destinationDirectoryName) => {
+  await fsx.ensureDir(destinationDirectoryName);
+  await fsx.emptyDir(destinationDirectoryName);
+
+  const staticPath = path.join(__dirname, '../', '/client-static');
+  fsx.copy(staticPath, destinationDirectoryName);
+};
+
+const bootstrapGeneratedPackage = (destinationDirectoryName) => {
+  return new Promise(
+    (resolve) => exec(`cd ${destinationDirectoryName} && npm install && npm run build`, resolve)
+  );
+};
+
+module.exports = async ({clientName, openrpcjson}) => {
+  const schema = await getSchema(openrpcjson);
+  const compiledResult = await compileTemplate(clientName, schema);
+
+  const destinationDirectoryName = `${cwd}/${clientName}`;
+  await cleanBuildDir(destinationDirectoryName);
+  await copyStatic(destinationDirectoryName);
+  await writeFile(`${destinationDirectoryName}/${clientName}.ts`, compiledResult, 'utf8');
+
+  await bootstrapGeneratedPackage(destinationDirectoryName);
+  return true;
+};
