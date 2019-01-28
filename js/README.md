@@ -22,7 +22,7 @@ docker run \
 ```sh
 npm install -g @open-rpc/generator-client-js
 
-orpc-generator-client-js myRpc
+open-rpc-generator-client-js myRpc
 ```
 
 open-rpc.json

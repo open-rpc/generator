@@ -5,7 +5,7 @@
   "description": "",
   "main": "index.js",
   "bin": {
-    "orpc-generator-client-js": "./bin/cli.js"
+    "open-rpc-generator-client-js": "./bin/cli.js"
   },
   "files": [
     "./src",
