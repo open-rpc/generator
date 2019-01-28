@@ -11,6 +11,7 @@ Options:
 ```
 
 Using Docker
+`docker pull openrpc/generator-client-js`
 ```sh
 docker run \
   -v $(pwd)/petstore/:/petstore \
