@@ -1,17 +1,17 @@
 {
   "name": "@open-rpc/generator-client-js",
   "private": false,
-  "version": "1.0.13",
+  "version": "1.0.14",
   "description": "",
   "main": "./bin/cli.js",
   "bin": {
     "open-rpc-generator-client-js": "./bin/cli.js"
   },
   "files": [
-    "./src/*.js",
-    "./bin/*.js",
-    "./client-static/*",
-    "./client-templated/*",
+    "src/*.js",
+    "bin/*.js",
+    "client-static/*",
+    "client-templated/*",
     ".node-version"
   ],
   "scripts": {
