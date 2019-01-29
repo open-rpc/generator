@@ -9,7 +9,7 @@ program
   .arguments('<clientName>')
   .option('-s, --schema [schema]', 'JSON string or a Path/Url pointing to an open rpc schema')
   .action((clientName) => {
-    orpcGenerator({ clientName, schema })
+    orpcGenerator({ clientName, ...program })
       .then(() => {
         console.log('Finished! Client has been generated.')
       })
