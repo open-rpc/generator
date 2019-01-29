@@ -1,13 +1,12 @@
 # Open RPC Javascript Client Generator
 
 ```
-> ./bin/cli.js --help
 Usage: cli [options] <clientName>
 
 Options:
-  -V, --version                    output the version number
-  -o, --openrpcjson [openrpcjson]  Path or Url to openrpc.json file
-  -h, --help                       output usage information
+  -V, --version          output the version number
+  -s, --schema [schema]  JSON string or a Path/Url pointing to an open rpc schema
+  -h, --help             output usage information
 ```
 
 Using Docker
