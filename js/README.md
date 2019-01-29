@@ -1,4 +1,6 @@
-# Open RPC Javascript Client Generator
+# OpenRPC Javascript Client Generator
+
+A generator that takes an [open-rpc](https://github.com/open-rpc/spec) schema and outputs a javascript client that works both in node.js and the browser.
 
 ```
 Usage: cli [options] <clientName>
