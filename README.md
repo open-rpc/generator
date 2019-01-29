@@ -6,6 +6,6 @@ In action (for a js client):
 docker run \
   -v $(pwd)/petstore/:/petstore \
   openrpc/generator-client-js \
-    -o https://raw.githubusercontent.com/open-rpc/examples/master/service-descriptions/petstore.json
+    -s https://raw.githubusercontent.com/open-rpc/examples/master/service-descriptions/petstore.json
     petstore
 ```
