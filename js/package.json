@@ -1,0 +1,34 @@
+{
+  "name": "@open-rpc/generator-client-js",
+  "private": false,
+  "version": "1.0.15",
+  "description": "",
+  "main": "./bin/cli.js",
+  "bin": {
+    "open-rpc-generator-client-js": "./bin/cli.js"
+  },
+  "files": [
+    "src/*.js",
+    "bin/*.js",
+    "client-static/*",
+    "client-templated/*",
+    ".node-version"
+  ],
+  "scripts": {
+    "start": "./bin/cli.js",
+    "test": "jest --coverage",
+    "watch:test": "jest --watch",
+    "publish": "npm publish --access=public"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "commander": "^2.19.0",
+    "node-fetch": "^2.3.0",
+    "fs-extra": "^7.0.1",
+    "jest": "^24.0.0",
+    "json-schema-ref-parser": "^6.0.3",
+    "lodash": "^4.17.11",
+    "typescript": "^3.2.4"
+  }
+}

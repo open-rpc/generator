@@ -1,0 +1,18 @@
+import * as jayson from 'jayson';
+
+export default class <%= className %> {
+  rpc: jayson.Client
+
+  constructor(options) {
+    if (options.transport === undefined || options.transport.type === undefined) {
+      throw new Error("Invalid constructor params");
+    }
+
+    this.rpc = jayson.Client[options.transport.type](options.transport);
+  }
+  <% methodNames.forEach((methodName, i) => { %>
+  <%= methodName %>(...params: Array<any>): jayson.JSONRPCRequest {
+    return this.rpc.request('<%= methodName %>', params);
+  }
+  <% }) %>
+};
