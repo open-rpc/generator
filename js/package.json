@@ -1,9 +1,9 @@
 {
   "name": "@open-rpc/generator-client-js",
   "private": false,
-  "version": "1.0.12",
+  "version": "1.0.13",
   "description": "",
-  "main": "index.js",
+  "main": "./bin/cli.js",
   "bin": {
     "open-rpc-generator-client-js": "./bin/cli.js"
   },
@@ -15,6 +15,7 @@
     ".node-version"
   ],
   "scripts": {
+    "start": "./bin/cli.js",
     "test": "jest --coverage",
     "watch:test": "jest --watch",
     "publish": "npm publish --access=public"
