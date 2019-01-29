@@ -4,7 +4,7 @@ const program = require('commander');
 const orpcGenerator = require('../src');
 
 program
-  .version('1.0.0')
+  .version(require('./get-version'))
   .usage('[options] <clientName>')
   .arguments('<clientName>')
   .option('-s, --schema [schema]', 'JSON string or a Path/Url pointing to an open rpc schema')
