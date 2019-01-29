@@ -10,7 +10,7 @@ const refParser = require('json-schema-ref-parser');
 const { exec } = require('child_process');
 const fetch = require('node-fetch');
 const path = require('path');
-const getSchema = require('./get-schema');
+const parseSchema = require('./parse-schema');
 
 const cwd = process.cwd();
 
@@ -41,9 +41,9 @@ const bootstrapGeneratedPackage = (destinationDirectoryName) => {
   );
 };
 
-module.exports = async ({clientName, openrpcjson}) => {
-  const schema = await getSchema(openrpcjson);
-  const compiledResult = await compileTemplate(clientName, schema);
+module.exports = async ({clientName, schema}) => {
+  const parsedSchema = await parseSchema(schema);
+  const compiledResult = await compileTemplate(clientName, parsedSchema);
 
   const destinationDirectoryName = `${cwd}/${clientName}`;
   await cleanBuildDir(destinationDirectoryName);

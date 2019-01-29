@@ -7,9 +7,9 @@ program
   .version('1.0.0')
   .usage('[options] <clientName>')
   .arguments('<clientName>')
-  .option('-o, --openrpcjson [openrpcjson]', 'Path or Url to openrpc.json file')
+  .option('-s, --schema [schema]', 'JSON string or a Path/Url pointing to an open rpc schema')
   .action((clientName) => {
-    orpcGenerator({ clientName, openrpcjson: program.openrpcjson })
+    orpcGenerator({ clientName, schema })
       .then(() => {
         console.log('Finished! Client has been generated.')
       })

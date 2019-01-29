@@ -17,7 +17,7 @@ describe('index.js - clientGen', () => {
 
     await clientGen({
       clientName: 'test',
-      openrpcjson: 'https://raw.githubusercontent.com/open-rpc/examples/master/service-descriptions/petstore.json'
+      schema: 'https://raw.githubusercontent.com/open-rpc/examples/master/service-descriptions/petstore.json'
     });
 
     await expect(stat(`${process.cwd()}/test`)).resolves.toBeTruthy();
