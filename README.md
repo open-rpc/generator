@@ -1,5 +1,5 @@
 # generator-client
-Multi-language client generators for open rpc apis.
+Multi-language client generators for [open-rpc](https://github.com/open-rpc/spec) apis.
 
 In action (for a js client):
 ```sh
