@@ -7,7 +7,7 @@ const fs = require('fs-extra');
 
 describe('get-schema', () => {
   beforeEach(() => {
-    fs.readJson.mockResolvedValue({ methods: {} });
+    fs.readJson.mockResolvedValue({ methods: [] });
   });
 
   it('defaults to looking for openrc.json in cwd', async () => {
@@ -58,8 +58,9 @@ describe('get-schema', () => {
       expect.assertions(1);
       fs.readJson.mockClear();
       fs.readJson.mockResolvedValue({
-        methods: {
-          foo: {
+        methods: [
+          {
+            name: 'foo',
             parameters: [
               {
                 name: 'bar',
@@ -67,7 +68,7 @@ describe('get-schema', () => {
               }
             ]
           }
-        }
+        ]
       });
       return expect(parseSchema()).rejects.toThrow('The json schema provided cannot be dereferenced');
     });

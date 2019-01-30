@@ -24,7 +24,7 @@ const compileTemplate = async (name, schema) => {
   const templates = await readFile(templatePath, 'utf8');
 
   const compile = _.template(templates);
-  const result = compile({ className: name, methodNames: Object.keys(schema.methods) });
+  const result = compile({ className: name, methods: schema.methods });
 }
 
 const copyStatic = async (destinationDirectoryName) => {
