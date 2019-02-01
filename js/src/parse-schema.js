@@ -1,6 +1,7 @@
 const { readJson } = require('fs-extra');
 const refParser = require('json-schema-ref-parser');
 const fetch = require('node-fetch');
+const isUrl = require('is-url');
 
 const cwd = process.cwd();
 
@@ -16,9 +17,8 @@ module.exports = async function getSchema(schema) {
     schema = `${cwd}/openrpc.json`;
   }
 
-  const isUrl = schema.includes('http') || schema.includes('https');
   if (parsedSchema) {
-  } else if (schema && isUrl) {
+  } else if (schema && isUrl(schema)) {
     try {
       const response = await fetch(schema);
       parsedSchema = await response.json();
@@ -29,7 +29,11 @@ module.exports = async function getSchema(schema) {
     try {
       parsedSchema = await readJson(schema);
     } catch (e) {
-      throw new Error(`Unable to read openrpc.json file located at ${schema}`);
+      if (e.message.includes('SyntaxError')) {
+        throw new Error(`Failed to parse json in file ${schema}`);
+      } else {
+        throw new Error(`Unable to read openrpc.json file located at ${schema}`);
+      }
     }
   }
 
