@@ -21,10 +21,10 @@ const cleanBuildDir = async (destinationDirectoryName) => {
 
 const compileTemplate = async (name, schema) => {
   const templatePath = path.join(__dirname, '../', '/client-templated/exported-class.ts.tmpl');
-  const templates = await readFile(templatePath, 'utf8');
+  const templates = await readFile(templatePath, 'utf-8');
 
   const compile = _.template(templates);
-  const result = compile({ className: name, methods: schema.methods });
+  return compile({ className: name, methods: schema.methods });
 }
 
 const copyStatic = async (destinationDirectoryName) => {
