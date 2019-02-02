@@ -24,6 +24,8 @@ const readSchemaFromFile = async (schema) => {
   try {
     return await readJson(schema);
   } catch (e) {
+
+    console.log(e);
     if (e.message.includes('SyntaxError')) {
       throw new Error(`Failed to parse json in file ${schema}`);
     } else {
@@ -33,7 +35,7 @@ const readSchemaFromFile = async (schema) => {
 };
 
 
-module.exports = async function getSchema(schema) {
+module.exports = async function parseSchema(schema) {
   let parsedSchema;
 
   if (schema === undefined) {
@@ -45,7 +47,7 @@ module.exports = async function getSchema(schema) {
   } else if (isUrl(schema)) {
     parsedSchema = await fetchUrlSchemaFile(schema);
   } else {
-    parsedSchema = await readSchemaFromFile();
+    parsedSchema = await readSchemaFromFile(schema);
   }
 
   try {

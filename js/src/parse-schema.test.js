@@ -73,5 +73,11 @@ describe('get-schema', () => {
       return expect(parseSchema()).rejects.toThrow('The json schema provided cannot be dereferenced');
     });
 
+    it('rejects when the json provided is invalid from file', () => {
+      expect.assertions(1);
+      fs.readJson.mockClear();
+      fs.readJson.mockRejectedValue(new Error('SyntaxError: super duper bad one'));
+      return expect(parseSchema('./node_modules/@open-rpc/examples/service-descriptions/petstore.json')).rejects.toThrow();
+    });
   });
 });
