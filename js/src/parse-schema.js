@@ -1,36 +1,53 @@
 const { readJson } = require('fs-extra');
 const refParser = require('json-schema-ref-parser');
 const fetch = require('node-fetch');
+const isUrl = require('is-url');
 
 const cwd = process.cwd();
 
-const handleRawJson = (jsonString) => {
-  try { return JSON.parse(jsonString); }
+const isJson = (jsonString) => {
+  try { JSON.parse(jsonString); return true; }
   catch(e) { return false; }
 };
 
-module.exports = async function getSchema(schema) {
-  let parsedSchema = handleRawJson(schema);
+const fetchUrlSchemaFile = async (schema) => {
+  try {
+    const response = await fetch(schema);
+    return await response.json();
+  } catch(e) {
+    throw new Error(`Unable to download openrpc.json file located at the url: ${schema}`);
+  }
+};
+
+
+const readSchemaFromFile = async (schema) => {
+  try {
+    return await readJson(schema);
+  } catch (e) {
+
+    console.log(e);
+    if (e.message.includes('SyntaxError')) {
+      throw new Error(`Failed to parse json in file ${schema}`);
+    } else {
+      throw new Error(`Unable to read openrpc.json file located at ${schema}`);
+    }
+  }
+};
+
+
+module.exports = async function parseSchema(schema) {
+  let parsedSchema;
 
   if (schema === undefined) {
     schema = `${cwd}/openrpc.json`;
   }
 
-  const isUrl = schema.includes('http') || schema.includes('https');
-  if (parsedSchema) {
-  } else if (schema && isUrl) {
-    try {
-      const response = await fetch(schema);
-      parsedSchema = await response.json();
-    } catch(e) {
-      throw new Error(`Unable to download openrpc.json file located at the url: ${schema}`);
-    }
+  if (isJson(schema)) {
+    parsedSchema = JSON.parse(schema);
+  } else if (isUrl(schema)) {
+    parsedSchema = await fetchUrlSchemaFile(schema);
   } else {
-    try {
-      parsedSchema = await readJson(schema);
-    } catch (e) {
-      throw new Error(`Unable to read openrpc.json file located at ${schema}`);
-    }
+    parsedSchema = await readSchemaFromFile(schema);
   }
 
   try {
