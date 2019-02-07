@@ -27,6 +27,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@open-rpc/schema-utils-js": "^1.0.1",
     "commander": "^2.19.0",
     "fs-extra": "^7.0.1",
     "is-url": "^1.2.4",

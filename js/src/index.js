@@ -10,7 +10,7 @@ const refParser = require('json-schema-ref-parser');
 const { exec } = require('child_process');
 const fetch = require('node-fetch');
 const path = require('path');
-const parseSchema = require('./parse-schema');
+const parseSchema = require('@open-rpc/schema-utils-js');
 
 const cwd = process.cwd();
 
