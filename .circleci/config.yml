@@ -5,7 +5,7 @@ jobs:
       - image: circleci/node:10.11.0
     steps:
       - checkout
-      - run: npm install -g codecov
+      - run: npm install codecov
       - run: npm install
       - run: npm test
-      - run: codecov
+      - run: ./node_modules/.bin/codecov
