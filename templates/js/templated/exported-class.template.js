@@ -1,3 +1,4 @@
+module.exports = require('lodash').template(`
 import * as jayson from "jayson/promise";
 
 export default class <%= className %> {
@@ -16,3 +17,4 @@ export default class <%= className %> {
   }
   <% }) %>
 }
+`);

@@ -6,13 +6,14 @@ const readFile = promisify(fs.readFile);
 const writeFile = promisify(fs.writeFile);
 const mkdir = promisify(fs.mkdir);
 const fsx = require('fs-extra');
-const refParser = require('json-schema-ref-parser');
 const { exec } = require('child_process');
-const fetch = require('node-fetch');
 const path = require('path');
 const parseSchema = require('@open-rpc/schema-utils-js');
 
 const cwd = process.cwd();
+
+
+const jsTemplate = require('../templates/js/templated/exported-class.template');
 
 const cleanBuildDir = async (destinationDirectoryName) => {
   await fsx.ensureDir(destinationDirectoryName);
@@ -20,18 +21,14 @@ const cleanBuildDir = async (destinationDirectoryName) => {
 };
 
 const compileTemplate = async (name, schema) => {
-  const templatePath = path.join(__dirname, '../', '/client-templated/exported-class.ts.tmpl');
-  const templates = await readFile(templatePath, 'utf-8');
-
-  const compile = _.template(templates);
-  return compile({ className: name, methods: schema.methods });
+  return jsTemplate({ className: name, methods: schema.methods });
 }
 
 const copyStatic = async (destinationDirectoryName) => {
   await fsx.ensureDir(destinationDirectoryName);
   await fsx.emptyDir(destinationDirectoryName);
 
-  const staticPath = path.join(__dirname, '../', '/client-static');
+  const staticPath = path.join(__dirname, '../', '/templates/js/static');
   fsx.copy(staticPath, destinationDirectoryName);
 };
 

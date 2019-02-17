@@ -1,0 +1,11 @@
+version: 2
+jobs:
+  build:
+    docker:
+      - image: circleci/node:10.11.0
+    steps:
+      - checkout
+      - run: npm install codecov
+      - run: npm install
+      - run: npm test
+      - run: ./node_modules/.bin/codecov

@@ -25,16 +25,14 @@
     "publish": "npm publish --access=public"
   },
   "author": "",
-  "license": "ISC",
+  "license": "Apache-2.0",
   "dependencies": {
     "@open-rpc/schema-utils-js": "^1.0.1",
     "commander": "^2.19.0",
     "fs-extra": "^7.0.1",
     "is-url": "^1.2.4",
     "jest": "^24.0.0",
-    "json-schema-ref-parser": "^6.0.3",
     "lodash": "^4.17.11",
-    "node-fetch": "^2.3.0",
     "typescript": "^3.2.4"
   }
 }
