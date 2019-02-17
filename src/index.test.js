@@ -11,13 +11,13 @@ describe('index.js - clientGen', () => {
   const testDir = `${process.cwd()}/test`;
 
   beforeAll(async () => {
-    // await fsx.emptyDir(testDir);
-    // return await rmdir(testDir);
+    await fsx.emptyDir(testDir);
+    return await rmdir(testDir);
   });
 
   afterAll(async () => {
-    // await fsx.emptyDir(testDir);
-    // return await rmdir(testDir);
+    await fsx.emptyDir(testDir);
+    return await rmdir(testDir);
   });
 
   it('creates a new client', async () => {
