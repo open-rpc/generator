@@ -25,7 +25,7 @@
     "publish": "npm publish --access=public"
   },
   "author": "",
-  "license": "ISC",
+  "license": "Apache-2.0",
   "dependencies": {
     "@open-rpc/schema-utils-js": "^1.0.1",
     "commander": "^2.19.0",
