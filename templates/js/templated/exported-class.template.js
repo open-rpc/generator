@@ -1,12 +1,12 @@
 module.exports = require('lodash').template(`
 import * as jayson from "jayson/promise";
-import * as Djv from "djv";
+import Djv from "djv";
 
 export default class <%= className %> {
   rpc: jayson.Client;
 
   constructor(options) {
-    this.schema = JSON.parse(<%= JSON.stringify(methods) %>);
+    this.methods = <%= JSON.stringify(methods) %>;
     if (options.transport === undefined || options.transport.type === undefined) {
       throw new Error("Invalid constructor params");
     }
@@ -14,7 +14,11 @@ export default class <%= className %> {
     this.rpc = jayson.client[options.transport.type](options.transport);
 
     this.validators = {};
-    methods.forEach((method) => {
+    this.methods.forEach((method) => {
+      if (!method.params) {
+        this.validators[method.name] = [];
+        return;
+      }
       this.validators[method.name] = method.params.map((param) => new Djv().addSchema(method.name, param.schema));
     });
   }

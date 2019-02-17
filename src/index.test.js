@@ -8,12 +8,20 @@ const stat = promisify(fs.stat);
 const rmdir = promisify(fs.rmdir);
 
 describe('index.js - clientGen', () => {
+  const testDir = `${process.cwd()}/test`;
+
+  beforeAll(async () => {
+    // await fsx.emptyDir(testDir);
+    // return await rmdir(testDir);
+  });
+
+  afterAll(async () => {
+    // await fsx.emptyDir(testDir);
+    // return await rmdir(testDir);
+  });
 
   it('creates a new client', async () => {
     expect.assertions(1);
-    const testDir = path.join('__dirname/', '../', 'test');
-    await fsx.emptyDir(testDir);
-    await rmdir(testDir);
 
     await clientGen({
       clientName: 'test',
@@ -21,8 +29,16 @@ describe('index.js - clientGen', () => {
     });
 
     await expect(stat(`${process.cwd()}/test`)).resolves.toBeTruthy();
-
-    await fsx.emptyDir(testDir);
-    await rmdir(testDir);
   }, 30000);
+
+  describe('the generated lib', () => {
+    it('can be imported', () => {
+      const generated = require(`${testDir}/dist/test.js`).default;
+      expect(typeof generated).toBe('function');
+
+      const instance = new generated({ transport: { type: 'http' } });
+
+      expect(instance).toBeInstanceOf(generated)
+    });
+  });
 });
