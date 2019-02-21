@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "build": "tsc"
+    "build": "tsc",
+    "test": "jest  --coverage"
   },
   "author": "",
   "license": "ISC",
@@ -14,7 +15,10 @@
     "node-fetch": "^2.3.0"
   },
   "devDependencies": {
-    "typescript": "^3.2.4",
-    "@types/node-fetch": "^2.1.4"
+    "@types/jest": "^24.0.5",
+    "@types/node-fetch": "^2.1.4",
+    "jest": "^24.1.0",
+    "ts-jest": "^23.10.5",
+    "typescript": "^3.2.4"
   }
 }

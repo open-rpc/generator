@@ -45,7 +45,7 @@ module.exports = async ({clientName, schema}) => {
   const destinationDirectoryName = `${cwd}/${clientName}`;
   await cleanBuildDir(destinationDirectoryName);
   await copyStatic(destinationDirectoryName);
-  await writeFile(`${destinationDirectoryName}/${clientName}.ts`, compiledResult, 'utf8');
+  await writeFile(`${destinationDirectoryName}/src/${clientName}.ts`, compiledResult, 'utf8');
 
   await bootstrapGeneratedPackage(destinationDirectoryName);
   return true;

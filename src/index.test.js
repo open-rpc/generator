@@ -7,6 +7,15 @@ const { promisify } = require('util');
 const stat = promisify(fs.stat);
 const rmdir = promisify(fs.rmdir);
 
+const { exec } = require('child_process');
+
+jest.mock('jayson', () => ({
+  client: {
+    http: jest.fn()
+  }
+}));
+const jayson = require('jayson');
+
 describe('index.js - clientGen', () => {
   const testDir = `${process.cwd()}/test`;
 
@@ -31,14 +40,10 @@ describe('index.js - clientGen', () => {
     await expect(stat(`${process.cwd()}/test`)).resolves.toBeTruthy();
   }, 30000);
 
-  describe('the generated lib', () => {
-    it('can be imported', () => {
-      const generated = require(`${testDir}/dist/test.js`).default;
-      expect(typeof generated).toBe('function');
-
-      const instance = new generated({ transport: { type: 'http' } });
-
-      expect(instance).toBeInstanceOf(generated)
-    });
+  it('can run tests inside generated lib', (cb) => {
+    exec(`cd ${process.cwd()}/test && npm test`, (err, result, otherresult) => {
+      console.log(err, result, otherresult);
+      cb();
+    }, 30000);
   });
 });
