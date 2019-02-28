@@ -12,7 +12,7 @@ const parseSchema = require('@open-rpc/schema-utils-js');
 
 const cwd = process.cwd();
 
-const jsTemplate = require(path.join(__dirname, '../', '/templates/templated/exported-class.template.js'));
+const jsTemplate = require(path.join(__dirname, '../', '/templates/js/templated/exported-class.template.js'));
 const cleanBuildDir = async (destinationDirectoryName) => {
   await fsx.ensureDir(destinationDirectoryName);
   await fsx.emptyDir(destinationDirectoryName);
