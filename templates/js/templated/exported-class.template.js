@@ -28,9 +28,9 @@ export default class <%= className %> {
   <%= method.name %>(...params: Array<any>): jayson.JSONRPCRequest {
     params.forEach((param, i) => this.validators['<%= method.name %>'][i].validate(param));
     <% if (method.paramStructure && method.paramStructure === "by-name") { %>
-    const rpcParams = params;
-    <% } else { %>
     const rpcParams = zipObject(params, <%= _.map(method.params, 'name') %>);
+    <% } else { %>
+    const rpcParams = params;
     <% } %>
     return this.rpc.request("<%= method.name %>", rpcParams);
   }
