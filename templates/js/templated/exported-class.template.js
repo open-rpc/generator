@@ -1,6 +1,7 @@
 module.exports = require('lodash').template(`
 import * as jayson from "jayson/promise";
 import Djv from "djv";
+import { zipObject } from "lodash";
 
 export default class <%= className %> {
   rpc: jayson.Client;
@@ -26,8 +27,14 @@ export default class <%= className %> {
   <% methods.forEach((method, i) => { %>
   <%= method.name %>(...params: Array<any>): jayson.JSONRPCRequest {
     params.forEach((param, i) => this.validators['<%= method.name %>'][i].validate(param));
-    return this.rpc.request("<%= method.name %>", params);
+    <% if (method.paramStructure && method.paramStructure === "by-name") { %>
+    const rpcParams = params;
+    <% } else { %>
+    const rpcParams = zipObject(params, <%= _.map(method.params, 'name') %>);
+    <% } %>
+    return this.rpc.request("<%= method.name %>", rpcParams);
   }
+
   <% }) %>
 }
 `);
