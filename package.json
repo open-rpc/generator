@@ -9,7 +9,7 @@
   },
   "main": "./src/index.js",
   "bin": {
-    "open-rpc-generator-client-js": "./bin/cli.js"
+    "open-rpc-generator-client": "./bin/cli.js"
   },
   "files": [
     "src/*.js",
