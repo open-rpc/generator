@@ -9,7 +9,8 @@ program
   .arguments('<clientName>')
   .option('-s, --schema [schema]', 'JSON string or a Path/Url pointing to an open rpc schema')
   .action((clientName) => {
-    orpcGenerator({ clientName, ...program, languages: ['js'] })
+    const parsedSchema = await parseSchema(program.schema);
+    orpcGenerator({ clientName, parsedSchema, languages: ['js'] })
       .then(() => {
         console.log('Finished! Client has been generated.')
       })

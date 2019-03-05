@@ -1,5 +1,5 @@
 {
-  "name": "@open-rpc/generator-client-js",
+  "name": "@open-rpc/generator-client",
   "private": false,
   "version": "1.0.24",
   "description": "",
@@ -9,7 +9,7 @@
   },
   "main": "./src/index.js",
   "bin": {
-    "open-rpc-generator-client-js": "./bin/cli.js"
+    "open-rpc-generator-client": "./bin/cli.js"
   },
   "files": [
     "src/*.js",
@@ -34,5 +34,8 @@
     "jest": "^24.0.0",
     "lodash": "^4.17.11",
     "typescript": "^3.2.4"
+  },
+  "devDependencies": {
+    "@open-rpc/examples": "^1.0.8"
   }
 }

@@ -39,8 +39,7 @@ const bootstrapGeneratedPackage = (destinationDirectoryName) => {
 };
 
 module.exports = async ({clientName, schema}) => {
-  const parsedSchema = await parseSchema(schema);
-  const compiledResult = await compileTemplate(clientName, parsedSchema);
+  const compiledResult = await compileTemplate(clientName, schema);
 
   const destinationDirectoryName = `${cwd}/${clientName}`;
   await cleanBuildDir(destinationDirectoryName);
