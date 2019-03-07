@@ -1,6 +1,8 @@
 # generator-client
 Multi-language client generators for [open-rpc](https://github.com/open-rpc/spec) apis.
 
+[![Dependabot badge](https://img.shields.io/badge/Dependabot-enabled-brightgreen.svg?logo=dependabot)](https://dependabot.com/)
+
 using npm:
 ```
 npm install -g @open-rpc/generator-client
