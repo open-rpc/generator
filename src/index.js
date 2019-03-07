@@ -26,8 +26,10 @@ const getTypeId = (method, contentDescriptor) => {
 
 const getTypeName = (contentDescriptor) => {
   const {schema} = contentDescriptor;
+  if (!contentDescriptor.name) { contentDescriptor.name = 'BROKEN'; }
   const prefix = (schema.type === undefined || schema.type.includes(['string', 'number', 'boolean'])) ? 'T' : 'I';
-  return `${prefix}${contentDescriptor.name}`;
+  const contentDescriptorName = contentDescriptor.name[0].toUpperCase() + _.tail(contentDescriptor.name).join('');
+  return `${prefix}${contentDescriptorName}`;
 };
 
 const getTypings = async ({ methods }) => {
@@ -57,9 +59,6 @@ const getTypings = async ({ methods }) => {
 
 const compileTemplate = async (name, schema) => {
   const typeDefs = await getTypings(schema);
-
-  console.log(_(typeDefs).uniqBy('typeName').map('typings').value().join(''))
-
   return jsTemplate({ className: name, methods: schema.methods, typeDefs, getTypeId });
 }
 
