@@ -3,8 +3,12 @@ import * as jayson from "jayson/promise";
 import Djv from "djv";
 import { zipObject } from "lodash";
 
+<%= _(typeDefs).values().uniqBy('typeName').map('typings').value().join('') %>
+
 export default class <%= className %> {
   rpc: jayson.Client;
+  methods: Array<any>;
+  validators: any;
 
   constructor(options) {
     this.methods = <%= JSON.stringify(methods) %>;
@@ -25,7 +29,11 @@ export default class <%= className %> {
   }
 
   <% methods.forEach((method, i) => { %>
-  <%= method.name %>(...params: Array<any>): jayson.JSONRPCRequest {
+  /**
+   * <%= method.summary %>
+   */
+  <%= method.name %>(<%= _.map(method.params, (param) => param.name + ': ' + typeDefs[getTypeId(method, param)].typeName).join(', ') %>): jayson.JSONRPCRequest {
+    const params = Array.from(arguments);
     params.forEach((param, i) => this.validators['<%= method.name %>'][i].validate(param));
     <% if (method.paramStructure && method.paramStructure === "by-name") { %>
     const rpcParams = zipObject(params, <%= _.map(method.params, 'name') %>);

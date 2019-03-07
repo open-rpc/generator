@@ -3,6 +3,7 @@ const fs = require('fs');
 const fsx = require('fs-extra');
 const path = require('path');
 const examples = require('@open-rpc/examples');
+const refParser = require('json-schema-ref-parser');
 
 const { promisify } = require('util');
 const stat = promisify(fs.stat);
@@ -28,13 +29,13 @@ describe(`Examples to generate Js clients}`, async () => {
 
       await clientGen({
         clientName: 'test',
-        schema: example
+        schema: await refParser.dereference(example)
       });
 
       await expect(stat(`${process.cwd()}/test`)).resolves.toBeTruthy();
     }, 30000);
 
-    it(`the generated lib can be imported ${example.info.title}`, () => {
+    it(`the generated lib can be imported ${example.info.title}`, async () => {
       const generated = require(`${testDir}/dist/test.js`).default;
       expect(typeof generated).toBe('function');
 
