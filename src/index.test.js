@@ -10,7 +10,7 @@ const stat = promisify(fs.stat);
 const rmdir = promisify(fs.rmdir);
 
 
-describe(`Examples to generate Js clients}`, async () => {
+describe(`Examples to generate Js clients}`, () => {
   const testDir = `${process.cwd()}/test`;
 
   beforeAll(async () => {
@@ -36,7 +36,7 @@ describe(`Examples to generate Js clients}`, async () => {
     }, 30000);
 
     it(`the generated lib can be imported ${example.info.title}`, async () => {
-      const generated = require(`${testDir}/dist/test.js`).default;
+      const generated = require(`${testDir}/build/index.js`).default;
       expect(typeof generated).toBe('function');
 
       const instance = new generated({ transport: { type: 'http' } });
@@ -44,4 +44,4 @@ describe(`Examples to generate Js clients}`, async () => {
       expect(instance).toBeInstanceOf(generated);
     });
   });
-});
+}, 90000);

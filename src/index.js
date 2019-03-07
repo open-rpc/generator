@@ -13,15 +13,11 @@ const cwd = process.cwd();
 const { compile, compileFromFile } = require('json-schema-to-typescript');
 
 const jsTemplate = require('../templates/js/templated/exported-class.template');
+const { makeIdForMethodContentDescriptors } = require("@open-rpc/schema-utils-js");
 
 const cleanBuildDir = async (destinationDirectoryName) => {
   await fsx.ensureDir(destinationDirectoryName);
   await fsx.emptyDir(destinationDirectoryName);
-};
-
-const getTypeId = (method, contentDescriptor) => {
-  const paramId = method.paramStructure === 'by-name' ? contentDescriptor.name : (method.params.indexOf(contentDescriptor) || method.result === contentDescriptor);
-  return `${method.name}/${paramId}`
 };
 
 const getTypeName = (contentDescriptor) => {
@@ -44,7 +40,7 @@ const getTypings = async ({ methods }) => {
     })))
     .filter(({ contentDescriptor }) => contentDescriptor.schema !== undefined)
     .map(async ({ method, contentDescriptor }) => ({
-      typeId: getTypeId(method, contentDescriptor),
+      typeId: makeIdForMethodContentDescriptors(method, contentDescriptor),
       typeName: getTypeName(contentDescriptor),
       typings: await compile(contentDescriptor.schema, getTypeName(contentDescriptor), { bannerComment: '' })
     }))
@@ -59,7 +55,7 @@ const getTypings = async ({ methods }) => {
 
 const compileTemplate = async (name, schema) => {
   const typeDefs = await getTypings(schema);
-  return jsTemplate({ className: name, methods: schema.methods, typeDefs, getTypeId });
+  return jsTemplate({ className: name, methods: schema.methods, typeDefs, makeIdForMethodContentDescriptors });
 }
 
 const copyStatic = async (destinationDirectoryName) => {

@@ -1,7 +1,8 @@
 module.exports = require('lodash').template(`
 import * as jayson from "jayson/promise";
-import Djv from "djv";
+import Ajv from "ajv";
 import { zipObject } from "lodash";
+import { makeIdForMethodContentDescriptors } from "@open-rpc/schema-utils-js";
 
 <%= _(typeDefs).values().uniqBy('typeName').map('typings').value().join('') %>
 
@@ -18,13 +19,9 @@ export default class <%= className %> {
 
     this.rpc = jayson.client[options.transport.type](options.transport);
 
-    this.validators = {};
+    this.validator = new Ajv();
     this.methods.forEach((method) => {
-      if (!method.params) {
-        this.validators[method.name] = [];
-        return;
-      }
-      this.validators[method.name] = method.params.map((param) => new Djv().addSchema(method.name, param.schema));
+      method.params.forEach((param, i) => this.validator.addSchema(param.schema, makeIdForMethodContentDescriptors(method, param)));
     });
   }
 
@@ -32,11 +29,39 @@ export default class <%= className %> {
   /**
    * <%= method.summary %>
    */
-  <%= method.name %>(<%= _.map(method.params, (param) => param.name + ': ' + typeDefs[getTypeId(method, param)].typeName).join(', ') %>): jayson.JSONRPCRequest {
+  <%= method.name %>(<%= _.map(method.params, (param) => param.name + ': ' + typeDefs[makeIdForMethodContentDescriptors(method, param)].typeName).join(', ') %>): jayson.JSONRPCRequest {
     const params = Array.from(arguments);
-    params.forEach((param, i) => this.validators['<%= method.name %>'][i].validate(param));
+
+    const errors = _(method.params)
+      .map((param, index) => {
+        const isValid = this.validator.validate(makeIdForMethodContentDescriptors(method, param), params[index]);
+        const message = [
+          "Expected param in position ",
+          index,
+          " to match the json schema: ",
+          JSON.stringify(param.schema, undefined, '\t'),
+          ". The function received instead ",
+          params[index],
+          "."
+        ].join("");
+
+        if (!isValid) {
+          const err = new Error(message);
+          err.data = this.validator.errors;
+          return err;
+        }
+      })
+      .compact()
+      .value();
+
+    if (validationErrors.length > 0) {
+      return Promise.reject(errors);
+    }
+
+
+    params.forEach((param, i) => this.validator.validate(makeIdForMethodContentDescriptors(methd, param));
     <% if (method.paramStructure && method.paramStructure === "by-name") { %>
-    const rpcParams = zipObject(params, <%= _.map(method.params, 'name') %>);
+    const rpcParams = zipObject(params, <%= _.map(method.params, "name") %>);
     <% } else { %>
     const rpcParams = params;
     <% } %>
