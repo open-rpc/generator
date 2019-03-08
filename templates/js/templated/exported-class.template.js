@@ -29,7 +29,7 @@ export default class <%= className %> {
   /**
    * <%= method.summary %>
    */
-  <%= method.name %>(<%= _.map(method.params, (param) => param.name + ': ' + typeDefs[makeIdForMethodContentDescriptors(method, param)].typeName).join(', ') %>): jayson.JSONRPCRequest {
+  <%= method.name %>(<%= _.map(method.params, (param) => param.name + ': ' + typeDefs[makeIdForMethodContentDescriptors(method, param)].typeName).join(', ') %>): Promise<<%= typeDefs[makeIdForMethodContentDescriptors(method, method.result)].typeName %>> {
     const params = Array.from(arguments);
 
     const errors = _(method.params)
