@@ -17,7 +17,7 @@ export default class <%= className %> {
       throw new Error("Invalid constructor params");
     }
 
-    this.rpc = jayson.client[options.transport.type](options.transport);
+    this.rpc = jayson.Client[options.transport.type](options.transport);
 
     this.validator = new Ajv();
     this.methods.forEach((method) => {
