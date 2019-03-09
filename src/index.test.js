@@ -9,10 +9,8 @@ const { promisify } = require('util');
 const stat = promisify(fs.stat);
 const rmdir = promisify(fs.rmdir);
 
-
 describe(`Examples to generate Js clients`, () => {
   const testDir = `${process.cwd()}/test`;
-
   beforeAll(async () => {
     await fsx.emptyDir(testDir);
     return await rmdir(testDir);
@@ -22,7 +20,6 @@ describe(`Examples to generate Js clients`, () => {
     await fsx.emptyDir(testDir);
     return await rmdir(testDir);
   });
-
 
   Object.values(examples).forEach((example) => {
     it(`creates a new client for example: ${example.info.title}`, async () => {

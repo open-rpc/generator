@@ -8,7 +8,7 @@ const mkdir = promisify(fs.mkdir);
 const fsx = require('fs-extra');
 const { exec } = require('child_process');
 const path = require('path');
-
+const bootstrapGeneratedPackage = require('./bootstrapGeneratedPackage')(exec);
 const cwd = process.cwd();
 const { compile, compileFromFile } = require('json-schema-to-typescript');
 
@@ -22,6 +22,7 @@ const cleanBuildDir = async (destinationDirectoryName) => {
 
 const getTypeName = (contentDescriptor) => {
   const {schema} = contentDescriptor;
+  // TODO: Remove this when we've fixed things to ensure name is a required field
   if (!contentDescriptor.name) { contentDescriptor.name = 'BROKEN'; }
 
   const primitiveTypes = ["string", "number", "integer", "boolean", "null"];
@@ -71,17 +72,6 @@ const copyStatic = async (destinationDirectoryName) => {
 
   const staticPath = path.join(__dirname, '../', '/templates/js/static');
   fsx.copy(staticPath, destinationDirectoryName);
-};
-
-const bootstrapGeneratedPackage = (destinationDirectoryName) => {
-  return new Promise(
-    (resolve, reject) => exec(`cd ${destinationDirectoryName} && npm install && npm run build`, (err, stdout, stderr) => {
-      if (err) {
-        return reject(new Error(stdout));
-      }
-      resolve();
-    })
-  );
 };
 
 module.exports = async ({clientName, schema}) => {
