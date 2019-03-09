@@ -29,7 +29,8 @@ export default class <%= className %> {
   /**
    * <%= method.summary %>
    */
-  <%= method.name %>(<%= _.map(method.params, (param) => param.name + ': ' + typeDefs[makeIdForMethodContentDescriptors(method, param)].typeName).join(', ') %>): Promise<<%= typeDefs[makeIdForMethodContentDescriptors(method, method.result)].typeName %>> {
+
+  <%= method.name %>(<%= _.map(method.params, (param) => param.name + ': ' + typeDefs[makeIdForMethodContentDescriptors(method, param)].typeName).join(', ') %>): Promise<<%= (typeDefs[makeIdForMethodContentDescriptors(method, method.result)] || {typeName: 'jayson.JSONRPCResponse'}).typeName %>> {
     const params = Array.from(arguments);
 
     const errors = _(method.params)

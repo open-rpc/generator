@@ -1,7 +1,7 @@
 {
   "name": "@open-rpc/generator-client",
   "private": false,
-  "version": "1.0.24",
+  "version": "1.0.25",
   "description": "",
   "repository": {
     "type": "git",
@@ -27,7 +27,7 @@
   "author": "",
   "license": "Apache-2.0",
   "dependencies": {
-    "@open-rpc/schema-utils-js": "git+https://github.com/open-rpc/schema-utils-js.git#feat/make-id",
+    "@open-rpc/schema-utils-js": "git+https://github.com/open-rpc/schema-utils-js.git",
     "commander": "^2.19.0",
     "fs-extra": "^7.0.1",
     "is-url": "^1.2.4",
