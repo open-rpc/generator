@@ -2,16 +2,22 @@
   "name": "template-client",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "build/index.js",
   "scripts": {
-    "build": "tsc"
+    "build": "tsc && typedoc --out docs",
+    "publish": "npm publish --access=public"
   },
+  "files": [
+    "build/*"
+  ],
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "djv": "^2.1.1",
+    "@open-rpc/schema-utils-js": "git+https://github.com/open-rpc/schema-utils-js.git",
     "jayson": "^2.1.1",
-    "node-fetch": "^2.3.0"
+    "node-fetch": "^2.3.0",
+    "lodash": "4.17.11",
+    "typedoc": "^0.14.2"
   },
   "devDependencies": {
     "typescript": "^3.2.4",

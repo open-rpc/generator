@@ -2,15 +2,17 @@
 
 const program = require('commander');
 const orpcGenerator = require('../src');
+const { parse } = require('@open-rpc/schema-utils-js');
 
 program
   .version(require('./get-version'))
   .usage('[options] <clientName>')
   .arguments('<clientName>')
   .option('-s, --schema [schema]', 'JSON string or a Path/Url pointing to an open rpc schema')
-  .action((clientName) => {
-    const parsedSchema = await parseSchema(program.schema);
-    orpcGenerator({ clientName, parsedSchema, languages: ['js'] })
+  .action(async (clientName) => {
+    const schema = await parse(program.schema);
+
+    orpcGenerator({ clientName, schema, languages: ['js'] })
       .then(() => {
         console.log('Finished! Client has been generated.')
       })

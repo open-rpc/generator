@@ -1,5 +1,8 @@
 **/node_modules
 **/build
 **/coverage
+**/docs
+coverage
+docs
 .DS_Store
 test
