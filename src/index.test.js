@@ -18,10 +18,10 @@ describe(`Examples to generate Js clients}`, () => {
     return await rmdir(testDir);
   });
 
-  afterAll(async () => {
-    await fsx.emptyDir(testDir);
-    return await rmdir(testDir);
-  });
+  // afterAll(async () => {
+  //   await fsx.emptyDir(testDir);
+  //   return await rmdir(testDir);
+  // });
 
   Object.values(examples).forEach((example) => {
     it(`creates a new client for example: ${example.info.title}`, async () => {
