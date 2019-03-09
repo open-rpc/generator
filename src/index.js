@@ -68,7 +68,12 @@ const copyStatic = async (destinationDirectoryName) => {
 
 const bootstrapGeneratedPackage = (destinationDirectoryName) => {
   return new Promise(
-    (resolve, reject) => exec(`cd ${destinationDirectoryName} && npm install && npm run build`, resolve, reject)
+    (resolve, reject) => exec(`cd ${destinationDirectoryName} && npm install && npm run build`, (err, stdout, stderr) => {
+      if (err) {
+        return reject(new Error(stdout));
+      }
+      resolve();
+    })
   );
 };
 

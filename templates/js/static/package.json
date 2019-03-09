@@ -14,9 +14,10 @@
   "license": "ISC",
   "dependencies": {
     "@open-rpc/schema-utils-js": "git+https://github.com/open-rpc/schema-utils-js.git",
-    "ajv": "^6.10.0",
     "jayson": "^2.1.1",
     "node-fetch": "^2.3.0",
+    "@types/ajv": "^1.0.0",
+    "lodash": "4.17.11",
     "typedoc": "^0.14.2"
   },
   "devDependencies": {
