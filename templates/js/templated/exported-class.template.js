@@ -36,10 +36,10 @@ export default class <%= className %> {
    * <%= method.summary %>
    */
 
-  <%= method.name %>(<%= _.map(method.params, (param) => param.name + ': ' + typeDefs[makeIdForMethodContentDescriptors(method, param)].typeName).join(', ') %>): Promise<<%= (typeDefs[makeIdForMethodContentDescriptors(method, method.result)] || {typeName: 'any'}).typeName %>> {
+  <%= method.name %>(<%= _.map(method.params, (param, i) => param.name + i + ': ' + typeDefs[makeIdForMethodContentDescriptors(method, param)].typeName).join(', ') %>): Promise<<%= (typeDefs[makeIdForMethodContentDescriptors(method, method.result)] || {typeName: 'any'}).typeName %>> {
     const params = Array.from(arguments);
-    const methodName = '<%= method.name %>';
-    const methodObject = _.find(this.methods, (m) =>  m.name === methodName);
+    const methodName = "<%= method.name %>";
+    const methodObject = _.find(this.methods, ({name}) =>  name === methodName);
 
     const errors = _.chain(methodObject.params)
         .map((param, index) => {
@@ -67,11 +67,11 @@ export default class <%= className %> {
     }
 
     <% if (method.paramStructure && method.paramStructure === "by-name") { %>
-    const rpcParams = _.zipObject(params, <%= _.map(methodObject.params, "name") %>);
+    const rpcParams = _.zipObject(params, _.map(methodObject.params, "name"));
     <% } else { %>
     const rpcParams = params;
     <% } %>
-    const result : any = this.rpc.request("<%= method.name %>", rpcParams);
+    const result : any = this.rpc.request(methodName, rpcParams);
     return result;
   }
 

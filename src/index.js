@@ -23,8 +23,15 @@ const cleanBuildDir = async (destinationDirectoryName) => {
 const getTypeName = (contentDescriptor) => {
   const {schema} = contentDescriptor;
   if (!contentDescriptor.name) { contentDescriptor.name = 'BROKEN'; }
-  const prefix = (schema.type === undefined || schema.type.includes(['string', 'number', 'boolean'])) ? 'T' : 'I';
-  const contentDescriptorName = contentDescriptor.name[0].toUpperCase() + _.tail(contentDescriptor.name).join('');
+
+  const primitiveTypes = ["string", "number", "integer", "boolean", "null"];
+  let prefix = "T";
+  if (schema.type && primitiveTypes.includes(schema.type)) {
+    prefix = 'I';
+  }
+
+  const contentDescriptorName = _.startCase(contentDescriptor.name).replace(/\s/g, '');
+
   return `${prefix}${contentDescriptorName}`;
 };
 
