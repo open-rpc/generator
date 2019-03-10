@@ -14,7 +14,7 @@
   "files": [
     "src/*.js",
     "bin/*.js",
-    "templates/**/*",
+    "templates/",
     ".node-version"
   ],
   "scripts": {
