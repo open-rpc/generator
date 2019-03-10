@@ -15,7 +15,6 @@
     "src/*.js",
     "bin/*.js",
     "templates/",
-    "templates/js/static/",
     ".node-version"
   ],
   "scripts": {
