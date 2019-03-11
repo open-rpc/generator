@@ -1,7 +1,7 @@
 {
   "name": "@open-rpc/generator-client",
   "private": false,
-  "version": "1.0.25",
+  "version": "1.0.28",
   "description": "",
   "repository": {
     "type": "git",
@@ -14,8 +14,7 @@
   "files": [
     "src/*.js",
     "bin/*.js",
-    "client-static/*",
-    "client-templated/*",
+    "templates/",
     ".node-version"
   ],
   "scripts": {

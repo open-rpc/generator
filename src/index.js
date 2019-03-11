@@ -71,7 +71,8 @@ const copyStatic = async (destinationDirectoryName) => {
   await fsx.emptyDir(destinationDirectoryName);
 
   const staticPath = path.join(__dirname, '../', '/templates/js/static');
-  fsx.copy(staticPath, destinationDirectoryName);
+  await fsx.copy(staticPath, destinationDirectoryName);
+  await fsx.move(path.join(destinationDirectoryName, '_package.json'), path.join(destinationDirectoryName, 'package.json'));
 };
 
 module.exports = async ({clientName, schema}) => {
