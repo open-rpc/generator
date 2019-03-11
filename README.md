@@ -1,15 +1,28 @@
-# generator-client
+# open-rpc-generator-client
 Multi-language client generators for [open-rpc](https://github.com/open-rpc/spec) apis.
 
 [![Dependabot Status](https://api.dependabot.com/badges/status?host=github&repo=open-rpc/generator-client)](https://dependabot.com)
 
-using npm:
+Install using npm
 ```
 npm install -g @open-rpc/generator-client
+```
+
+Check install or update package
+
+```
+open-rpc-generator-client --version
+
+npm -g update @open-rpc/generator-client
+```
+
+Generate client
+```
 open-rpc-generator-client \
-  -s https://raw.githubusercontent.com/open-rpc/examples/master/service-descriptions/petstore.json \
+  -s https://raw.githubusercontent.com/open-rpc/examples/master/service-descriptions/petstore-openrpc.json \
   PetStore
 ```
+
 In action (for a js client):
 ```sh
 docker run \
