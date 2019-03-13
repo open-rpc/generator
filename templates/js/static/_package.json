@@ -5,6 +5,7 @@
   "main": "build/index.js",
   "scripts": {
     "build": "tsc && typedoc --out docs",
+    "lint": "tslint -c tslint.json 'src/**/*.ts'",
     "publish": "npm publish --access=public"
   },
   "files": [
@@ -24,6 +25,7 @@
   },
   "devDependencies": {
     "typescript": "^3.2.4",
-    "@types/node-fetch": "^2.1.4"
+    "@types/node-fetch": "^2.1.4",
+    "tslint": "^5.13.1"
   }
 }
