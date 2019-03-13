@@ -27,7 +27,7 @@ export default class <%= className %> {
 
     this.validator = new ajv();
     this.methods.forEach((method) => {
-      method.params.forEach((param: any, i: any) => this.validator.addSchema(param.schema, makeIdForMethodContentDescriptors(method, param)));
+      method.params.forEach((param: any, i: number) => this.validator.addSchema(param.schema, makeIdForMethodContentDescriptors(method, param)));
     });
   }
 
