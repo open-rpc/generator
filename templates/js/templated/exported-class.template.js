@@ -32,11 +32,11 @@ export default class <%= className %> {
   }
 
   <% methods.forEach((method, i) => { %>
+  <% const paramNames = _.uniqBy(method.params, 'name').length === method.params.length ? _.map(method.params, 'name') : _.map(method.params, (param, i) => param.name + i) %>
   /**
    * <%= method.summary %>
    */
-  <% const methodParams = _.uniqBy(method.params, 'name').length === method.params.length ? method.params : _.map(method.params, (param, i) => ({...param, name: param.name + i}))%>
-  <%= method.name %>(<%= _.map(methodParams, (param, i) => param.name + ': ' + typeDefs[makeIdForMethodContentDescriptors(method, param)].typeName).join(', ') %>): Promise<<%= (typeDefs[makeIdForMethodContentDescriptors(method, method.result)] || {typeName: 'any'}).typeName %>> {
+  <%= method.name %>(<%= _.map(method.params, (param, i) => paramNames[i] + ': ' + typeDefs[makeIdForMethodContentDescriptors(method, param)].typeName).join(', ') %>): Promise<<%= (typeDefs[makeIdForMethodContentDescriptors(method, method.result)] || {typeName: 'any'}).typeName %>> {
     const params = Array.from(arguments);
     const methodName = "<%= method.name %>";
     const methodObject = _.find(this.methods, ({name}: any) => name === methodName);
@@ -72,7 +72,7 @@ export default class <%= className %> {
     const rpcParams = params;
     <% } %>
     const result : any = this.rpc.request(methodName, rpcParams);
-    return result.then((r) => r.result);
+    return result.then((r: any) => r.result);
   }
 
   <% }) %>
