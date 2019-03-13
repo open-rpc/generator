@@ -30,7 +30,6 @@
     "commander": "^2.19.0",
     "fs-extra": "^7.0.1",
     "is-url": "^1.2.4",
-    "isomorphic-fetch": "^2.2.1",
     "jayson": "^2.1.2",
     "jest": "^24.5.0",
     "json-schema-to-typescript": "^6.1.3",
