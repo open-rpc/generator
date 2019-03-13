@@ -17,7 +17,7 @@
     "@open-rpc/schema-utils-js": "1.0.3",
     "json-schema": "^0.2.3",
     "ajv": "^6.10.0",
-    "jayson": "^2.1.1",
+    "jayson": "^2.1.2",
     "lodash": "4.17.11"
   },
   "devDependencies": {
