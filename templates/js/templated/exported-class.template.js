@@ -32,11 +32,11 @@ export default class <%= className %> {
   }
 
   <% methods.forEach((method, i) => { %>
+  <% const paramNames = _.uniqBy(method.params, 'name').length === method.params.length ? _.map(method.params, 'name') : _.map(method.params, (param, i) => param.name + i) %>
   /**
    * <%= method.summary %>
    */
-
-  <%= method.name %>(<%= _.map(method.params, (param, i) => param.name + i + ': ' + typeDefs[makeIdForMethodContentDescriptors(method, param)].typeName).join(', ') %>): Promise<<%= (typeDefs[makeIdForMethodContentDescriptors(method, method.result)] || {typeName: 'any'}).typeName %>> {
+  <%= method.name %>(<%= _.map(method.params, (param, i) => paramNames[i] + ': ' + typeDefs[makeIdForMethodContentDescriptors(method, param)].typeName).join(', ') %>): Promise<<%= (typeDefs[makeIdForMethodContentDescriptors(method, method.result)] || {typeName: 'any'}).typeName %>> {
     const params = Array.from(arguments);
     const methodName = "<%= method.name %>";
     const methodObject = _.find(this.methods, ({name}: any) => name === methodName);
