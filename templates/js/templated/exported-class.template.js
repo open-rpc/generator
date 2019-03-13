@@ -5,7 +5,7 @@ import _ from "lodash";
 import { makeIdForMethodContentDescriptors } from "@open-rpc/schema-utils-js";
 
 class ParameterValidationError extends Error {
-  constructor(public message: string, public errors: Array<ajv.ErrorObject>) {
+  constructor(public message: string, public errors: Array<ajv.ErrorObject> | undefined | null) {
     super(message);
   }
 }
@@ -23,7 +23,7 @@ export default class <%= className %> {
       throw new Error("Invalid constructor params");
     }
 
-    this.rpc = jayson.Client[options.transport.type](options.transport);
+    this.rpc = (jayson.Client as any)[options.transport.type](options.transport);
 
     this.validator = new ajv();
     this.methods.forEach((method) => {
