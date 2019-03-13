@@ -35,8 +35,8 @@ export default class <%= className %> {
   /**
    * <%= method.summary %>
    */
-
-  <%= method.name %>(<%= _.map(method.params, (param, i) => param.name + i + ': ' + typeDefs[makeIdForMethodContentDescriptors(method, param)].typeName).join(', ') %>): Promise<<%= (typeDefs[makeIdForMethodContentDescriptors(method, method.result)] || {typeName: 'any'}).typeName %>> {
+  <% const methodParams = _.uniqBy(method.params, 'name').length === method.params.length ? method.params : _.map(method.params, (param, i) => ({...param, name: param.name + i}))%>
+  <%= method.name %>(<%= _.map(methodParams, (param, i) => param.name + ': ' + typeDefs[makeIdForMethodContentDescriptors(method, param)].typeName).join(', ') %>): Promise<<%= (typeDefs[makeIdForMethodContentDescriptors(method, method.result)] || {typeName: 'any'}).typeName %>> {
     const params = Array.from(arguments);
     const methodName = "<%= method.name %>";
     const methodObject = _.find(this.methods, ({name}: any) => name === methodName);
