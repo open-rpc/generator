@@ -2,7 +2,8 @@ module.exports = (exec) => (destinationDirectoryName) => {
   const commandSequence = [
     `cd ${destinationDirectoryName}`,
     'npm install',
-    'npm run build'
+    'npm run lint',
+    'npm run build',
   ].join(' && ');
 
   return new Promise((resolve, reject) => exec(commandSequence, (err, stdout) => {
