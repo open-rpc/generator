@@ -36,12 +36,12 @@ export default class <%= className %> {
    * <%= method.summary %>
    */
 
-  <%= method.name %>(<%= _.map(method.params, (param, i) => param.name + i + ': ' + typeDefs[makeIdForMethodContentDescriptors(method, param)].typeName).join(', ') %>): Promise<<%= (typeDefs[makeIdForMethodContentDescriptors(method, method.result)] || {typeName: 'any'}).typeName %>> {
+  <%= method.name %>(<%= _.map(method.params, (param, i) => param.name + ': ' + typeDefs[makeIdForMethodContentDescriptors(method, param)].typeName).join(', ') %>): Promise<<%= (typeDefs[makeIdForMethodContentDescriptors(method, method.result)] || {typeName: 'any'}).typeName %>> {
     const params = Array.from(arguments);
     const methodName = "<%= method.name %>";
-    const methodObject = _.find(this.methods, ({name: string}) =>  name === methodName);
+    const methodObject = _.find(this.methods, ({name}: {name: string}) => name === methodName);
 
-    const errors = _.chain(methodObject.params)
+    const errors = _.chain((methodObject as any).params)
         .map((param: any, index: number) => {
         const isValid = this.validator.validate(makeIdForMethodContentDescriptors(methodObject, param), params[index]);
         const message = [
