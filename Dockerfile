@@ -4,6 +4,5 @@ RUN npm set progress=false
 RUN npm install --only=production
 COPY ./src ./src
 COPY ./bin ./bin
-COPY ./client-static ./client-static
-COPY ./client-templated ./client-templated
+COPY ./templates ./templates
 ENTRYPOINT [ "./bin/cli.js" ]
