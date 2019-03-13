@@ -16,16 +16,14 @@
   "dependencies": {
     "@open-rpc/schema-utils-js": "1.0.3",
     "json-schema": "^0.2.3",
-    "@types/json-schema": "7.0.3",
     "ajv": "^6.10.0",
     "jayson": "^2.1.1",
-    "lodash": "4.17.11",
-    "node-fetch": "^2.3.0",
-    "typedoc": "^0.14.2"
+    "lodash": "4.17.11"
   },
   "devDependencies": {
     "typescript": "^3.2.4",
-    "@types/node-fetch": "^2.1.4",
-    "tslint": "^5.13.1"
+    "@types/json-schema": "7.0.3",
+    "tslint": "^5.13.1",
+    "typedoc": "^0.14.2"
   }
 }
