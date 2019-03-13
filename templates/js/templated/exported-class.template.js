@@ -5,7 +5,7 @@ import _ from "lodash";
 import { makeIdForMethodContentDescriptors } from "@open-rpc/schema-utils-js";
 
 class ParameterValidationError extends Error {
-  constructor(public message: string, public errors: Array<ajv.ErrorObject>) {
+  constructor(public message: string, public errors: Array<ajv.ErrorObject> | undefined | null) {
     super(message);
   }
 }
@@ -17,17 +17,17 @@ export default class <%= className %> {
   methods: Array<any>;
   validator: ajv.Ajv;
 
-  constructor(options) {
+  constructor(options: any) {
     this.methods = <%= JSON.stringify(methods) %>;
     if (options.transport === undefined || options.transport.type === undefined) {
       throw new Error("Invalid constructor params");
     }
 
-    this.rpc = jayson.Client[options.transport.type](options.transport);
+    this.rpc = (jayson.Client as any)[options.transport.type](options.transport);
 
     this.validator = new ajv();
     this.methods.forEach((method) => {
-      method.params.forEach((param, i) => this.validator.addSchema(param.schema, makeIdForMethodContentDescriptors(method, param)));
+      method.params.forEach((param: any, i: number) => this.validator.addSchema(param.schema, makeIdForMethodContentDescriptors(method, param)));
     });
   }
 
@@ -39,10 +39,10 @@ export default class <%= className %> {
   <%= method.name %>(<%= _.map(method.params, (param, i) => param.name + i + ': ' + typeDefs[makeIdForMethodContentDescriptors(method, param)].typeName).join(', ') %>): Promise<<%= (typeDefs[makeIdForMethodContentDescriptors(method, method.result)] || {typeName: 'any'}).typeName %>> {
     const params = Array.from(arguments);
     const methodName = "<%= method.name %>";
-    const methodObject = _.find(this.methods, ({name}) =>  name === methodName);
+    const methodObject = _.find(this.methods, ({name}: any) => name === methodName);
 
-    const errors = _.chain(methodObject.params)
-        .map((param, index) => {
+    const errors = _.chain((methodObject as any).params)
+        .map((param: any, index: number) => {
         const isValid = this.validator.validate(makeIdForMethodContentDescriptors(methodObject, param), params[index]);
         const message = [
           "Expected param in position ",
