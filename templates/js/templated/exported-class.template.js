@@ -72,7 +72,7 @@ export default class <%= className %> {
     const rpcParams = params;
     <% } %>
     const result : any = this.rpc.request(methodName, rpcParams);
-    return result.then((r) => r.result);
+    return result.then((r: any) => r.result);
   }
 
   <% }) %>
