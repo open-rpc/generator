@@ -1,11 +1,11 @@
-const clientGen = require('./');
-const fs = require('fs');
-const fsx = require('fs-extra');
-const path = require('path');
-const examples = require('@open-rpc/examples');
-const refParser = require('json-schema-ref-parser');
+import clientGen from "./";
+import fs from "fs";
+import fsx from "fs-extra";
+import path from "path";
+import examples from "@open-rpc/examples";
+import refParser from "json-schema-ref-parser";
+import { promisify } from "util";
 
-const { promisify } = require('util');
 const stat = promisify(fs.stat);
 const rmdir = promisify(fs.rmdir);
 
@@ -43,4 +43,4 @@ describe(`Examples to generate Js clients`, () => {
       expect(instance).toBeInstanceOf(generated);
     });
   });
-}, 90000);
+});

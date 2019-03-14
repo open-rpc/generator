@@ -20,6 +20,8 @@
   "scripts": {
     "start": "./bin/cli.js",
     "test": "jest --coverage",
+    "build": "tsc",
+    "watch:build": "tsc --watch",
     "watch:test": "jest --watch",
     "publish": "npm publish --access=public"
   },
@@ -37,6 +39,8 @@
     "typescript": "^3.3.3333"
   },
   "devDependencies": {
-    "@open-rpc/examples": "1.0.13"
+    "@open-rpc/examples": "1.0.13",
+    "@types/fs-extra": "^5.0.5",
+    "@types/jest": "^24.0.11"
   }
 }
