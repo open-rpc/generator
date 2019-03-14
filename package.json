@@ -1,7 +1,7 @@
 {
   "name": "@open-rpc/generator-client",
   "private": false,
-  "version": "1.0.31",
+  "version": "1.0.32",
   "description": "",
   "repository": {
     "type": "git",

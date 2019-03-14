@@ -21,13 +21,13 @@ const cleanBuildDir = async (destinationDirectoryName) => {
 };
 
 const getTypeName = (contentDescriptor) => {
-  const {schema} = contentDescriptor;
+  const { schema } = contentDescriptor;
   // TODO: Remove this when we've fixed things to ensure name is a required field
   if (!contentDescriptor.name) { contentDescriptor.name = 'BROKEN'; }
 
-  const primitiveTypes = ["string", "number", "integer", "boolean", "null"];
+  const interfaceTypes = ["array", "object"];
   let prefix = "T";
-  if (schema.type && primitiveTypes.includes(schema.type)) {
+  if (schema.type && interfaceTypes.includes(schema.type)) {
     prefix = 'I';
   }
 
@@ -75,7 +75,7 @@ const copyStatic = async (destinationDirectoryName) => {
   await fsx.move(path.join(destinationDirectoryName, '_package.json'), path.join(destinationDirectoryName, 'package.json'));
 };
 
-module.exports = async ({clientName, schema}) => {
+module.exports = async ({ clientName, schema }) => {
   const compiledResult = await compileTemplate(clientName, schema);
 
   const destinationDirectoryName = `${cwd}/${clientName}`;
