@@ -16,7 +16,7 @@ export default class <%= className %> {
   private validator: ajv.Ajv;
 
   constructor(options: any) {
-    this.methods = <%= JSON.stringify(methods, undefined, '  ') %>;
+    this.methods = <%= JSON.stringify(methods, undefined, "  ") %>;
     if (options.transport === undefined || options.transport.type === undefined) {
       throw new Error("Invalid constructor params");
     }
