@@ -37,6 +37,6 @@
     "typescript": "^3.3.3333"
   },
   "devDependencies": {
-    "@open-rpc/examples": "https://github.com/open-rpc/examples.git#fix/type-object"
+    "@open-rpc/examples": "1.0.11"
   }
 }
