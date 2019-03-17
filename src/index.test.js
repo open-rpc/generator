@@ -21,6 +21,8 @@ describe(`Examples to generate Js clients`, () => {
     return await rmdir(testDir);
   });
 
+  // const example = examples.petstoreExpanded; // uncomment to run specific example
+
   Object.values(examples).forEach((example) => {
     it(`creates a new client for example: ${example.info.title}`, async () => {
       expect.assertions(1);
