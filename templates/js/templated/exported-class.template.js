@@ -47,7 +47,7 @@ export default class <%= className %> {
           "Expected param in position ",
           index,
           " to match the json schema: ",
-          JSON.stringify(param.schema, undefined, "\t"),
+          JSON.stringify(param.schema, undefined, "  "),
           ". The function received instead ",
           params[index],
           ".",
