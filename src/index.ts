@@ -23,8 +23,6 @@ const cleanBuildDir = async (destinationDirectoryName: string) => {
 
 const getTypeName = (contentDescriptor: any) => {
   const { schema } = contentDescriptor;
-  // TODO: Remove this when we've fixed things to ensure name is a required field
-  if (!contentDescriptor.name) { contentDescriptor.name = "BROKEN"; }
 
   const interfaceTypes = ["array", "object"];
   let prefix = "T";
