@@ -10,7 +10,7 @@ aliases:
   - &save-deps-cache
     key: deps-cache-{{ checksum "package.json" }}
     paths:
-      - ~/build/node_modules
+      - ~/generator-client/node_modules
 
   # -------------------------
   #  ALIASES: Branch Filters
@@ -22,8 +22,14 @@ aliases:
     branches:
       only:  /^(fix|feat)\/.*$/
 
+defaults: &defaults
+  working_directory: ~/generator-client
+  environment:
+    - GIT_COMMIT_DESC: git log --format=oneline -n 1 $CIRCLE_SHA1
+
 jobs:
   test:
+    <<: *defaults
     docker:
       - image: circleci/node:10
     steps:
@@ -36,6 +42,7 @@ jobs:
       - save_cache: *save-deps-cache
 
   build:
+    <<: *defaults
     docker:
       - image: circleci/node:10
     steps:
@@ -46,6 +53,7 @@ jobs:
       - save_cache: *save-deps-cache
 
   release:
+    <<: *defaults
     docker:
       - image: circleci/node:10
     steps:
