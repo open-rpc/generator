@@ -58,6 +58,7 @@ jobs:
       - checkout
       - restore_cache: *restore-deps-cache
       - run: npm install
+      - run: npm run build
       - run: npx semantic-release
       - save_cache: *save-deps-cache
 
