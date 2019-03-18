@@ -27,7 +27,7 @@
   "author": "",
   "license": "Apache-2.0",
   "dependencies": {
-    "@open-rpc/schema-utils-js": "1.0.3",
+    "@open-rpc/schema-utils-js": "1.1.0",
     "commander": "^2.19.0",
     "fs-extra": "^7.0.1",
     "is-url": "^1.2.4",
