@@ -1,4 +1,6 @@
-module.exports = require('lodash').template(`
+import { template } from "lodash";
+
+export default template(`
 import * as jayson from "jayson/promise";
 import ajv from "ajv";
 import _ from "lodash";
