@@ -12,15 +12,14 @@
     "open-rpc-generator-client": "./bin/cli.js"
   },
   "files": [
-    "src/*.js",
     "bin/*.js",
-    "templates/",
+    "build",
     ".node-version"
   ],
   "scripts": {
     "start": "./bin/cli.js",
     "test": "jest --coverage",
-    "build": "tsc",
+    "build": "tsc && cp -R templates/js/static build/templates/js/static",
     "watch:build": "tsc --watch",
     "watch:test": "jest --watch",
     "publish": "npm publish --access=public"

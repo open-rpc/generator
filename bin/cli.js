@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 const program = require('commander');
-const orpcGenerator = require('../src');
+const orpcGenerator = require('../build/src').default;
 const { parse } = require('@open-rpc/schema-utils-js');
 
 program
