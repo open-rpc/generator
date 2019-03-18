@@ -21,14 +21,13 @@ describe(`Examples to generate Js clients`, () => {
     return await rmdir(testDir);
   });
 
-
   Object.values(examples).forEach((example) => {
     it(`creates a new client for example: ${example.info.title}`, async () => {
       expect.assertions(1);
 
       await clientGen({
-        clientName: 'test',
-        schema: await refParser.dereference(example)
+        clientName: "test",
+        schema: await refParser.dereference(example),
       });
 
       await expect(stat(`${process.cwd()}/test`)).resolves.toBeTruthy();
@@ -36,9 +35,9 @@ describe(`Examples to generate Js clients`, () => {
 
     it(`the generated lib can be imported ${example.info.title}`, async () => {
       const generated = require(`${testDir}/build/index.js`).default;
-      expect(typeof generated).toBe('function');
+      expect(typeof generated).toBe("function");
 
-      const instance = new generated({ transport: { type: 'http' } });
+      const instance = new generated({ transport: { type: "http" } });
 
       expect(instance).toBeInstanceOf(generated);
     });
