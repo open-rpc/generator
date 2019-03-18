@@ -24,8 +24,6 @@ aliases:
 
 defaults: &defaults
   working_directory: ~/generator-client
-  environment:
-    - GIT_COMMIT_DESC: git log --format=oneline -n 1 $CIRCLE_SHA1
 
 jobs:
   test:
