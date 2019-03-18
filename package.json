@@ -1,7 +1,7 @@
 {
   "name": "@open-rpc/generator-client",
   "private": false,
-  "version": "1.0.33",
+  "version": "1.0.34",
   "description": "",
   "repository": {
     "type": "git",
@@ -22,7 +22,7 @@
     "build": "tsc && cp -R templates/js/static build/templates/js/static",
     "watch:build": "tsc --watch",
     "watch:test": "jest --watch",
-    "publish": "npm publish --access=public"
+    "publish": "npm run build && npm publish --access=public"
   },
   "author": "",
   "license": "Apache-2.0",
