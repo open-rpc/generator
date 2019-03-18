@@ -1,7 +1,7 @@
 {
   "name": "@open-rpc/generator-client",
   "private": false,
-  "version": "1.0.32",
+  "version": "1.0.34",
   "description": "",
   "repository": {
     "type": "git",
@@ -12,18 +12,17 @@
     "open-rpc-generator-client": "./bin/cli.js"
   },
   "files": [
-    "src/*.js",
     "bin/*.js",
-    "templates/",
+    "build",
     ".node-version"
   ],
   "scripts": {
     "start": "./bin/cli.js",
     "test": "jest --coverage",
-    "build": "tsc",
+    "build": "tsc && cp -R templates/js/static build/templates/js/static",
     "watch:build": "tsc --watch",
     "watch:test": "jest --watch",
-    "publish": "npm publish --access=public"
+    "publish": "npm run build && npm publish --access=public"
   },
   "author": "",
   "license": "Apache-2.0",
