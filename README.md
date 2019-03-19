@@ -27,7 +27,7 @@ In action (for a js client):
 ```sh
 docker run \
   -v $(pwd)/petstore/:/petstore \
-  openrpc/generator-client-js \
-    -s https://raw.githubusercontent.com/open-rpc/examples/master/service-descriptions/petstore.json
+  openrpc/generator-client \
+    -s https://raw.githubusercontent.com/open-rpc/examples/master/service-descriptions/petstore-openrpc.json
     petstore
 ```
