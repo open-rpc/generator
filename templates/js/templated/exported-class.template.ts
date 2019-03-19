@@ -33,44 +33,53 @@ export default class <%= className %> {
       })
     });
   }
-  <% methods.forEach((method, i) => { %><% const paramNames = _.uniqBy(method.params, 'name').length === method.params.length ? _.map(method.params, 'name') : _.map(method.params, (param, i) => param.name + i) %>
-  /**
-   * <%= method.summary %>
-   */
-  public <%= method.name %>(<%= _.map(method.params, (param, i) => paramNames[i] + ': ' + typeDefs[makeIdForMethodContentDescriptors(method, param)].typeName).join(', ') %>): Promise<<%= (typeDefs[makeIdForMethodContentDescriptors(method, method.result)] || {typeName: 'any'}).typeName %>> {
-    const params = Array.from(arguments);
-    const methodName = "<%= method.name %>";
-    const methodObject = _.find(this.methods, ({name}: any) => name === methodName);
 
-    const errors = _.chain((methodObject as any).params)
-        .map((param: any, index: number) => {
-        const isValid = this.validator.validate(makeIdForMethodContentDescriptors(methodObject, param), params[index]);
-        const message = [
-          "Expected param in position ",
-          index,
-          " to match the json schema: ",
-          JSON.stringify(param.schema, undefined, "  "),
-          ". The function received instead ",
-          params[index],
-          ".",
-        ].join("");
-
+  public validate(methodName: string, methodObject: any, params: any[]) {
+    return _.chain((methodObject as any).params)
+      .map((param: any, index: number) => {
+        const idForMethod = makeIdForMethodContentDescriptors(methodObject, param);
+        const isValid = this.validator.validate(idForMethod, params[index]);
         if (!isValid) {
+          const message = [
+            "Expected param in position ",
+            index,
+            " to match the json schema: ",
+            JSON.stringify(param.schema, undefined, "  "),
+            ". The function received instead ",
+            params[index],
+            ".",
+          ].join("");
           const err = new ParameterValidationError(message, this.validator.errors);
           return err;
         }
       })
       .compact()
       .value();
+  }
 
-    if (errors.length > 0) {
-      return Promise.reject(errors);
-    }<% if (method.paramStructure && method.paramStructure === "by-name") { %>
-    const rpcParams = _.zipObject(params, _.map(methodObject.params, "name"));
-    <% } else { %>
-    const rpcParams = params;<% } %>
-    const result: any = this.rpc.request(methodName, rpcParams);
+  public request({method, params}: any) {
+    const methodObject = _.find(this.methods, ({name}: any) => name === method);
+    const openRpcMethodValidationErrors = this.validate(method, methodObject, params);
+    if (openRpcMethodValidationErrors.length > 0) {
+      return Promise.reject(openRpcMethodValidationErrors);
+    }
+
+    let rpcParams;
+    if (methodObject.paramStructure && methodObject.paramStructure === "by-name") {
+      rpcParams = _.zipObject(params, _.map(methodObject.params, "name"));
+    } else {
+      rpcParams = Array.from(arguments);
+    }
+    const result: any = this.rpc.request(method, rpcParams);
     return result.then((r: any) => r.result);
+  }
+
+  <% methods.forEach((method, i) => { %><% const paramNames = _.uniqBy(method.params, 'name').length === method.params.length ? _.map(method.params, 'name') : _.map(method.params, (param, i) => param.name + i) %>
+  /**
+   * <%= method.summary %>
+   */
+  public <%= method.name %>(<%= _.map(method.params, (param, i) => paramNames[i] + ': ' + typeDefs[makeIdForMethodContentDescriptors(method, param)].typeName).join(', ') %>): Promise<<%= (typeDefs[makeIdForMethodContentDescriptors(method, method.result)] || {typeName: 'any'}).typeName %>> {
+    return this.request({method: "<%= method.name %>", params: Array.from(arguments)});
   }<% }) %>
 }
 `);
