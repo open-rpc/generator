@@ -17,8 +17,8 @@ describe(`Examples to generate Js clients`, () => {
   });
 
   afterAll(async () => {
-    // await fsx.emptyDir(testDir);
-    // return await rmdir(testDir);
+    await fsx.emptyDir(testDir);
+    return await rmdir(testDir);
   });
 
   Object.values(examples).forEach((example) => {
