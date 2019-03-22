@@ -1,0 +1,6 @@
+[package]
+name = "template-client"
+version = "1.0.0"
+authors = ["Zachary Belford <belfordz66@gmail.com>"]
+
+[dependencies]
