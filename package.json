@@ -27,6 +27,7 @@
   "author": "",
   "license": "Apache-2.0",
   "dependencies": {
+    "@open-rpc/meta-schema": "^1.2.0",
     "@open-rpc/schema-utils-js": "1.5.0",
     "@types/lodash": "^4.14.123",
     "commander": "^2.19.0",
@@ -39,7 +40,7 @@
     "typescript": "^3.3.3333"
   },
   "devDependencies": {
-    "@open-rpc/examples": "^1.2.1",
+    "@open-rpc/examples": "^1.2.2",
     "@types/fs-extra": "^5.0.5",
     "@types/jest": "^24.0.11",
     "ts-jest": "^24.0.0"

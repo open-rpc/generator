@@ -11,7 +11,7 @@ class ParameterValidationError extends Error {
     super(message);
   }
 }
-<%= _(typeDefs).values().uniqBy('typeName').map('typings').value().join('') %>
+<%= _(typeDefs).values().uniqBy('typeName').map('typing').value().join('') %>
 export default class <%= className %> {
   public rpc: jayson.Client;
   public methods: any[];
@@ -78,7 +78,7 @@ export default class <%= className %> {
   /**
    * <%= method.summary %>
    */
-  public <%= method.name %>(<%= _.map(method.params, (param, i) => paramNames[i] + ': ' + typeDefs[generateMethodParamId(method, param)].typeName).join(', ') %>): Promise<<%= (typeDefs[generateMethodParamId(method, method.result)] || {typeName: 'any'}).typeName %>> {
+  public <%= method.name %>(<%= _.map(method.params, (param, i) => paramNames[i] + ': ' + typeDefs[generateMethodParamId(method, param)].typeName).join(', ') %>): Promise<<%= (typeDefs[generateMethodResultId(method, method.result)] || {typeName: 'any'}).typeName %>> {
     return this.request({method: "<%= method.name %>", params: Array.from(arguments)});
   }<% }) %>
 }

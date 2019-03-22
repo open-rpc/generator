@@ -3,7 +3,6 @@ import fs from "fs";
 import fsx from "fs-extra";
 import path from "path";
 import examples from "@open-rpc/examples";
-import refParser from "json-schema-ref-parser";
 import { promisify } from "util";
 import { forEach } from "lodash";
 import { types } from "@open-rpc/meta-schema";
