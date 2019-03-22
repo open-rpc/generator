@@ -50,16 +50,20 @@ const getTypingForContentDescriptor = async (
   return typing;
 };
 
-export const getMethodTypingsMap = async ({ methods }: { methods: [any] }): Promise<IMethodTypingsMap> => {
+export const getMethodTypingsMap = async ({ methods }: types.OpenRPC): Promise<IMethodTypingsMap> => {
   const methodTypingsPromises = map(methods, async (method) => {
     const mparams = method.params;
     const mresult = method.result;
 
     const typingsForParams = await Promise.all(
-      map(mparams, (param) => getTypingForContentDescriptor(method, true, param)),
+      map(mparams, (param) => getTypingForContentDescriptor(method, true, param as types.ContentDescriptorObject)),
     );
 
-    const typingsForResult = await getTypingForContentDescriptor(method, false, mresult);
+    const typingsForResult = await getTypingForContentDescriptor(
+      method,
+      false,
+      mresult as types.ContentDescriptorObject,
+    );
 
     return [...typingsForParams, typingsForResult];
   });
@@ -70,4 +74,16 @@ export const getMethodTypingsMap = async ({ methods }: { methods: [any] }): Prom
     .flatten()
     .keyBy("typeId")
     .value();
+};
+
+export const getFunctionSignature = (method: types.MethodObject, typeDefs: IMethodTypingsMap): string => {
+  const params = map(
+    method.params as types.ContentDescriptorObject[],
+    (param) => `${param.name}: ${typeDefs[generateMethodParamId(method, param)].typeName}`,
+  ).join(", ");
+
+  const mResult = method.result as types.ContentDescriptorObject;
+  const result = `Promise<${typeDefs[generateMethodResultId(method, mResult)].typeName}>`;
+
+  return `public ${method.name}(${params}) : ${result}`;
 };

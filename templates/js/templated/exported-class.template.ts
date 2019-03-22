@@ -4,6 +4,7 @@ export default template(`
 import * as jayson from "jayson/promise";
 import ajv from "ajv";
 import _ from "lodash";
+import { types } from "@open-rpc/meta-schema";
 import { generateMethodParamId } from "@open-rpc/schema-utils-js";
 
 class ParameterValidationError extends Error {
@@ -11,7 +12,7 @@ class ParameterValidationError extends Error {
     super(message);
   }
 }
-<%= _(typeDefs).values().uniqBy('typeName').map('typing').value().join('') %>
+<%= _.chain(typeDefs).values().uniqBy('typeName').map('typing').value().join('') %>
 export default class <%= className %> {
   public rpc: jayson.Client;
   public methods: any[];
@@ -34,9 +35,9 @@ export default class <%= className %> {
     });
   }
 
-  public validate(methodName: string, methodObject: any, params: any[]) {
-    return _.chain((methodObject as any).params)
-      .map((param: any, index: number) => {
+  private validate(methodName: string, methodObject: types.MethodObject, params: any[]) {
+    return _.chain(methodObject.params)
+      .map((param: types.ContentDescriptorObject, index: number) => {
         const idForMethod = generateMethodParamId(methodObject, param);
         const isValid = this.validator.validate(idForMethod, params[index]);
         if (!isValid) {
@@ -57,9 +58,9 @@ export default class <%= className %> {
       .value();
   }
 
-  public request({method, params}: any) {
-    const methodObject = _.find(this.methods, ({name}: any) => name === method);
-    const openRpcMethodValidationErrors = this.validate(method, methodObject, params);
+  private request(methodName: string, params: any[]): Promise<any> {
+    const methodObject = _.find(this.methods, ({name}) => name === methodName) as types.MethodObject;
+    const openRpcMethodValidationErrors = this.validate(methodName, methodObject, params);
     if (openRpcMethodValidationErrors.length > 0) {
       return Promise.reject(openRpcMethodValidationErrors);
     }
@@ -70,16 +71,17 @@ export default class <%= className %> {
     } else {
       rpcParams = Array.from(arguments);
     }
-    const result: any = this.rpc.request(method, rpcParams);
+    const result: any = this.rpc.request(methodName, rpcParams);
     return result.then((r: any) => r.result);
   }
 
-  <% methods.forEach((method, i) => { %><% const paramNames = _.uniqBy(method.params, 'name').length === method.params.length ? _.map(method.params, 'name') : _.map(method.params, (param, i) => param.name + i) %>
+  <% methods.forEach((method) => { %>
   /**
    * <%= method.summary %>
    */
-  public <%= method.name %>(<%= _.map(method.params, (param, i) => paramNames[i] + ': ' + typeDefs[generateMethodParamId(method, param)].typeName).join(', ') %>): Promise<<%= (typeDefs[generateMethodResultId(method, method.result)] || {typeName: 'any'}).typeName %>> {
-    return this.request({method: "<%= method.name %>", params: Array.from(arguments)});
-  }<% }) %>
+  <%= getFunctionSignature(method, typeDefs) %> {
+    return this.request("<%= method.name %>", Array.from(arguments));
+  }
+  <% }) %>
 }
 `);

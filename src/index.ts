@@ -8,19 +8,19 @@ import jsTemplate from "../templates/js/templated/exported-class.template";
 import { generateMethodParamId, generateMethodResultId } from "@open-rpc/schema-utils-js";
 import { types } from "@open-rpc/meta-schema";
 
-import { getMethodTypingsMap } from "./getTypings";
+import { getMethodTypingsMap, getFunctionSignature } from "./getTypings";
 
 const cwd = process.cwd();
 
 const bootstrapGeneratedPackage = _bootstrapGeneratedPackage(exec);
 const writeFile = promisify(fs.writeFile);
 
-const cleanBuildDir = async (destinationDirectoryName: string) Promise<any> => {
+const cleanBuildDir = async (destinationDirectoryName: string): Promise<any> => {
   await ensureDir(destinationDirectoryName);
   await emptyDir(destinationDirectoryName);
 };
 
-const compileTemplate = async (name: string, schema: types.OpenRPC): string => {
+const compileTemplate = async (name: string, schema: types.OpenRPC): Promise<string> => {
   const typeDefs = await getMethodTypingsMap(schema);
   return jsTemplate({
     className: name,
@@ -28,6 +28,7 @@ const compileTemplate = async (name: string, schema: types.OpenRPC): string => {
     generateMethodResultId,
     methods: schema.methods,
     typeDefs,
+    getFunctionSignature
   });
 };
 
