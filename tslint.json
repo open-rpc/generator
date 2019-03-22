@@ -4,6 +4,8 @@
   ],
   "rules": {
     "ordered-imports": false,
-    "indent": [true, "spaces", 2]
+    "indent": [true, "spaces", 2],
+    "no-implicit-dependencies": true,
+    "no-unused-variable": true
   }
 }

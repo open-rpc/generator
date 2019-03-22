@@ -8,6 +8,7 @@
     "sourceMap": true,
     "outDir": "build",
     "declarationDir": "build",
-    "declaration": true
+    "declaration": true,
+    "resolveJsonModule": true
   }
 }

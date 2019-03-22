@@ -1,13 +1,13 @@
 import _bootstrapGeneratedPackage from "./bootstrapGeneratedPackage";
 import { exec } from "child_process";
-import { compile, compileFromFile } from "json-schema-to-typescript";
+import { compile } from "json-schema-to-typescript";
 import * as fs from "fs";
 import * as fsx from "fs-extra";
 import * as path from "path";
 import * as _ from "lodash";
 import { promisify } from "util";
 import jsTemplate from "../templates/js/templated/exported-class.template";
-import { makeIdForMethodContentDescriptors } from "@open-rpc/schema-utils-js";
+import { generateMethodParamId } from "@open-rpc/schema-utils-js";
 
 const cwd = process.cwd();
 
@@ -47,7 +47,7 @@ const getTypings = async ({ methods }: { methods: [any] }) => {
     })))
     .filter(({ contentDescriptor }) => contentDescriptor.schema !== undefined)
     .map(async ({ method, contentDescriptor }) => ({
-      typeId: makeIdForMethodContentDescriptors(method, contentDescriptor),
+      typeId: generateMethodParamId(method, contentDescriptor),
       typeName: getTypeName(contentDescriptor),
       typings: await compile(contentDescriptor.schema, getTypeName(contentDescriptor), { bannerComment: "" }),
     }))
@@ -62,7 +62,7 @@ const getTypings = async ({ methods }: { methods: [any] }) => {
 
 const compileTemplate = async (name: string, schema: any) => {
   const typeDefs = await getTypings(schema);
-  return jsTemplate({ className: name, methods: schema.methods, typeDefs, makeIdForMethodContentDescriptors });
+  return jsTemplate({ className: name, methods: schema.methods, typeDefs, generateMethodParamId });
 };
 
 const copyStatic = async (destinationDirectoryName: string) => {

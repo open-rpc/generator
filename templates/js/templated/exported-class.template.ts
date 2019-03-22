@@ -4,7 +4,7 @@ export default template(`
 import * as jayson from "jayson/promise";
 import ajv from "ajv";
 import _ from "lodash";
-import { makeIdForMethodContentDescriptors } from "@open-rpc/schema-utils-js";
+import { generateMethodParamId } from "@open-rpc/schema-utils-js";
 
 class ParameterValidationError extends Error {
   constructor(public message: string, public errors: ajv.ErrorObject[] | undefined | null) {
@@ -28,7 +28,7 @@ export default class <%= className %> {
       method.params.forEach((param: any, i: number) => {
         return this.validator.addSchema(
           param.schema,
-          makeIdForMethodContentDescriptors(method, param),
+          generateMethodParamId(method, param),
         );
       })
     });
@@ -37,7 +37,7 @@ export default class <%= className %> {
   public validate(methodName: string, methodObject: any, params: any[]) {
     return _.chain((methodObject as any).params)
       .map((param: any, index: number) => {
-        const idForMethod = makeIdForMethodContentDescriptors(methodObject, param);
+        const idForMethod = generateMethodParamId(methodObject, param);
         const isValid = this.validator.validate(idForMethod, params[index]);
         if (!isValid) {
           const message = [
@@ -78,7 +78,7 @@ export default class <%= className %> {
   /**
    * <%= method.summary %>
    */
-  public <%= method.name %>(<%= _.map(method.params, (param, i) => paramNames[i] + ': ' + typeDefs[makeIdForMethodContentDescriptors(method, param)].typeName).join(', ') %>): Promise<<%= (typeDefs[makeIdForMethodContentDescriptors(method, method.result)] || {typeName: 'any'}).typeName %>> {
+  public <%= method.name %>(<%= _.map(method.params, (param, i) => paramNames[i] + ': ' + typeDefs[generateMethodParamId(method, param)].typeName).join(', ') %>): Promise<<%= (typeDefs[generateMethodParamId(method, method.result)] || {typeName: 'any'}).typeName %>> {
     return this.request({method: "<%= method.name %>", params: Array.from(arguments)});
   }<% }) %>
 }
