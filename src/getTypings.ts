@@ -2,12 +2,13 @@ import { compile } from "json-schema-to-typescript";
 import { types } from "@open-rpc/meta-schema";
 import { generateMethodParamId, generateMethodResultId } from "@open-rpc/schema-utils-js";
 import { map, chain, startCase } from "lodash";
+const promiseSeries = require("promise-series");
 
 import * as fs from "fs";
 import { promisify } from "util";
 const writeFile = promisify(fs.writeFile);
 
-import * as Main from "quicktype";
+import { quicktype, JSONTypeSource, SchemaTypeSource, RendererOptions } from "quicktype";
 import * as qtCore from "quicktype-core";
 import _ from "lodash";
 
@@ -35,35 +36,44 @@ const getTypeName = (contentDescriptor: types.ContentDescriptorObject): string =
   return `${prefix}${contentDescriptorName}`;
 };
 
+const getTypeNameRS = (contentDescriptor: types.ContentDescriptorObject): string => {
+  return _.capitalize(contentDescriptor.name);
+};
+
+interface IContentDescriptorTyping {
+  typeId: string;
+  typeName: string;
+  typing: string;
+}
+
 const getTypingForContentDescriptor = async (
   method: types.MethodObject,
   isParam: boolean,
   contentDescriptor: types.ContentDescriptorObject,
   lang?: string,
-) => {
+): Promise<IContentDescriptorTyping> => {
   const generateId = isParam ? generateMethodParamId : generateMethodResultId;
-  const typeName = getTypeName(contentDescriptor);
-
+  let typeName;
   let _typing;
   if (lang === "rust") {
-    await writeFile("./tmp.json", JSON.stringify(contentDescriptor.schema), "utf8");
-    const cliOptions = Main.parseCLIOptions([
-      "--src", "./tmp.json",
-      "--src-lang", "schema",
-      "--top-level", typeName,
-      "--lang", "rust",
-      "--out", "./schema.rs",
-    ]);
-    const qtOpts = await Main.makeQuicktypeOptions(cliOptions) as Partial<Main.CLIOptions>;
+    typeName = getTypeNameRS(contentDescriptor);
+    const resultLines = await quicktype({
+      lang,
+      rendererOptions: { "just-types": "true" },
+      sources: [
+        {
+          kind: "schema",
+          name: typeName,
+          schema: JSON.stringify(contentDescriptor.schema),
+        } as SchemaTypeSource,
+      ],
+    }).then((result) => result.lines);
 
-    const resultsByFilename = await qtCore.quicktypeMultiFile(qtOpts);
-    const result = resultsByFilename.get("schema.rs") as qtCore.SerializedRenderResult;
-
-    _typing = _.chain(result.lines)
-      .reject((line) => _.startsWith(line, "//"))
-      .value()
+    _typing = _.filter(resultLines, (line) => !_.startsWith(line, "//"))
       .join("\n");
   } else {
+    lang = "typescript";
+    typeName = getTypeName(contentDescriptor);
     _typing = await compile(
       contentDescriptor.schema || {},
       typeName,
@@ -86,11 +96,14 @@ const getTypingForContentDescriptor = async (
 
 export const getMethodTypingsMap = async ({ methods }: types.OpenRPC, language: string): Promise<IMethodTypingsMap> => {
   const methodTypingsPromises = map(methods, async (method) => {
-    const mparams = method.params;
+    const mparams = method.params as types.ContentDescriptorObject[];
     const mresult = method.result;
 
     const typingsForParams = await Promise.all(
-      map(mparams, (param) => getTypingForContentDescriptor(method, true, param as types.ContentDescriptorObject, language)),
+      chain(mparams)
+        .map((param) => param.schema ? param : { ...param, schema: {} })
+        .map((param) => getTypingForContentDescriptor(method, true, param, language))
+        .value(),
     );
 
     const typingsForResult = await getTypingForContentDescriptor(
@@ -107,6 +120,12 @@ export const getMethodTypingsMap = async ({ methods }: types.OpenRPC, language: 
 
   return chain(methodTypings)
     .flatten()
+    .map((typing, i) => {
+      if (i === 0) { return typing; }
+
+      typing.typing = typing.typing.split("\n").filter((line) => line.indexOf("extern crate serde_json") === -1).join("\n");
+      return typing;
+    })
     .keyBy("typeId")
     .value();
 };
@@ -132,5 +151,5 @@ export const getFunctionSignatureRS = (method: types.MethodObject, typeDefs: IMe
   const mResult = method.result as types.ContentDescriptorObject;
   const result = `RpcRequest<${typeDefs[generateMethodResultId(method, mResult)].typeName}>`;
 
-  return `pub fn ${method.name}(&mut self, ${params}) -> ${result}`;
+  return `pub fn ${method.name}(&mut self, ${params}) -> ${result};`;
 };

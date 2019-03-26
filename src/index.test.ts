@@ -7,6 +7,7 @@ import { promisify } from "util";
 import { forEach } from "lodash";
 import { types } from "@open-rpc/meta-schema";
 import { parse } from "@open-rpc/schema-utils-js";
+import _ from "lodash";
 
 const stat = promisify(fs.stat);
 const rmdir = promisify(fs.rmdir);
@@ -25,6 +26,7 @@ describe(`Examples to generate Js clients`, () => {
 
   forEach(examples, (example: types.OpenRPC, exampleName: string) => {
     if (exampleName !== "simpleMath") { return; }
+
     it(`creates a new client for example: ${exampleName}`, async () => {
       expect.assertions(1);
 
