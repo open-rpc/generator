@@ -25,7 +25,7 @@ describe(`Examples to generate Js clients`, () => {
   // });
 
   forEach(examples, (example: types.OpenRPC, exampleName: string) => {
-    if (exampleName !== "simpleMath") { return; }
+    if (exampleName !== "links") { return; }
 
     it(`creates a new client for example: ${exampleName}`, async () => {
       expect.assertions(1);
@@ -36,10 +36,10 @@ describe(`Examples to generate Js clients`, () => {
       });
 
       await expect(stat(`${process.cwd()}/test`)).resolves.toBeTruthy();
-    }, 30000);
+    }, 60000);
 
     it(`the generated lib can be imported ${example.info.title}`, async () => {
-      const generated = require(`${testDir}/build/index.js`).default;
+      const generated = require(`${testDir}/ts/build/index.js`).default;
       expect(typeof generated).toBe("function");
 
       const instance = new generated({ transport: { type: "http" } });

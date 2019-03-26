@@ -28,9 +28,9 @@ const compileTemplate = async (name: string, schema: types.OpenRPC, language: st
     className: name,
     generateMethodParamId,
     generateMethodResultId,
+    getFunctionSignature: language === "rust" ? getFunctionSignatureRS : getFunctionSignature,
     methods: schema.methods,
     typeDefs,
-    getFunctionSignature: language === "rust" ? getFunctionSignatureRS : getFunctionSignature,
   });
 };
 
@@ -45,7 +45,7 @@ const copyStatic = async (destinationDirectoryName: string, language: string) =>
       path.join(destinationDirectoryName, "package.json"),
     );
   } catch (e) {
-    console.log("do nothing");
+    // do nothing
   }
 };
 
@@ -57,7 +57,7 @@ const typescript = async ({ clientName, schema }: any) => {
   await copyStatic(destinationDirectoryName, "js");
   await writeFile(`${destinationDirectoryName}/index.ts`, compiledResult, "utf8");
 
-  await bootstrapGeneratedPackage(destinationDirectoryName);
+  await bootstrapGeneratedPackage(destinationDirectoryName, "typescript");
   return true;
 };
 
@@ -69,7 +69,7 @@ const rust = async ({ clientName, schema }: any) => {
   await copyStatic(destinationDirectoryName, "rs");
   await writeFile(`${destinationDirectoryName}/src/lib.rs`, compiledResult, "utf8");
 
-  // await bootstrapGeneratedPackage(destinationDirectoryName);
+  await bootstrapGeneratedPackage(destinationDirectoryName, "rust");
   return true;
 };
 
