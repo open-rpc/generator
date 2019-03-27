@@ -6,5 +6,5 @@ it("rejects if there is an error", async () => {
   );
   return expect(bootstrapGeneratedPackage("foobar", "typescript"))
     .rejects
-    .toEqual(new Error("blahblah"));
+    .toEqual(new Error("blahblahundefined"));
 });
