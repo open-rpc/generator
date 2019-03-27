@@ -24,10 +24,9 @@ export default (exec: any): TBootstrapGeneratedPackage => (destinationDirectoryN
     ...languageCommandSequences[language],
   ].join(" && ");
 
-  return new Promise((resolve, reject) => exec(commandSequence, (err: Error, stdout: string, stdErr: string) => {
-    console.log(stdout, stdErr);
+  return new Promise((resolve, reject) => exec(commandSequence, (err: Error, stdout: string, stderr: string) => {
     if (err) {
-      reject(new Error(stdout));
+      reject(new Error(stdout + stderr));
     } else {
       resolve();
     }

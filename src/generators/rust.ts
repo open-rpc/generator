@@ -1,4 +1,9 @@
-import { IGenerator, TGetMethodTypingsMap, TGetFunctionSignature, IContentDescriptorTyping } from "./generator-interface";
+import {
+  IGenerator,
+  TGetMethodTypingsMap,
+  TGetFunctionSignature,
+  IContentDescriptorTyping,
+} from "./generator-interface";
 import _ from "lodash";
 import { types } from "@open-rpc/meta-schema";
 import { generateMethodParamId, generateMethodResultId } from "@open-rpc/schema-utils-js";
@@ -49,8 +54,7 @@ const getMethodTypingsMap: TGetMethodTypingsMap = async (openrpcSchema) => {
         sources: [source],
       }).then(
         (result) => _.chain(result.lines)
-          .filter((line) => !_.startsWith(line, "//"))
-          .filter((line) => !_.startsWith(line, "extern"))
+          .filter((line) => !_.startsWith(line, "//") && !_.startsWith(line, "extern"))
           .reduce((memoLines, line) => {
             const lastItem = recursiveGetLast(memoLines);
             const interfaceMatch = line.match(/pub (struct|enum) (.*) {/);
@@ -76,8 +80,7 @@ const getMethodTypingsMap: TGetMethodTypingsMap = async (openrpcSchema) => {
 
             return memoLines;
           }, [] as any)
-          .filter((line) => line !== untaggedString)
-          .filter((line) => line !== deriveString)
+          .filter((line) => line !== untaggedString && line !== deriveString)
           .compact()
           .value(),
       ),
@@ -85,7 +88,6 @@ const getMethodTypingsMap: TGetMethodTypingsMap = async (openrpcSchema) => {
   );
 
   const typeLines = _.flatten(typeLinesNested);
-  console.log(typeLines);
 
   const typeRegexes = {
     alias: /pub type (.*) = (.*)\;/,
@@ -101,13 +103,6 @@ const getMethodTypingsMap: TGetMethodTypingsMap = async (openrpcSchema) => {
   const aliasTypes = _.filter(simpleTypes, (line) => typeRegexes.alias.test(line.toString()));
   const structTypes = _.filter(complexTypes, (lines: string[]) => typeRegexes.struct.test(lines[1]));
   const enumTypes = _.filter(complexTypes, (lines: string[]) => typeRegexes.enum.test(lines[2]));
-
-  console.log("------ Current Typings -----");
-  console.log("useDeclerations", useDeclerationTypes);
-  console.log("aliasTypes", aliasTypes);
-  console.log("structTypes", structTypes);
-  console.log("enumTypes", enumTypes);
-  console.log("------ END Current Typings -----");
 
   const uniqueStructTypes = _.uniqBy(structTypes, (lines: any) => {
     const lineMatch = lines[1].match(/pub (struct|enum) (.*) {/);
@@ -130,41 +125,18 @@ const getMethodTypingsMap: TGetMethodTypingsMap = async (openrpcSchema) => {
       const r = [];
       const result = method.result as types.ContentDescriptorObject;
       const params = method.params as types.ContentDescriptorObject[];
-
-      const resultTypeName = getTypeName(result);
-      if (result.schema) {
-        r.push({
+      return [
+        {
           typeId: generateMethodResultId(method, result),
-          typeName: resultTypeName,
+          typeName: getTypeName(result),
           typing: "",
-        });
-      } else {
-        console.log("WHAT THE FUCK");
-        console.log(result);
-        r.push({
-          typeId: generateMethodResultId(method, result),
-          typeName: resultTypeName,
-          typing: `\npub type ${resultTypeName} = Option<serde_json::Value>;`,
-        });
-      }
-
-      _.each(params, (param) => {
-        const typeName = getTypeName(param);
-        if (param.schema) {
-          r.push({
-            typeId: generateMethodParamId(method, param),
-            typeName,
-            typing: "",
-          });
-        } else {
-          r.push({
-            typeId: generateMethodParamId(method, param),
-            typeName,
-            typing: `\npub type ${typeName} = Option<serde_json::Value>;`,
-          });
-        }
-      });
-      return r;
+        },
+        ..._.map(params, (param) => ({
+          typeId: generateMethodParamId(method, param),
+          typeName: getTypeName(param),
+          typing: "",
+        })),
+      ];
     })
     .flatten()
     .keyBy("typeId")
@@ -177,7 +149,6 @@ const getMethodTypingsMap: TGetMethodTypingsMap = async (openrpcSchema) => {
 
 const getFunctionSignature: TGetFunctionSignature = (method, typeDefs) => {
   const mResult = method.result as types.ContentDescriptorObject;
-  console.log(typeDefs);
   const result = `RpcRequest<${typeDefs[generateMethodResultId(method, mResult)].typeName}>`;
 
   if (method.params.length === 0) {
