@@ -9,7 +9,7 @@ import rsTemplate from "../templates/rs/templated/client.template";
 import { generateMethodParamId, generateMethodResultId } from "@open-rpc/schema-utils-js";
 import { types } from "@open-rpc/meta-schema";
 
-import { getMethodTypingsMap, getFunctionSignature, getFunctionSignatureRS } from "./getTypings";
+import generators from "./generators";
 
 const cwd = process.cwd();
 
@@ -22,13 +22,14 @@ const cleanBuildDir = async (destinationDirectoryName: string): Promise<any> => 
 };
 
 const compileTemplate = async (name: string, schema: types.OpenRPC, language: string): Promise<string> => {
-  const typeDefs = await getMethodTypingsMap(schema, language);
+  const typeDefs = await generators[language].getMethodTypingsMap(schema);
+
   const template = language === "rust" ? rsTemplate : jsTemplate;
   return template({
     className: name,
     generateMethodParamId,
     generateMethodResultId,
-    getFunctionSignature: language === "rust" ? getFunctionSignatureRS : getFunctionSignature,
+    getFunctionSignature: generators[language].getFunctionSignature,
     methods: schema.methods,
     typeDefs,
   });
