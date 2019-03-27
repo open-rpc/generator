@@ -4,9 +4,10 @@ import { types } from "@open-rpc/meta-schema";
 import { generateMethodParamId, generateMethodResultId } from "@open-rpc/schema-utils-js";
 import { compile } from "json-schema-to-typescript";
 import { quicktype, SchemaTypeSource } from "quicktype";
+import { RegexLiteral } from "@babel/types";
 
-const getTypeNameRS = (contentDescriptor: types.ContentDescriptorObject): string => {
-  return _.capitalize(contentDescriptor.name);
+const getTypeName = (contentDescriptor: types.ContentDescriptorObject): string => {
+  return _.chain(contentDescriptor.name).camelCase().upperFirst().value();
 };
 
 const getMethodTypingsMap: TGetMethodTypingsMap = async (openrpcSchema) => {
@@ -21,13 +22,24 @@ const getMethodTypingsMap: TGetMethodTypingsMap = async (openrpcSchema) => {
     .filter((contentDescriptor) => !!contentDescriptor.schema)
     .map((contentDescriptor) => ({
       kind: "schema",
-      name: getTypeNameRS(contentDescriptor),
+      name: getTypeName(contentDescriptor),
       schema: JSON.stringify(contentDescriptor.schema),
     } as SchemaTypeSource))
     .uniqBy("name")
     .value();
 
-  const otherTypesLines = await Promise.all(
+  const recursiveGetLast = (arr: any): any => {
+    const lastItem = _.last(arr);
+    if (_.isArray(lastItem)) {
+      return recursiveGetLast(lastItem);
+    } else {
+      return arr;
+    }
+  };
+
+  const deriveString = "#[derive(Serialize, Deserialize)]";
+  const untaggedString = "#[serde(untagged)]";
+  const typeLinesNested = await Promise.all(
     _.map(
       sources,
       (source) => quicktype({
@@ -39,44 +51,79 @@ const getMethodTypingsMap: TGetMethodTypingsMap = async (openrpcSchema) => {
         (result) => _.chain(result.lines)
           .filter((line) => !_.startsWith(line, "//"))
           .filter((line) => !_.startsWith(line, "extern"))
+          .reduce((memoLines, line) => {
+            const lastItem = recursiveGetLast(memoLines);
+            const interfaceMatch = line.match(/pub (struct|enum) (.*) {/);
+
+            if (interfaceMatch) {
+              const toAdd = [deriveString];
+
+              if (interfaceMatch[1] === "enum") {
+                toAdd.push(untaggedString);
+              }
+
+              toAdd.push(line);
+
+              memoLines.push(toAdd);
+            } else if (_.isArray(lastItem)) {
+              lastItem.push(line);
+              if (line === "}") {
+                memoLines.push("");
+              }
+            } else {
+              memoLines.push(line);
+            }
+
+            return memoLines;
+          }, [] as any)
+          .filter((line) => line !== untaggedString)
+          .filter((line) => line !== deriveString)
           .compact()
           .value(),
       ),
     ),
   );
 
-  const otherTypesFlat = _.compact(_.flatten(otherTypesLines));
+  const typeLines = _.flatten(typeLinesNested);
+  console.log(typeLines);
 
-  const primitiveTypes = _.filter(otherTypesFlat, (line) => _.startsWith(line, "pub") && _.endsWith(line, ";"));
-  const withoutPrimitiveTypes = _.pullAll(otherTypesFlat, primitiveTypes);
-  const deriveString = "#[derive(Serialize, Deserialize)]\n";
+  const typeRegexes = {
+    alias: /pub type (.*) = (.*)\;/,
+    decleration: /use (.*)\;/,
+    enum: /pub enum (.*) {/,
+    struct: /pub struct (.*) {/,
+  };
 
-  let structTypesArray = _.chain(withoutPrimitiveTypes.join("\n").split(deriveString))
-    .compact()
-    .map((structString) => structString.split("\n"))
-    .map(_.compact)
-    .uniqBy( // If I keyBy here instead, I could have the typigns properly distributed...
-      (lines: string[]) => {
-        const lineMatch = lines[0].match(/pub (struct|enum) (.*) {/);
-        if (lineMatch === null || typeof lineMatch[2] !== "string") {
-          throw new Error("Could not find the name of the complex type. " + lines.join("\n"));
-        }
+  const simpleTypes = _.filter(typeLines, (line) => typeof line === "string");
+  const complexTypes = _.filter(typeLines, (line) => _.isArray(line));
 
-        return lineMatch[2]; // typeName
-      },
-    )
-    .map((lines) => lines.join("\n"))
-    .value();
+  const useDeclerationTypes = _.filter(simpleTypes, (line) => typeRegexes.decleration.test(line.toString()));
+  const aliasTypes = _.filter(simpleTypes, (line) => typeRegexes.alias.test(line.toString()));
+  const structTypes = _.filter(complexTypes, (lines: string[]) => typeRegexes.struct.test(lines[1]));
+  const enumTypes = _.filter(complexTypes, (lines: string[]) => typeRegexes.enum.test(lines[2]));
 
-  if (structTypesArray.length > 0) {
-    structTypesArray = [
-      "", // when joined, this will put a deriveString on the first line(as is needed)
-      ...structTypesArray,
-    ];
-  }
+  console.log("------ Current Typings -----");
+  console.log("useDeclerations", useDeclerationTypes);
+  console.log("aliasTypes", aliasTypes);
+  console.log("structTypes", structTypes);
+  console.log("enumTypes", enumTypes);
+  console.log("------ END Current Typings -----");
 
-  const structTypes = structTypesArray.join(deriveString)
-    .concat("\n" + primitiveTypes.join("\n"));
+  const uniqueStructTypes = _.uniqBy(structTypes, (lines: any) => {
+    const lineMatch = lines[1].match(/pub (struct|enum) (.*) {/);
+    if (lineMatch === null || typeof lineMatch[2] !== "string") {
+      throw new Error("Could not find the name of the complex type. " + lines.join("\n"));
+    }
+
+    return lineMatch[2]; // typeName
+  });
+
+  const allTypings = _.flatten([
+    ...useDeclerationTypes,
+    ...aliasTypes,
+    ...enumTypes,
+    ...uniqueStructTypes,
+  ]).join("\n");
 
   const typings = _.chain(methods)
     .map((method) => {
@@ -84,7 +131,7 @@ const getMethodTypingsMap: TGetMethodTypingsMap = async (openrpcSchema) => {
       const result = method.result as types.ContentDescriptorObject;
       const params = method.params as types.ContentDescriptorObject[];
 
-      const resultTypeName = getTypeNameRS(result);
+      const resultTypeName = getTypeName(result);
       if (result.schema) {
         r.push({
           typeId: generateMethodResultId(method, result),
@@ -92,6 +139,8 @@ const getMethodTypingsMap: TGetMethodTypingsMap = async (openrpcSchema) => {
           typing: "",
         });
       } else {
+        console.log("WHAT THE FUCK");
+        console.log(result);
         r.push({
           typeId: generateMethodResultId(method, result),
           typeName: resultTypeName,
@@ -100,7 +149,7 @@ const getMethodTypingsMap: TGetMethodTypingsMap = async (openrpcSchema) => {
       }
 
       _.each(params, (param) => {
-        const typeName = getTypeNameRS(param);
+        const typeName = getTypeName(param);
         if (param.schema) {
           r.push({
             typeId: generateMethodParamId(method, param),
@@ -121,13 +170,14 @@ const getMethodTypingsMap: TGetMethodTypingsMap = async (openrpcSchema) => {
     .keyBy("typeId")
     .value();
 
-  typings[Object.keys(typings)[0]].typing += structTypes;
+  typings[Object.keys(typings)[0]].typing += allTypings;
 
   return typings;
 };
 
 const getFunctionSignature: TGetFunctionSignature = (method, typeDefs) => {
   const mResult = method.result as types.ContentDescriptorObject;
+  console.log(typeDefs);
   const result = `RpcRequest<${typeDefs[generateMethodResultId(method, mResult)].typeName}>`;
 
   if (method.params.length === 0) {
