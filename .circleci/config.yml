@@ -20,7 +20,11 @@ aliases:
       only: master
   - &filter-only-semantic-pr
     branches:
-      only:  /^(dependabot|fix|feat)\/.*$/
+      only:  /^(pull|dependabot|fix|feat)\/.*$/
+      
+  - &filter-only-fork-pr
+    branches:
+      only:  /^pull\/.*$/
 
 defaults: &defaults
   working_directory: ~/generator-client
@@ -66,10 +70,18 @@ workflows:
   version: 2
   analysis:
     jobs:
+      - hold:
+          filters: *filter-only-fork-pr
+          type: approval
       - test:
           filters: *filter-only-semantic-pr
+          requires:
+            - hold
       - build:
           filters: *filter-only-semantic-pr
+          requires:
+            - hold
+            - test
 
   release:
     jobs:
