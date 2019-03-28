@@ -10,6 +10,7 @@ import { parse } from "@open-rpc/schema-utils-js";
 
 const stat = promisify(fs.stat);
 const rmdir = promisify(fs.rmdir);
+const readFile = promisify(fs.readFile);
 
 describe(`Examples to generate Js clients`, () => {
   const testDir = `${process.cwd()}/test`;
@@ -34,6 +35,11 @@ describe(`Examples to generate Js clients`, () => {
 
       await expect(stat(`${process.cwd()}/test`)).resolves.toBeTruthy();
     }, 30000);
+
+    it(`creates generated code annotation`, async () =>{
+      const fileData = await readFile(`${testDir}/index.ts`);
+      expect(fileData.toString().match('// Code generated .* DO NOT EDIT\.')).not.toBe(null);
+    })
 
     it(`the generated lib can be imported ${example.info.title}`, async () => {
       const generated = require(`${testDir}/build/index.js`).default;
