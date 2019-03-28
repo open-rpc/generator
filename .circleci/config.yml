@@ -72,7 +72,6 @@ workflows:
       - build:
           filters: *filter-only-semantic-pr
           requires:
-            - hold
             - test
 
   release:
