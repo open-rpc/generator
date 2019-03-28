@@ -1,4 +1,9 @@
-import { IGenerator, TGetMethodTypingsMap, TGetFunctionSignature, IContentDescriptorTyping } from "./generator-interface";
+import {
+  IGenerator,
+  TGetMethodTypingsMap,
+  TGetFunctionSignature,
+  IContentDescriptorTyping,
+} from "./generator-interface";
 import _ from "lodash";
 import { types } from "@open-rpc/meta-schema";
 import { generateMethodParamId, generateMethodResultId } from "@open-rpc/schema-utils-js";
@@ -25,23 +30,18 @@ const getTypingForContentDescriptor = async (
 ): Promise<IContentDescriptorTyping> => {
   const generateId = isParam ? generateMethodParamId : generateMethodResultId;
   let typeName;
-  let _typing;
   typeName = getTypeName(contentDescriptor);
 
-  if (contentDescriptor.schema === undefined || contentDescriptor.schema.type === undefined) {
-    _typing = `export type ${typeName} = any; \n`;
-  } else {
-    _typing = await compile(
-      contentDescriptor.schema || {},
-      typeName,
-      { bannerComment: "", declareExternallyReferenced: false },
-    );
-  }
+  const rawTyping = await compile(
+    contentDescriptor.schema || {},
+    typeName,
+    { bannerComment: "", declareExternallyReferenced: false },
+  );
 
   const typing = {
     typeId: generateId(method, contentDescriptor),
     typeName,
-    typing: _typing,
+    typing: rawTyping,
   };
 
   return typing;

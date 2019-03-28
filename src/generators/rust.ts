@@ -54,7 +54,6 @@ const getMethodTypingsMap: TGetMethodTypingsMap = async (openrpcSchema) => {
         sources: [source],
       }).then(
         (result) => _.chain(result.lines)
-          .filter((line) => !_.startsWith(line, "//") && !_.startsWith(line, "extern"))
           .reduce((memoLines, line) => {
             const lastItem = recursiveGetLast(memoLines);
             const interfaceMatch = line.match(/pub (struct|enum) (.*) {/);
@@ -106,10 +105,6 @@ const getMethodTypingsMap: TGetMethodTypingsMap = async (openrpcSchema) => {
 
   const uniqueStructTypes = _.uniqBy(structTypes, (lines: any) => {
     const lineMatch = lines[1].match(/pub (struct|enum) (.*) {/);
-    if (lineMatch === null || typeof lineMatch[2] !== "string") {
-      throw new Error("Could not find the name of the complex type. " + lines.join("\n"));
-    }
-
     return lineMatch[2]; // typeName
   });
 
