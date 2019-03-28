@@ -36,7 +36,7 @@ jobs:
     <<: *defaults
     steps:
       - checkout
-      - run: curl https://sh.rustup.rs -sSf | sh
+      - run: curl https://sh.rustup.rs -sSf | sh -s -- -y
       - restore_cache: *restore-deps-cache
       - run: npm install
       - run: npm install codecov
