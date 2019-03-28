@@ -7,6 +7,7 @@ import { promisify } from "util";
 import { forEach } from "lodash";
 import { types } from "@open-rpc/meta-schema";
 import { parse } from "@open-rpc/schema-utils-js";
+import _ from "lodash";
 
 const stat = promisify(fs.stat);
 const rmdir = promisify(fs.rmdir);
@@ -33,16 +34,16 @@ describe(`Examples to generate Js clients`, () => {
         schema: await parse(JSON.stringify(example)),
       });
 
-      await expect(stat(`${process.cwd()}/test`)).resolves.toBeTruthy();
-    }, 30000);
+      await expect(stat(testDir)).resolves.toBeTruthy();
+    }, 60000);
 
-    it(`creates generated code annotation`, async () =>{
-      const fileData = await readFile(`${testDir}/index.ts`);
-      expect(fileData.toString().match('// Code generated .* DO NOT EDIT\.')).not.toBe(null);
-    })
+    it(`creates generated code annotation`, async () => {
+      const fileData = await readFile(`${testDir}/ts/src/index.ts`, "utf8");
+      expect(fileData.match("// Code generated .* DO NOT EDIT\.")).not.toBe(null);
+    });
 
     it(`the generated lib can be imported ${example.info.title}`, async () => {
-      const generated = require(`${testDir}/build/index.js`).default;
+      const generated = require(`${testDir}/ts/build/index.js`).default;
       expect(typeof generated).toBe("function");
 
       const instance = new generated({ transport: { type: "http" } });
