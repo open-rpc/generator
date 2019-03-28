@@ -21,19 +21,19 @@ aliases:
   - &filter-only-semantic-pr
     branches:
       only:  /^(pull|dependabot|fix|feat)\/.*$/
-      
+
   - &filter-only-fork-pr
     branches:
       only:  /^pull\/.*$/
 
 defaults: &defaults
   working_directory: ~/generator-client
+  docker:
+    - image: circleci/node:10
 
 jobs:
   test:
     <<: *defaults
-    docker:
-      - image: circleci/node:10
     steps:
       - checkout
       - run: curl https://sh.rustup.rs -sSf | sh
@@ -46,8 +46,6 @@ jobs:
 
   build:
     <<: *defaults
-    docker:
-      - image: circleci/node:10
     steps:
       - checkout
       - restore_cache: *restore-deps-cache
@@ -57,8 +55,6 @@ jobs:
 
   release:
     <<: *defaults
-    docker:
-      - image: circleci/node:10
     steps:
       - checkout
       - restore_cache: *restore-deps-cache
@@ -71,13 +67,8 @@ workflows:
   version: 2
   analysis:
     jobs:
-      - hold:
-          filters: *filter-only-fork-pr
-          type: approval
       - test:
           filters: *filter-only-semantic-pr
-          requires:
-            - hold
       - build:
           filters: *filter-only-semantic-pr
           requires:
