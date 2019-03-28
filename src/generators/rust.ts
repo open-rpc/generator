@@ -8,11 +8,22 @@ import _ from "lodash";
 import { types } from "@open-rpc/meta-schema";
 import { generateMethodParamId, generateMethodResultId } from "@open-rpc/schema-utils-js";
 import { compile } from "json-schema-to-typescript";
-import { quicktype, SchemaTypeSource } from "quicktype";
+import { quicktype, SchemaTypeSource, TypeSource } from "quicktype";
 import { RegexLiteral } from "@babel/types";
 
 const getTypeName = (contentDescriptor: types.ContentDescriptorObject): string => {
   return _.chain(contentDescriptor.name).camelCase().upperFirst().value();
+};
+
+const getQuickTypeSources = (contentDescriptors: types.ContentDescriptorObject[]): SchemaTypeSource[] => {
+  return _.chain(contentDescriptors)
+    .map((contentDescriptor) => ({
+      kind: "schema",
+      name: getTypeName(contentDescriptor),
+      schema: JSON.stringify(contentDescriptor.schema),
+    } as SchemaTypeSource))
+    .uniqBy("name")
+    .value();
 };
 
 const getMethodTypingsMap: TGetMethodTypingsMap = async (openrpcSchema) => {
@@ -23,30 +34,11 @@ const getMethodTypingsMap: TGetMethodTypingsMap = async (openrpcSchema) => {
     ..._.map(methods, "result"),
   ] as types.ContentDescriptorObject[];
 
-  const sources = _.chain(allContentDescriptors)
-    .filter((contentDescriptor) => !!contentDescriptor.schema)
-    .map((contentDescriptor) => ({
-      kind: "schema",
-      name: getTypeName(contentDescriptor),
-      schema: JSON.stringify(contentDescriptor.schema),
-    } as SchemaTypeSource))
-    .uniqBy("name")
-    .value();
-
-  const recursiveGetLast = (arr: any): any => {
-    const lastItem = _.last(arr);
-    if (_.isArray(lastItem)) {
-      return recursiveGetLast(lastItem);
-    } else {
-      return arr;
-    }
-  };
-
   const deriveString = "#[derive(Serialize, Deserialize)]";
   const untaggedString = "#[serde(untagged)]";
   const typeLinesNested = await Promise.all(
     _.map(
-      sources,
+      getQuickTypeSources(allContentDescriptors),
       (source) => quicktype({
         lang: "rust",
         leadingComments: undefined,
@@ -55,7 +47,7 @@ const getMethodTypingsMap: TGetMethodTypingsMap = async (openrpcSchema) => {
       }).then(
         (result) => _.chain(result.lines)
           .reduce((memoLines, line) => {
-            const lastItem = recursiveGetLast(memoLines);
+            const lastItem = _.last(memoLines);
             const interfaceMatch = line.match(/pub (struct|enum) (.*) {/);
 
             if (interfaceMatch) {
