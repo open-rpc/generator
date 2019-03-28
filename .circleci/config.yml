@@ -36,6 +36,7 @@ jobs:
       - image: circleci/node:10
     steps:
       - checkout
+      - run: curl https://sh.rustup.rs -sSf | sh
       - restore_cache: *restore-deps-cache
       - run: npm install
       - run: npm install codecov
