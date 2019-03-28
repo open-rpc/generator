@@ -20,12 +20,13 @@ describe(`Examples to generate Js clients`, () => {
     return await rmdir(testDir);
   });
 
-  afterAll(async () => {
-    await fsx.emptyDir(testDir);
-    return await rmdir(testDir);
-  });
+  // afterAll(async () => {
+  //   await fsx.emptyDir(testDir);
+  //   return await rmdir(testDir);
+  // });
 
   forEach(examples, (example: types.OpenRPC, exampleName: string) => {
+    if (exampleName !== "petstore") { return; }
     it(`creates a new client for example: ${exampleName}`, async () => {
       expect.assertions(1);
 
@@ -38,7 +39,7 @@ describe(`Examples to generate Js clients`, () => {
     }, 60000);
 
     it(`creates generated code annotation`, async () => {
-      const fileData = await readFile(`${testDir}/ts/index.ts`);
+      const fileData = await readFile(`${testDir}/ts/src/index.ts`);
       expect(fileData.toString().match("// Code generated .* DO NOT EDIT\.")).not.toBe(null);
     });
 

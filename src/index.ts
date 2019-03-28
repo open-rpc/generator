@@ -56,7 +56,7 @@ const typescript = async ({ clientName, schema }: any) => {
   const destinationDirectoryName = `${cwd}/${clientName}/ts`;
   await cleanBuildDir(destinationDirectoryName);
   await copyStatic(destinationDirectoryName, "js");
-  await writeFile(`${destinationDirectoryName}/index.ts`, compiledResult, "utf8");
+  await writeFile(`${destinationDirectoryName}/src/index.ts`, compiledResult, "utf8");
 
   await bootstrapGeneratedPackage(destinationDirectoryName, "typescript");
   return true;
@@ -74,7 +74,9 @@ const rust = async ({ clientName, schema }: any) => {
   return true;
 };
 
-export default async ({ clientName, schema }: any) => {
-  await rust({ clientName, schema });
-  await typescript({ clientName, schema });
+export default ({ clientName, schema }: any) => {
+  return Promise.all([
+    rust({ clientName, schema }),
+    typescript({ clientName, schema }),
+  ]);
 };
