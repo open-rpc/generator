@@ -37,6 +37,7 @@ jobs:
     steps:
       - checkout
       - run: curl https://sh.rustup.rs -sSf | sh -s -- -y
+      - run: $HOME/.cargo/env
       - restore_cache: *restore-deps-cache
       - run: npm install
       - run: npm install codecov

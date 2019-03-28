@@ -39,8 +39,8 @@ describe(`Examples to generate Js clients`, () => {
     }, 60000);
 
     it(`creates generated code annotation`, async () => {
-      const fileData = await readFile(`${testDir}/ts/src/index.ts`);
-      expect(fileData.toString().match("// Code generated .* DO NOT EDIT\.")).not.toBe(null);
+      const fileData = await readFile(`${testDir}/ts/src/index.ts`, "utf8");
+      expect(fileData.match("// Code generated .* DO NOT EDIT\.")).not.toBe(null);
     });
 
     it(`the generated lib can be imported ${example.info.title}`, async () => {
