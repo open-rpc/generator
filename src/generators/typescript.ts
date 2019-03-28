@@ -33,7 +33,7 @@ const getTypingForContentDescriptor = async (
   typeName = getTypeName(contentDescriptor);
 
   const rawTyping = await compile(
-    contentDescriptor.schema || {},
+    contentDescriptor.schema,
     typeName,
     { bannerComment: "", declareExternallyReferenced: false },
   );
