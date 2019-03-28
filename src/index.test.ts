@@ -34,11 +34,11 @@ describe(`Examples to generate Js clients`, () => {
         schema: await parse(JSON.stringify(example)),
       });
 
-      await expect(stat(`${process.cwd()}/test`)).resolves.toBeTruthy();
+      await expect(stat(testDir)).resolves.toBeTruthy();
     }, 60000);
 
     it(`creates generated code annotation`, async () => {
-      const fileData = await readFile(`${testDir}/index.ts`);
+      const fileData = await readFile(`${testDir}/ts/index.ts`);
       expect(fileData.toString().match("// Code generated .* DO NOT EDIT\.")).not.toBe(null);
     });
 
