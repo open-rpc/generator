@@ -12,7 +12,7 @@ import { compile } from "json-schema-to-typescript";
 const getTypeName = (contentDescriptor: types.ContentDescriptorObject): string => {
   const { schema } = contentDescriptor;
 
-  const interfaceTypes = ["object", "null"];
+  const interfaceTypes = ["object", undefined];
   let prefix = "T";
   if (interfaceTypes.includes(schema.type)) {
     prefix = "I";
