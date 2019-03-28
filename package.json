@@ -19,7 +19,7 @@
   "scripts": {
     "start": "./bin/cli.js",
     "test": "jest --coverage",
-    "build": "tsc && cp -R templates/js/static build/templates/js/static",
+    "build": "tsc && cp -R templates build/.",
     "watch:build": "tsc --watch",
     "watch:test": "jest --watch",
     "publish": "npm run build"
