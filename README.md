@@ -2,7 +2,7 @@
 
 [![Dependabot Status](https://api.dependabot.com/badges/status?host=github&repo=open-rpc/generator-client)](https://dependabot.com) [![Dependabot Status](https://img.shields.io/badge/chat-on%20discord-7289da.svg)](https://discord.gg/Tf55C7d)
 
-Multi-language client generator tool for [open-rpc](https://github.com/open-rpc/spec) APIs. Developers generate a client by passing a raw open-rpc schema document to _this_ tool which generates a client based on the supported language templates.
+Multi-language client generator tool for [open-rpc](https://github.com/open-rpc/spec) APIs. Developers generate a client by passing an OpenRPC Document to _this_ tool which generates a client based on the supported language templates.
 
 ![overview diagram](https://github.com/open-rpc/design/blob/master/diagrams/generator-client/open-rpc-diagrams.png?raw=true)
 
@@ -34,7 +34,7 @@ open-rpc-generator-client \
   PetStore
 ```
 
-Using the `open-rpc-generator-client` command, then passing an example schema document `petstore-openrpc.json` in the directory of `Petstore`.
+Using the `open-rpc-generator-client` command, then passing an example OpenRPC document `petstore-openrpc.json` in the directory of `Petstore`.
 
 ### Using Docker ![docker-icon](https://github.com/open-rpc/design/blob/master/png/docker-icon-16x.png?raw=true)
 
@@ -43,7 +43,7 @@ In action (for a js client):
 ```shell
 docker run \
   -v $(pwd)/petstore/:/petstore \
-  openrpc/generator-client-js \
+  openrpc/generator-client \
     -s https://raw.githubusercontent.com/open-rpc/examples/master/service-descriptions/petstore.json
     petstore
 ```
