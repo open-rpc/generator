@@ -40,7 +40,7 @@ const getMethodTypingsMap: TGetMethodTypingsMap = async (openrpcSchema) => {
   //console.log("allContentDescriptors", inspect(allContentDescriptors));
 
   const deriveString = "#[derive(Serialize, Deserialize)]";
-  const handyDeriveString = "#[derive(Debug, Clone, Serialize, Deserialize)]";
+  const handyDeriveString = "#[derive(Serialize, Deserialize, Debug, Clone, PartialEq)]";
   const cfgDeriveString = "#[cfg_attr(test, derive(Random))]";
   const untaggedString = "#[serde(untagged)]";
   const typeLinesNested = await Promise.all(
