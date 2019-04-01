@@ -6,9 +6,9 @@ use serde_json::Value;
 use serde::{Serialize, Deserialize};
 
 pub struct MockTransport {
-    method: String,
-    params: Vec<Value>,
-    result: Value,
+    pub method: String,
+    pub params: Vec<Value>,
+    pub result: Value,
 }
 
 impl MockTransport {

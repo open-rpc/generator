@@ -29,10 +29,10 @@ const compileTemplate = async (name: string, schema: types.OpenRPC, language: st
   const template = language === "rust" ? rsTemplate : jsTemplate;
   return template({
     className: name,
-    getParamTypings: (method: types.MethodObject, typeDefs: IMethodTypingsMap): string[] => {
+    getParams: (method: types.MethodObject, typeDefs: IMethodTypingsMap) => {
       return map(
         method.params as types.ContentDescriptorObject[],
-        (param) => `${typeDefs[generateMethodParamId(method, param)].typeName}`,
+        (param) => [param.name, `${typeDefs[generateMethodParamId(method, param)].typeName}`],
       );
     },
     generateMethodParamId,

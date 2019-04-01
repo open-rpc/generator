@@ -23,8 +23,8 @@ jsonrpc_client!(pub struct <%= className %> {
 mod tests {
     use super::*;
     use test_harness::*;
-    use serde::{Serialize, Deserialize};
     use autorand::Random;
+    use futures::Future;
 
 <% methods.forEach((method) => { %>
     #[test]
@@ -37,9 +37,10 @@ mod tests {
         //- params query template start
         let mut params = Vec::new();
         //-- loop over params (name, type) pairs start
-    <% getParamTypings(method, typeDefs).forEach((paramType) => { %>
-        let <%= paramType + "_value" %> = <%= paramType + "::random()" %>;
-        let serialized = serde_json::to_value(&<%= paramType + "_value" %>).unwrap();
+    <% getParams(method, typeDefs).forEach((param) => { %>
+        <% const paramName = param[0] + "_value" %>
+        let <%= paramName %> = <%= param[1] + "::random()" %>;
+        let serialized = serde_json::to_value(&<%= paramName %>).unwrap();
         params.push(serialized);
     <% }); %>
         //-- loop over params end
@@ -48,6 +49,9 @@ mod tests {
         //- result query template start
         <% const resultType = typeDefs[generateMethodResultId(method, method.result)].typeName; %>
         let result = <%= resultType + "::random()" %>;
+        // transcode result to workaround Some(Null) -> Null serialization detail loss
+        let result_serialized = serde_json::to_vec(&result).unwrap();
+        let result: <%= resultType %> = serde_json::from_slice(&result_serialized).unwrap(); 
         //- result query template end
 
         let transport = MockTransport {
@@ -56,15 +60,17 @@ mod tests {
             result: serde_json::to_value(&result).unwrap(),
         };
 
-        let mut client = PetStore::new(transport);
-        let received_result = client.get_pet(
+        let mut client = <%= className + "::new(transport);" %>
+        let received_result = client.<%= method.name %>(
             //- loop over params start
-        <% getParamTypings(method, typeDefs).forEach((paramType) => { %>
-            <%= paramType + "_value" %>,
+        <% getParams(method, typeDefs).forEach((param) => { %>
+            <%= param[0] + "_value" %>,
         <% }); %>
             //- loop over params end
         ).wait().unwrap();
 
+        // transcode result to workaround Some(Null) -> Null serialization detail loss
+        let result_s = 
         assert_eq!(result, received_result);
     }
 <% }); %>
