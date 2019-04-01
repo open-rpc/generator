@@ -99,7 +99,7 @@ const getMethodTypingsMap: TGetMethodTypingsMap = async (openrpcSchema) => {
 
   const simpleTypes = _.filter(typeLines, (line) => typeof line === "string");
   //console.log("simpleTypes", inspect(simpleTypes));
-  const complexTypes = _.chain(typeLines).difference(simpleTypes).value();
+  const complexTypes = _.difference(typeLines, simpleTypes);
   //console.log("complexTypes", inspect(complexTypes));
 
   const useDeclerationTypes = _.filter(simpleTypes, (line) => typeRegexes.decleration.test(line.toString()));
