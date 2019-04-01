@@ -3,6 +3,7 @@ import {
   TGetMethodTypingsMap,
   TGetFunctionSignature,
   IContentDescriptorTyping,
+  IMethodTypingsMap,
 } from "./generator-interface";
 import _ from "lodash";
 import { types } from "@open-rpc/meta-schema";
@@ -34,7 +35,8 @@ const getMethodTypingsMap: TGetMethodTypingsMap = async (openrpcSchema) => {
     ..._.map(methods, "result"),
   ] as types.ContentDescriptorObject[];
 
-  const deriveString = "#[derive(Serialize, Deserialize)]";
+  const deriveString = "#[derive(Debug, Clone, Serialize, Deserialize)]";
+  const cfgDeriveString = "#[cfg_attr(test, derive(Random))]";
   const untaggedString = "#[serde(untagged)]";
   const typeLinesNested = await Promise.all(
     _.map(
@@ -52,6 +54,7 @@ const getMethodTypingsMap: TGetMethodTypingsMap = async (openrpcSchema) => {
 
             if (interfaceMatch) {
               const toAdd = [deriveString];
+              toAdd.push(cfgDeriveString);
 
               if (interfaceMatch[1] === "enum") {
                 toAdd.push(untaggedString);
@@ -71,7 +74,7 @@ const getMethodTypingsMap: TGetMethodTypingsMap = async (openrpcSchema) => {
 
             return memoLines;
           }, [] as any)
-          .filter((line) => line !== untaggedString && line !== deriveString)
+          .filter((line) => line !== untaggedString && line !== deriveString && line !== cfgDeriveString)
           .compact()
           .value(),
       ),
@@ -130,9 +133,12 @@ const getMethodTypingsMap: TGetMethodTypingsMap = async (openrpcSchema) => {
     .value();
 
   typings[Object.keys(typings)[0]].typing += allTypings;
-
+  //console.log(JSON.stringify(typings, undefined, "  "))
+  //throw new Error();
   return typings;
 };
+
+
 
 const getFunctionSignature: TGetFunctionSignature = (method, typeDefs) => {
   const mResult = method.result as types.ContentDescriptorObject;

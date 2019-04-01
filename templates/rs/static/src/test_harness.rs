@@ -68,11 +68,13 @@ impl Transport for MockTransport {
 mod tests {
     use super::*;
     use serde::{Serialize, Deserialize};
+    use autorand::Random;
 
     pub type PetId = String;
     pub type Pets = Vec<Pet>;
 
     #[derive(Serialize, Deserialize, Debug, PartialEq)]
+    #[cfg_attr(test, derive(Random))]
     pub struct Pet {
         #[serde(rename = "id")]
         id: PetId,
@@ -89,6 +91,7 @@ mod tests {
     });
 
     #[test]
+    #[allow(non_snake_case)]
     fn generated_test_sample() {
         //- method quety template start
         let method = "get_pet".into();
@@ -97,16 +100,14 @@ mod tests {
         //- params query template start
         let mut params= Vec::new();
         //-- loop over params (name, type) pairs start
-        let petId_value = PetId::from("pet0"); // note: should be random, or queried from example, not manually set value
+        let petId_value = PetId::random(); // note: should be random, or queried from example, not manually set value
         params.push(serde_json::to_value(&petId_value).unwrap());
         //-- loop over params end
         //- params query template end
 
         //- result query template start
         // note: should be random, or queried from example, not manually set value
-        let result = Pets::from(vec![
-            Pet { id: PetId::from("pet0"), name: String::from("Fluffy"), tag: None }
-        ]);
+        let result = Pets::random();
         //- result query template end
 
         let transport = MockTransport {
