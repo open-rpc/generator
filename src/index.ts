@@ -10,6 +10,8 @@ import { generateMethodParamId, generateMethodResultId } from "@open-rpc/schema-
 import { types } from "@open-rpc/meta-schema";
 
 import generators from "./generators";
+import { IMethodTypingsMap } from "./generators/generator-interface";
+import { map } from "lodash";
 
 const cwd = process.cwd();
 
@@ -27,6 +29,12 @@ const compileTemplate = async (name: string, schema: types.OpenRPC, language: st
   const template = language === "rust" ? rsTemplate : jsTemplate;
   return template({
     className: name,
+    getParams: (method: types.MethodObject, typeDefs: IMethodTypingsMap) => {
+      return map(
+        method.params as types.ContentDescriptorObject[],
+        (param) => [param.name, `${typeDefs[generateMethodParamId(method, param)].typeName}`],
+      );
+    },
     generateMethodParamId,
     generateMethodResultId,
     getFunctionSignature: generators[language].getFunctionSignature,

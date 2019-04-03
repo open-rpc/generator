@@ -9,6 +9,7 @@ interface ILanguageCommandSequences {
 const languageCommandSequences: ILanguageCommandSequences = {
   rust: [
     "cargo build",
+    "cargo test --all",
   ],
   typescript: [
     "npm install",

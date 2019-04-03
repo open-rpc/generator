@@ -2,6 +2,7 @@
 **/build
 **/coverage
 **/docs
+**/.idea
 coverage
 docs
 .DS_Store

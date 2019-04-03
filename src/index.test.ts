@@ -26,6 +26,7 @@ describe(`Examples to generate Js clients`, () => {
   });
 
   forEach(examples, (example: types.OpenRPC, exampleName: string) => {
+    //if(exampleName != "petstore") return;
     it(`creates a new client for example: ${exampleName}`, async () => {
       expect.assertions(1);
 
