@@ -43,19 +43,22 @@ const compileTemplate = async (name: string, schema: types.OpenRPC, language: st
   });
 };
 
+const moveFiles = async (dirName: string, file1: string, file2: string) => {
+  try {
+    await move(path.join(dirName, file1), path.join(dirName, file2));
+  } catch (error) {
+    // do nothing
+  }
+}
+
 const copyStatic = async (destinationDirectoryName: string, language: string) => {
   await cleanBuildDir(destinationDirectoryName);
 
   const staticPath = path.join(__dirname, "../", `/templates/${language}/static`);
   await copy(staticPath, destinationDirectoryName);
-  try {
-    await move(
-      path.join(destinationDirectoryName, "_package.json"),
-      path.join(destinationDirectoryName, "package.json"),
-    );
-  } catch (e) {
-    // do nothing
-  }
+  
+  moveFiles(destinationDirectoryName, "_package.json", "package.json");
+  moveFiles(destinationDirectoryName, "gitignore", ".gitignore");
 };
 
 const typescript = async ({ clientName, schema }: any) => {
