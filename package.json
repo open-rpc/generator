@@ -22,7 +22,8 @@
     "build": "tsc && cp -R templates build/.",
     "watch:build": "tsc --watch",
     "watch:test": "jest --watch",
-    "publish": "npm run build"
+    "publish": "npm run build",
+    "nexe": "./bin/compile-artifact.js"
   },
   "author": "",
   "license": "Apache-2.0",
@@ -40,6 +41,7 @@
     "@open-rpc/examples": "^1.3.0",
     "jest": "^24.5.0",
     "typescript": "^3.3.3333",
+    "nexe": "^3.1.0",
     "ts-jest": "^24.0.0"
   }
 }
