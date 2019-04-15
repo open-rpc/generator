@@ -5,11 +5,11 @@ import {
   IContentDescriptorTyping,
 } from "./generator-interface";
 import _ from "lodash";
-import { types } from "@open-rpc/meta-schema";
 import { generateMethodParamId, generateMethodResultId } from "@open-rpc/schema-utils-js";
 import { compile } from "json-schema-to-typescript";
+import { ContentDescriptorObject, MethodObject } from "@open-rpc/meta-schema";
 
-const getTypeName = (contentDescriptor: types.ContentDescriptorObject): string => {
+const getTypeName = (contentDescriptor: ContentDescriptorObject): string => {
   const { schema } = contentDescriptor;
 
   const interfaceTypes = ["object", undefined];
@@ -24,9 +24,9 @@ const getTypeName = (contentDescriptor: types.ContentDescriptorObject): string =
 };
 
 const getTypingForContentDescriptor = async (
-  method: types.MethodObject,
+  method: MethodObject,
   isParam: boolean,
-  contentDescriptor: types.ContentDescriptorObject,
+  contentDescriptor: ContentDescriptorObject,
 ): Promise<IContentDescriptorTyping> => {
   const generateId = isParam ? generateMethodParamId : generateMethodResultId;
   let typeName;
@@ -49,7 +49,7 @@ const getTypingForContentDescriptor = async (
 
 const getMethodTypingsMap: TGetMethodTypingsMap = async (openrpcSchema) => {
   const methodTypingsPromises = _.map(openrpcSchema.methods, async (method) => {
-    const mparams = method.params as types.ContentDescriptorObject[];
+    const mparams = method.params as ContentDescriptorObject[];
     const mresult = method.result;
 
     const typingsForParams = await Promise.all(
@@ -61,7 +61,7 @@ const getMethodTypingsMap: TGetMethodTypingsMap = async (openrpcSchema) => {
     const typingsForResult = await getTypingForContentDescriptor(
       method,
       false,
-      mresult as types.ContentDescriptorObject,
+      mresult as ContentDescriptorObject,
     );
 
     return [...typingsForParams, typingsForResult];
@@ -82,7 +82,7 @@ const getMethodTypingsMap: TGetMethodTypingsMap = async (openrpcSchema) => {
 };
 
 const getFunctionSignature: TGetFunctionSignature = (method, typeDefs) => {
-  const mResult = method.result as types.ContentDescriptorObject;
+  const mResult = method.result as ContentDescriptorObject;
   const result = `Promise<${typeDefs[generateMethodResultId(method, mResult)].typeName}>`;
 
   if (method.params.length === 0) {
@@ -90,7 +90,7 @@ const getFunctionSignature: TGetFunctionSignature = (method, typeDefs) => {
   }
 
   const params = _.map(
-    method.params as types.ContentDescriptorObject[],
+    method.params as ContentDescriptorObject[],
     (param) => `${param.name}: ${typeDefs[generateMethodParamId(method, param)].typeName}`,
   ).join(", ");
 

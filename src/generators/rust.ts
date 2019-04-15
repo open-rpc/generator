@@ -6,19 +6,19 @@ import {
   IMethodTypingsMap,
 } from "./generator-interface";
 import _ from "lodash";
-import { types } from "@open-rpc/meta-schema";
 import { generateMethodParamId, generateMethodResultId } from "@open-rpc/schema-utils-js";
 import { compile } from "json-schema-to-typescript";
 import { quicktype, SchemaTypeSource, TypeSource } from "quicktype";
 import { RegexLiteral } from "@babel/types";
 
 import { inspect } from "util"; // for debugging
+import { ContentDescriptorObject } from "@open-rpc/meta-schema";
 
-const getTypeName = (contentDescriptor: types.ContentDescriptorObject): string => {
+const getTypeName = (contentDescriptor: ContentDescriptorObject): string => {
   return _.chain(contentDescriptor.name).camelCase().upperFirst().value();
 };
 
-const getQuickTypeSources = (contentDescriptors: types.ContentDescriptorObject[]): SchemaTypeSource[] => {
+const getQuickTypeSources = (contentDescriptors: ContentDescriptorObject[]): SchemaTypeSource[] => {
   return _.chain(contentDescriptors)
     .map((contentDescriptor) => ({
       kind: "schema",
@@ -35,7 +35,7 @@ const getMethodTypingsMap: TGetMethodTypingsMap = async (openrpcSchema) => {
   const allContentDescriptors = [
     ..._.chain(methods).map("params").flatten().value(),
     ..._.map(methods, "result"),
-  ] as types.ContentDescriptorObject[];
+  ] as ContentDescriptorObject[];
 
   //console.log("allContentDescriptors", inspect(allContentDescriptors));
 
@@ -130,8 +130,8 @@ const getMethodTypingsMap: TGetMethodTypingsMap = async (openrpcSchema) => {
   const typings = _.chain(methods)
     .map((method) => {
       const r = [];
-      const result = method.result as types.ContentDescriptorObject;
-      const params = method.params as types.ContentDescriptorObject[];
+      const result = method.result as ContentDescriptorObject;
+      const params = method.params as ContentDescriptorObject[];
       return [
         {
           typeId: generateMethodResultId(method, result),
@@ -156,7 +156,7 @@ const getMethodTypingsMap: TGetMethodTypingsMap = async (openrpcSchema) => {
 };
 
 const getFunctionSignature: TGetFunctionSignature = (method, typeDefs) => {
-  const mResult = method.result as types.ContentDescriptorObject;
+  const mResult = method.result as ContentDescriptorObject;
   const result = `RpcRequest<${typeDefs[generateMethodResultId(method, mResult)].typeName}>`;
 
   if (method.params.length === 0) {
@@ -164,7 +164,7 @@ const getFunctionSignature: TGetFunctionSignature = (method, typeDefs) => {
   }
 
   const params = _.map(
-    method.params as types.ContentDescriptorObject[],
+    method.params as ContentDescriptorObject[],
     (param) => `${param.name}: ${typeDefs[generateMethodParamId(method, param)].typeName}`,
   ).join(", ");
 

@@ -7,11 +7,11 @@ import { promisify } from "util";
 import jsTemplate from "../templates/js/templated/exported-class.template";
 import rsTemplate from "../templates/rs/templated/client.template";
 import { generateMethodParamId, generateMethodResultId } from "@open-rpc/schema-utils-js";
-import { types } from "@open-rpc/meta-schema";
 
 import generators from "./generators";
 import { IMethodTypingsMap } from "./generators/generator-interface";
 import { map } from "lodash";
+import { MethodObject, ContentDescriptorObject, OpenRPC } from "@open-rpc/meta-schema";
 
 const cwd = process.cwd();
 
@@ -23,15 +23,16 @@ const cleanBuildDir = async (destinationDirectoryName: string): Promise<any> => 
   await emptyDir(destinationDirectoryName);
 };
 
-const compileTemplate = async (name: string, schema: types.OpenRPC, language: string): Promise<string> => {
+const compileTemplate = async (name: string, schema: OpenRPC, language: string): Promise<string> => {
   const typeDefs = await generators[language].getMethodTypingsMap(schema);
 
   const template = language === "rust" ? rsTemplate : jsTemplate;
   return template({
+    openrpcDocument: schema,
     className: name,
-    getParams: (method: types.MethodObject, typeDefs: IMethodTypingsMap) => {
+    getParams: (method: MethodObject, typeDefs: IMethodTypingsMap) => {
       return map(
-        method.params as types.ContentDescriptorObject[],
+        method.params as ContentDescriptorObject[],
         (param) => [param.name, `${typeDefs[generateMethodParamId(method, param)].typeName}`],
       );
     },
@@ -49,14 +50,14 @@ const moveFiles = async (dirName: string, file1: string, file2: string) => {
   } catch (error) {
     // do nothing
   }
-}
+};
 
 const copyStatic = async (destinationDirectoryName: string, language: string) => {
   await cleanBuildDir(destinationDirectoryName);
 
   const staticPath = path.join(__dirname, "../", `/templates/${language}/static`);
   await copy(staticPath, destinationDirectoryName);
-  
+
   moveFiles(destinationDirectoryName, "_package.json", "package.json");
   moveFiles(destinationDirectoryName, "gitignore", ".gitignore");
 };
