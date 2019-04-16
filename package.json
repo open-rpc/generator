@@ -28,7 +28,7 @@
   "license": "Apache-2.0",
   "dependencies": {
     "@open-rpc/meta-schema": "^1.2.2",
-    "@open-rpc/schema-utils-js": "1.5.1",
+    "@open-rpc/schema-utils-js": "1.6.4",
     "@types/lodash": "^4.14.123",
     "commander": "^2.19.0",
     "fs-extra": "^7.0.1",
