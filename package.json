@@ -9,10 +9,9 @@
   },
   "main": "./src/index.js",
   "bin": {
-    "open-rpc-generator-client": "./bin/cli.js"
+    "open-rpc-generator-client": "./build/src/cli.js"
   },
   "files": [
-    "bin/*.js",
     "build",
     ".node-version"
   ],
