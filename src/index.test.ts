@@ -18,10 +18,10 @@ describe(`Examples to generate Js clients`, () => {
     return await rmdir(testDir);
   });
 
-  // afterAll(async () => {
-  //   await fsx.emptyDir(testDir);
-  //   return await rmdir(testDir);
-  // });
+  afterAll(async () => {
+    await fsx.emptyDir(testDir);
+    return await rmdir(testDir);
+  });
 
   forEach(examples, (example: OpenRPC, exampleName: string) => {
     if (exampleName !== "petstore") { return; }
