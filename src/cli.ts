@@ -1,5 +1,5 @@
 import program = require("commander");
-import orpcGenerator from "../build/src";
+import orpcGenerator from "./";
 import { parseOpenRPCDocument } from "@open-rpc/schema-utils-js";
 import version from "./get-version";
 
