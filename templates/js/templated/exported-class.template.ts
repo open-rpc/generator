@@ -5,23 +5,18 @@ export default template(`
 import * as jayson from "jayson/promise";
 import ajv from "ajv";
 import _ from "lodash";
-import { MethodObject, ContentDescriptorObject } from "@open-rpc/meta-schema";
-import { generateMethodParamId, MethodCallValidator } from "@open-rpc/schema-utils-js";
+import { OpenRPC, MethodObject, ContentDescriptorObject } from "@open-rpc/meta-schema";
+import { MethodCallValidator } from "@open-rpc/schema-utils-js";
 
-class ParameterValidationError extends Error {
-  constructor(public message: string, public errors: ajv.ErrorObject[] | undefined | null) {
-    super(message);
-  }
-}
-<%= _.chain(typeDefs).values().uniqBy('typeName').map('typing').value().join('') %>
+<%= methodTypings.getAllUniqueTypings("typescript") %>
+
 export default class <%= className %> {
   public rpc: jayson.Client;
-  public methods: any[];
-  private validator: ajv.Ajv;
+  private validator: MethodCallValidator;
+  private openrpcDocument: OpenRPC;
 
   constructor(options: any) {
-    this.openrpcDocuement = <%= JSON.stringify(openrpcDocument) %>;
-    this.methods = <%= JSON.stringify(methods, undefined, "  ") %>;
+    this.openrpcDocument = <%= JSON.stringify(openrpcDocument) %>;
 
     if (options.transport === undefined || options.transport.type === undefined) {
       throw new Error("Invalid constructor params");
@@ -31,7 +26,7 @@ export default class <%= className %> {
   }
 
   private request(methodName: string, params: any[]): Promise<any> {
-    const methodObject = _.find(this.methods, ({name}) => name === methodName) as MethodObject;
+    const methodObject = _.find(this.openrpcDocument.methods, ({name}) => name === methodName) as MethodObject;
     const openRpcMethodValidationErrors = this.validator.validate(methodName, params);
     if (openRpcMethodValidationErrors.length > 0) {
       return Promise.reject(openRpcMethodValidationErrors);
@@ -47,13 +42,13 @@ export default class <%= className %> {
     return result.then((r: any) => r.result);
   }
 
-  <% methods.forEach((method) => { %>
+  <% openrpcDocument.methods.forEach((method) => { %>
   /**
    * <%= method.summary %>
    */
-  <%= getFunctionSignature(method, typeDefs) %> {
+  <%= methodTypings.getFunctionSignature(method, "typescript") %> {
     return this.request("<%= method.name %>", Array.from(arguments));
   }
-  <% }) %>
+  <% }); %>
 }
 `);

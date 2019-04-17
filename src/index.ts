@@ -8,7 +8,7 @@ import jsTemplate from "../templates/js/templated/exported-class.template";
 import rsTemplate from "../templates/rs/templated/client.template";
 import { generateMethodParamId, generateMethodResultId } from "@open-rpc/schema-utils-js";
 
-import generators from "./generators";
+import { MethodTypings } from "@open-rpc/schema-utils-js";
 import { IMethodTypingsMap } from "./generators/generator-interface";
 import { map } from "lodash";
 import { MethodObject, ContentDescriptorObject, OpenRPC } from "@open-rpc/meta-schema";
@@ -24,23 +24,15 @@ const cleanBuildDir = async (destinationDirectoryName: string): Promise<any> => 
 };
 
 const compileTemplate = async (name: string, schema: OpenRPC, language: string): Promise<string> => {
-  const typeDefs = await generators[language].getMethodTypingsMap(schema);
+  const methodTypings = new MethodTypings(schema);
+  await methodTypings.generateTypings();
 
   const template = language === "rust" ? rsTemplate : jsTemplate;
   return template({
-    openrpcDocument: schema,
     className: name,
-    getParams: (method: MethodObject, typeDefs: IMethodTypingsMap) => {
-      return map(
-        method.params as ContentDescriptorObject[],
-        (param) => [param.name, `${typeDefs[generateMethodParamId(method, param)].typeName}`],
-      );
-    },
-    generateMethodParamId,
-    generateMethodResultId,
-    getFunctionSignature: generators[language].getFunctionSignature,
+    methodTypings,
     methods: schema.methods,
-    typeDefs,
+    openrpcDocument: schema,
   });
 };
 
