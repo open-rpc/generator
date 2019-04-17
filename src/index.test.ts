@@ -1,13 +1,11 @@
 import clientGen from "./";
 import fs from "fs";
 import fsx from "fs-extra";
-import path from "path";
 import examples from "@open-rpc/examples";
 import { promisify } from "util";
 import { forEach } from "lodash";
-import { types } from "@open-rpc/meta-schema";
-import { parse } from "@open-rpc/schema-utils-js";
-import _ from "lodash";
+import { parseOpenRPCDocument } from "@open-rpc/schema-utils-js";
+import { OpenRPC } from "@open-rpc/meta-schema";
 
 const stat = promisify(fs.stat);
 const rmdir = promisify(fs.rmdir);
@@ -25,14 +23,13 @@ describe(`Examples to generate Js clients`, () => {
     return await rmdir(testDir);
   });
 
-  forEach(examples, (example: types.OpenRPC, exampleName: string) => {
-    //if(exampleName != "petstore") return;
+  forEach(examples, (example: OpenRPC, exampleName: string) => {
     it(`creates a new client for example: ${exampleName}`, async () => {
       expect.assertions(1);
 
       await clientGen({
         clientName: "test",
-        schema: await parse(JSON.stringify(example)),
+        schema: await parseOpenRPCDocument(example),
       });
 
       await expect(stat(testDir)).resolves.toBeTruthy();

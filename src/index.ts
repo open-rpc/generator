@@ -1,17 +1,16 @@
-import _bootstrapGeneratedPackage from "./bootstrapGeneratedPackage";
 import { exec } from "child_process";
 import * as fs from "fs";
 import { ensureDir, emptyDir, copy, move } from "fs-extra";
 import * as path from "path";
 import { promisify } from "util";
+import { map } from "lodash";
+import { MethodTypings } from "@open-rpc/schema-utils-js";
+import { OpenRPC } from "@open-rpc/meta-schema";
+
+import _bootstrapGeneratedPackage from "./bootstrapGeneratedPackage";
+
 import jsTemplate from "../templates/js/templated/exported-class.template";
 import rsTemplate from "../templates/rs/templated/client.template";
-import { generateMethodParamId, generateMethodResultId } from "@open-rpc/schema-utils-js";
-import { types } from "@open-rpc/meta-schema";
-
-import generators from "./generators";
-import { IMethodTypingsMap } from "./generators/generator-interface";
-import { map } from "lodash";
 
 const cwd = process.cwd();
 
@@ -23,23 +22,16 @@ const cleanBuildDir = async (destinationDirectoryName: string): Promise<any> => 
   await emptyDir(destinationDirectoryName);
 };
 
-const compileTemplate = async (name: string, schema: types.OpenRPC, language: string): Promise<string> => {
-  const typeDefs = await generators[language].getMethodTypingsMap(schema);
+const compileTemplate = async (name: string, schema: OpenRPC, language: string): Promise<string> => {
+  const methodTypings = new MethodTypings(schema);
+  await methodTypings.generateTypings();
 
   const template = language === "rust" ? rsTemplate : jsTemplate;
   return template({
     className: name,
-    getParams: (method: types.MethodObject, typeDefs: IMethodTypingsMap) => {
-      return map(
-        method.params as types.ContentDescriptorObject[],
-        (param) => [param.name, `${typeDefs[generateMethodParamId(method, param)].typeName}`],
-      );
-    },
-    generateMethodParamId,
-    generateMethodResultId,
-    getFunctionSignature: generators[language].getFunctionSignature,
+    methodTypings,
     methods: schema.methods,
-    typeDefs,
+    openrpcDocument: schema,
   });
 };
 
@@ -49,14 +41,14 @@ const moveFiles = async (dirName: string, file1: string, file2: string) => {
   } catch (error) {
     // do nothing
   }
-}
+};
 
 const copyStatic = async (destinationDirectoryName: string, language: string) => {
   await cleanBuildDir(destinationDirectoryName);
 
   const staticPath = path.join(__dirname, "../", `/templates/${language}/static`);
   await copy(staticPath, destinationDirectoryName);
-  
+
   moveFiles(destinationDirectoryName, "_package.json", "package.json");
   moveFiles(destinationDirectoryName, "gitignore", ".gitignore");
 };
