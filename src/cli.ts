@@ -1,10 +1,8 @@
 import program = require("commander");
 import orpcGenerator from "./";
 import { parseOpenRPCDocument } from "@open-rpc/schema-utils-js";
-import version from "./get-version";
 
 program
-  .version(version)
   .usage("[options] <clientName>")
   .arguments("<clientName>")
   .option("-s, --schema [schema]", "JSON string or a Path/Url pointing to an open rpc schema")

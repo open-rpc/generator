@@ -7,12 +7,12 @@
     "type": "git",
     "url": "https://github.com/open-rpc/generator-client.git"
   },
-  "main": "./src/index.js",
+  "main": "./build/src/index.js",
   "bin": {
     "open-rpc-generator-client": "./build/src/cli.js"
   },
   "files": [
-    "build",
+    "build/**/*",
     ".node-version"
   ],
   "scripts": {
