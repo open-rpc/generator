@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 import program = require("commander");
 import orpcGenerator from "./";
 import { parseOpenRPCDocument } from "@open-rpc/schema-utils-js";
