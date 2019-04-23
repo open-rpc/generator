@@ -3,16 +3,14 @@ import * as fs from "fs";
 import { ensureDir, emptyDir, copy, move } from "fs-extra";
 import * as path from "path";
 import { promisify } from "util";
-import { map } from "lodash";
+import { map, trim, startCase } from "lodash";
 import { MethodTypings } from "@open-rpc/schema-utils-js";
 import { OpenRPC } from "@open-rpc/meta-schema";
 
 import _bootstrapGeneratedPackage from "./bootstrapGeneratedPackage";
 
-import jsTemplate from "../templates/js/templated/exported-class.template";
-import rsTemplate from "../templates/rs/templated/client.template";
-
-const cwd = process.cwd();
+import jsTemplate from "../templates/typescript/templated/exported-class.template";
+import rsTemplate from "../templates/rust/templated/client.template";
 
 const bootstrapGeneratedPackage = _bootstrapGeneratedPackage(exec);
 const writeFile = promisify(fs.writeFile);
@@ -22,16 +20,15 @@ const cleanBuildDir = async (destinationDirectoryName: string): Promise<any> => 
   await emptyDir(destinationDirectoryName);
 };
 
-const compileTemplate = async (name: string, schema: OpenRPC, language: string): Promise<string> => {
-  const methodTypings = new MethodTypings(schema);
+const compileTemplate = async (openrpcDocument: OpenRPC, language: string): Promise<string> => {
+  const methodTypings = new MethodTypings(openrpcDocument);
   await methodTypings.generateTypings();
 
   const template = language === "rust" ? rsTemplate : jsTemplate;
   return template({
-    className: name,
+    className: startCase(openrpcDocument.info.title).replace(/\s/g, ""),
     methodTypings,
-    methods: schema.methods,
-    openrpcDocument: schema,
+    openrpcDocument,
   });
 };
 
@@ -53,33 +50,27 @@ const copyStatic = async (destinationDirectoryName: string, language: string) =>
   moveFiles(destinationDirectoryName, "gitignore", ".gitignore");
 };
 
-const typescript = async ({ clientName, schema }: any) => {
-  const compiledResult = await compileTemplate(clientName, schema, "typescript");
+interface IGeneratorOptions {
+  outDir: string;
+  openrpcDocument: OpenRPC;
+}
 
-  const destinationDirectoryName = `${cwd}/${clientName}/ts`;
-  await cleanBuildDir(destinationDirectoryName);
-  await copyStatic(destinationDirectoryName, "js");
-  await writeFile(`${destinationDirectoryName}/src/index.ts`, compiledResult, "utf8");
-
-  await bootstrapGeneratedPackage(destinationDirectoryName, "typescript");
-  return true;
+const languageFilenameMap: any = {
+  rust: "lib.rs",
+  typescript: "index.ts",
 };
 
-const rust = async ({ clientName, schema }: any) => {
-  const compiledResult = await compileTemplate(clientName, schema, "rust");
+export default (generatorOptions: IGeneratorOptions) => {
+  const { openrpcDocument, outDir } = generatorOptions;
 
-  const destinationDirectoryName = `${cwd}/${clientName}/rs`;
-  await cleanBuildDir(destinationDirectoryName);
-  await copyStatic(destinationDirectoryName, "rs");
-  await writeFile(`${destinationDirectoryName}/src/lib.rs`, compiledResult, "utf8");
+  return Promise.all(["typescript", "rust"].map(async (language) => {
+    const compiledResult = await compileTemplate(openrpcDocument, language);
 
-  await bootstrapGeneratedPackage(destinationDirectoryName, "rust");
-  return true;
-};
+    const destinationDirectoryName = `${outDir}/${language}`;
+    await cleanBuildDir(destinationDirectoryName);
+    await copyStatic(destinationDirectoryName, language);
+    await writeFile(`${destinationDirectoryName}/src/${languageFilenameMap[language]}`, compiledResult, "utf8");
 
-export default ({ clientName, schema }: any) => {
-  return Promise.all([
-    rust({ clientName, schema }),
-    typescript({ clientName, schema }),
-  ]);
+    await bootstrapGeneratedPackage(destinationDirectoryName, language);
+  }));
 };
