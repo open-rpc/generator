@@ -24,15 +24,24 @@ Supported client languages:
 ## Install
 
 ```shell
-npm install -g @open-rpc/generator-client
+$ npm install -g @open-rpc/generator-client
 ```
 
 ## Usage
 
+```shell
+$ open-rpc-generator-client --help
+Usage: open-rpc-generator-client [options] <clientName>
+
+Options:
+  -s, --schema [schema]  JSON string or a Path/Url pointing to an open rpc schema
+  -h, --help             output usage information
+```
+
 ### Generating a Client
 
 ```shell
-open-rpc-generator-client \
+$ open-rpc-generator-client \
   -d https://raw.githubusercontent.com/open-rpc/examples/master/service-descriptions/petstore-openrpc.json \
 ```
 
@@ -50,10 +59,10 @@ When a client is generated `cd` in the directory and `ls` to view the contents.
 
 ```shell
 $ ls
-rs ts
+rust typescript
 ```
 
-The generator client tool creates the client directories by language. E.i: `rs/` for generated Rust client and `ts` for generated Typescript (JavaScript) client. A developer can choose which client language they want to use from here.
+The generator client tool creates the client directories by language. E.i: `rust/` for generated Rust client and `typescript` for generated Typescript (JavaScript) client. A developer can choose which client language they want to use from here.
 
 ## Resources
 
