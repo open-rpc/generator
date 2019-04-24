@@ -31,10 +31,10 @@ $ npm install -g @open-rpc/generator-client
 
 ```shell
 $ open-rpc-generator-client --help
-Usage: open-rpc-generator-client [options] <clientName>
+Usage: open-rpc-generator-client [options]
 
 Options:
-  -s, --schema [schema]  JSON string or a Path/Url pointing to an open rpc schema
+  -d, --document [openrpcDocument]  JSON string or a Path/Url pointing to an open rpc schema
   -h, --help             output usage information
 ```
 
