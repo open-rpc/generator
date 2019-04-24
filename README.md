@@ -27,37 +27,16 @@ Supported client languages:
 npm install -g @open-rpc/generator-client
 ```
 
-Check install or update package
-
-```shell
-open-rpc-generator-client --version
-
-npm -g update @open-rpc/generator-client
-```
-
 ## Usage
 
 ### Generating a Client
 
 ```shell
 open-rpc-generator-client \
-  -s https://raw.githubusercontent.com/open-rpc/examples/master/service-descriptions/petstore-openrpc.json \
-  PetStore
+  -d https://raw.githubusercontent.com/open-rpc/examples/master/service-descriptions/petstore-openrpc.json \
 ```
 
 Using the `open-rpc-generator-client` command, then passing an example OpenRPC document `petstore-openrpc.json` in the directory of `Petstore`.
-
-### Using Docker ![docker-icon](https://github.com/open-rpc/design/blob/master/png/docker-icon-16x.png?raw=true)
-
-In action (for a js client):
-
-```shell
-docker run \
-  -v $(pwd)/petstore/:/petstore \
-  openrpc/generator-client \
-    -s https://raw.githubusercontent.com/open-rpc/examples/master/service-descriptions/petstore-openrpc.json
-    petstore
-```
 
 ## Examples
 
