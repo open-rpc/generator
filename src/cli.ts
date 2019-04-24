@@ -6,10 +6,9 @@ import { parseOpenRPCDocument } from "@open-rpc/schema-utils-js";
 
 program
   .usage("[options] <clientName>")
-  .arguments("<clientName>")
-  .option("-s, --schema [schema]", "JSON string or a Path/Url pointing to an open rpc schema")
+  .option("-d, --document [openrpcDocument]", "JSON string or a Path/Url pointing to an open rpc schema", "./openrpc.json")
   .action(async () => {
-    const openrpcDocument = await parseOpenRPCDocument(program.schema);
+    const openrpcDocument = await parseOpenRPCDocument(program.openrpcDocument);
 
     await orpcGenerator({ outDir: process.cwd(), openrpcDocument });
 
