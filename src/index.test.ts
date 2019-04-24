@@ -1,6 +1,6 @@
 import clientGen from "./";
 import fs from "fs";
-import fsx from "fs-extra";
+import fsx, { emptyDir } from "fs-extra";
 import examples from "@open-rpc/examples";
 import { promisify } from "util";
 import { forEach } from "lodash";
@@ -17,10 +17,10 @@ describe(`Examples to generate Js clients`, () => {
     await emptyDir(testDir);
   });
 
-  // afterAll(async () => {
-  //   await fsx.emptyDir(testDir);
-  //   return await rmdir(testDir);
-  // });
+  afterAll(async () => {
+    await fsx.emptyDir(testDir);
+    return await rmdir(testDir);
+  });
 
   forEach(examples, (example: OpenRPC, exampleName: string) => {
     it(`creates a new client for example: ${exampleName}`, async () => {
