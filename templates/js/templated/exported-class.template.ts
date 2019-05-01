@@ -70,7 +70,7 @@ export default class <%= className %> {
     if (methodObject.paramStructure && methodObject.paramStructure === "by-name") {
       rpcParams = _.zipObject(params, _.map(methodObject.params, "name"));
     } else {
-      rpcParams = Array.from(arguments);
+      rpcParams = params;
     }
     const result: any = this.rpc.request(methodName, rpcParams);
     return result.then((r: any) => r.result);
