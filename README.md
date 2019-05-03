@@ -24,40 +24,28 @@ Supported client languages:
 ## Install
 
 ```shell
-npm install -g @open-rpc/generator-client
-```
-
-Check install or update package
-
-```shell
-open-rpc-generator-client --version
-
-npm -g update @open-rpc/generator-client
+$ npm install -g @open-rpc/generator-client
 ```
 
 ## Usage
 
+```shell
+$ open-rpc-generator-client --help
+Usage: open-rpc-generator-client [options]
+
+Options:
+  -d, --document [openrpcDocument]  JSON string or a Path/Url pointing to an open rpc schema
+  -h, --help             output usage information
+```
+
 ### Generating a Client
 
 ```shell
-open-rpc-generator-client \
-  -s https://raw.githubusercontent.com/open-rpc/examples/master/service-descriptions/petstore-openrpc.json \
-  PetStore
+$ open-rpc-generator-client \
+  -d https://raw.githubusercontent.com/open-rpc/examples/master/service-descriptions/petstore-openrpc.json \
 ```
 
 Using the `open-rpc-generator-client` command, then passing an example OpenRPC document `petstore-openrpc.json` in the directory of `Petstore`.
-
-### Using Docker ![docker-icon](https://github.com/open-rpc/design/blob/master/png/docker-icon-16x.png?raw=true)
-
-In action (for a js client):
-
-```shell
-docker run \
-  -v $(pwd)/petstore/:/petstore \
-  openrpc/generator-client \
-    -s https://raw.githubusercontent.com/open-rpc/examples/master/service-descriptions/petstore-openrpc.json
-    petstore
-```
 
 ## Examples
 
@@ -71,10 +59,10 @@ When a client is generated `cd` in the directory and `ls` to view the contents.
 
 ```shell
 $ ls
-rs ts
+rust typescript
 ```
 
-The generator client tool creates the client directories by language. E.i: `rs/` for generated Rust client and `ts` for generated Typescript (JavaScript) client. A developer can choose which client language they want to use from here.
+The generator client tool creates the client directories by language. E.i: `rust/` for generated Rust client and `typescript` for generated Typescript (JavaScript) client. A developer can choose which client language they want to use from here.
 
 ## Resources
 
