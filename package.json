@@ -17,7 +17,9 @@
   ],
   "scripts": {
     "start": "./bin/cli.js",
-    "test": "jest --coverage",
+    "test": "npm run test:lint && npm run test:unit",
+    "test:unit": "jest --coverage",
+    "test:lint": "tslint -c tslint.json 'src/**/*.ts' --fix",
     "build": "tsc && cp -R templates build/. && chmod +x build/src/cli.js",
     "watch:build": "tsc --watch",
     "watch:test": "jest --watch"
