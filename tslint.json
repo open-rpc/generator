@@ -4,7 +4,6 @@
   ],
   "rules": {
     "ordered-imports": false,
-    "indent": [true, "spaces", 2],
-    "no-unused-variable": true
+    "indent": [true, "spaces", 2]
   }
 }
