@@ -16,6 +16,6 @@ program
 
     await orpcGenerator({ outDir: process.cwd(), openrpcDocument });
 
-    console.log("Done!");
+    console.log("Done!"); // tslint:disable-line
   })
   .parse(process.argv);
