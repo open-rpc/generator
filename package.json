@@ -29,7 +29,7 @@
   "dependencies": {
     "@open-rpc/schema-utils-js": "^1.8.0",
     "commander": "^2.19.0",
-    "fs-extra": "^7.0.1",
+    "fs-extra": "^8.0.0",
     "lodash": "^4.17.11"
   },
   "devDependencies": {
