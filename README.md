@@ -47,21 +47,6 @@ $ open-rpc-generator-client \
 
 Using the `open-rpc-generator-client` command, then passing an example OpenRPC document `petstore-openrpc.json` in the directory of `Petstore`.
 
-## Examples
-
-The [examples](https://github.com/open-rpc/examples/tree/master/service-descriptions) repository contains example open-rpc documents.
-
-Petstore example: https://raw.githubusercontent.com/open-rpc/examples/master/service-descriptions/petstore-openrpc.json
-
-![petstore-generated](https://github.com/stevanlohja/design/blob/master/videos-gifs/generator-client/001-generate-client-demo/001-generate-client-demo.gif?raw=true)
-
-When a client is generated `cd` in the directory and `ls` to view the contents.
-
-```shell
-$ ls
-rust typescript
-```
-
 The generator client tool creates the client directories by language. E.i: `rust/` for generated Rust client and `typescript` for generated Typescript (JavaScript) client. A developer can choose which client language they want to use from here.
 
 ## Resources
