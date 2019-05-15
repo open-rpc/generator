@@ -16,11 +16,12 @@
   "dependencies": {
     "@open-rpc/meta-schema": "^1.3.1",
     "@open-rpc/schema-utils-js": "^1.8.0",
-    "jayson": "^2.1.2",
+    "@open-rpc/client-js": "0.0.0-development",
     "lodash": "4.17.11"
   },
   "devDependencies": {
     "typescript": "^3.2.4",
+    "@types/ws": "^6.0.1",
     "@types/json-schema": "7.0.3",
     "tslint": "^5.13.1",
     "typedoc": "^0.14.2"
