@@ -24,7 +24,7 @@ const cleanBuildDir = async (destinationDirectoryName: string): Promise<any> => 
 const compileTemplate = async (
   openrpcDocument: OpenRPC,
   language: string,
-  methodTypings: MethodTypings
+  methodTypings: MethodTypings,
 ): Promise<string> => {
   const template = language === "rust" ? rsTemplate : jsTemplate;
   return template({
