@@ -60,8 +60,7 @@ export default class <%= className %> {
     } else {
       rpcParams = params;
     }
-    const result: any = this.rpc.request(methodName, rpcParams);
-    return result.then((r: any) => r.result);
+    return this.rpc.request(methodName, rpcParams);
   }
 
   <% openrpcDocument.methods.forEach((method) => { %>
