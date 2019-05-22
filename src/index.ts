@@ -1,9 +1,9 @@
 import { exec } from "child_process";
 import * as fs from "fs";
-import { ensureDir, emptyDir, copy, move } from "fs-extra";
+import { ensureDir, emptyDir, copy, move, readFile } from "fs-extra";
 import * as path from "path";
 import { promisify } from "util";
-import { map, trim, startCase } from "lodash";
+import { startCase } from "lodash";
 import { OpenRPC } from "@open-rpc/meta-schema";
 
 import MethodTypings from "@open-rpc/typings";
@@ -34,6 +34,25 @@ const compileTemplate = async (
   });
 };
 
+const postProcessStatic = async (
+  destinationDirectoryName: string,
+  generatorOptions: IGeneratorOptions,
+  language: string,
+) => {
+  if (language === "rust") {
+    return;
+  }
+  const packagePath = path.join(destinationDirectoryName, "package.json");
+  const fileContents = await readFile(packagePath);
+  const pkg = JSON.parse(fileContents.toString());
+  const updatedPkg = JSON.stringify({
+    ...pkg,
+    name: generatorOptions.tsName,
+    version: generatorOptions.openrpcDocument.info.version,
+  });
+  await writeFile(packagePath, updatedPkg);
+};
+
 const moveFiles = async (dirName: string, file1: string, file2: string) => {
   try {
     await move(path.join(dirName, file1), path.join(dirName, file2));
@@ -48,11 +67,12 @@ const copyStatic = async (destinationDirectoryName: string, language: string) =>
   const staticPath = path.join(__dirname, "../", `/templates/${language}/static`);
   await copy(staticPath, destinationDirectoryName);
 
-  moveFiles(destinationDirectoryName, "_package.json", "package.json");
-  moveFiles(destinationDirectoryName, "gitignore", ".gitignore");
+  await moveFiles(destinationDirectoryName, "_package.json", "package.json");
+  await moveFiles(destinationDirectoryName, "gitignore", ".gitignore");
 };
 
 interface IGeneratorOptions {
+  tsName: string;
   outDir: string;
   openrpcDocument: OpenRPC;
 }
@@ -74,6 +94,7 @@ export default async (generatorOptions: IGeneratorOptions) => {
     const destinationDirectoryName = `${outDir}/${language}`;
     await cleanBuildDir(destinationDirectoryName);
     await copyStatic(destinationDirectoryName, language);
+    await postProcessStatic(destinationDirectoryName, generatorOptions, language);
     await writeFile(`${destinationDirectoryName}/src/${languageFilenameMap[language]}`, compiledResult, "utf8");
 
     await bootstrapGeneratedPackage(destinationDirectoryName, language);
