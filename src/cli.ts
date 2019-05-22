@@ -14,8 +14,14 @@ program
     "JSON string or a Path/Url pointing to an open rpc schema",
     "./openrpc.json",
   )
+  .option(
+    "-o, --outputDir [outputDirectory]",
+    "JSON string or a Path/Url pointing to an open rpc schema",
+    "./openrpc.json",
+  )
   .action(async () => {
     let openrpcDocument: OpenRPC;
+    const outDir = program.outputDir || process.cwd();
     try {
       openrpcDocument = await parseOpenRPCDocument(program.document);
     } catch (e) {
@@ -24,7 +30,7 @@ program
       return;
     }
 
-    await orpcGenerator({ outDir: process.cwd(), openrpcDocument });
+    await orpcGenerator({ outDir, openrpcDocument });
 
     console.log("Done!"); // tslint:disable-line
   })
