@@ -45,6 +45,7 @@ const processRust = async (
   const updatedCargo = TOML.stringify({
     ...cargoTOML,
     package: {
+      ...cargoTOML.package as object,
       name: generatorOptions.rsName,
       version: generatorOptions.openrpcDocument.info.version,
     },
