@@ -40,7 +40,12 @@ program
       return;
     }
 
-    await orpcGenerator({ outDir, openrpcDocument, tsName: program.tsName || "template-client" });
+    await orpcGenerator({
+      openrpcDocument,
+      outDir,
+      rsName: program.rsName || "template-client",
+      tsName: program.tsName || "template-client",
+    });
 
     console.log("Done!"); // tslint:disable-line
   })

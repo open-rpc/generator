@@ -5,6 +5,7 @@ import * as path from "path";
 import { promisify } from "util";
 import { startCase } from "lodash";
 import { OpenRPC } from "@open-rpc/meta-schema";
+import TOML from "@iarna/toml";
 
 import MethodTypings from "@open-rpc/typings";
 
@@ -34,14 +35,27 @@ const compileTemplate = async (
   });
 };
 
-const postProcessStatic = async (
+const processRust = async (
   destinationDirectoryName: string,
   generatorOptions: IGeneratorOptions,
-  language: string,
 ) => {
-  if (language === "rust") {
-    return;
-  }
+  const cargoTOMLPath = path.join(destinationDirectoryName, "Cargo.toml");
+  const fileContents = await readFile(cargoTOMLPath);
+  const cargoTOML = TOML.parse(fileContents.toString());
+  const updatedCargo = TOML.stringify({
+    ...cargoTOML,
+    package: {
+      name: generatorOptions.rsName,
+      version: generatorOptions.openrpcDocument.info.version,
+    },
+  });
+  await writeFile(cargoTOMLPath, updatedCargo);
+};
+
+const processTypescript = async (
+  destinationDirectoryName: string,
+  generatorOptions: IGeneratorOptions,
+) => {
   const packagePath = path.join(destinationDirectoryName, "package.json");
   const fileContents = await readFile(packagePath);
   const pkg = JSON.parse(fileContents.toString());
@@ -51,6 +65,18 @@ const postProcessStatic = async (
     version: generatorOptions.openrpcDocument.info.version,
   });
   await writeFile(packagePath, updatedPkg);
+};
+
+const postProcessStatic = async (
+  destinationDirectoryName: string,
+  generatorOptions: IGeneratorOptions,
+  language: string,
+) => {
+  if (language === "rust") {
+    return processRust(destinationDirectoryName, generatorOptions);
+  } else {
+    return processTypescript(destinationDirectoryName, generatorOptions);
+  }
 };
 
 const moveFiles = async (dirName: string, file1: string, file2: string) => {
@@ -72,6 +98,7 @@ const copyStatic = async (destinationDirectoryName: string, language: string) =>
 };
 
 interface IGeneratorOptions {
+  rsName: string;
   tsName: string;
   outDir: string;
   openrpcDocument: OpenRPC;
