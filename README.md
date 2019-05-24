@@ -34,15 +34,19 @@ $ open-rpc-generator-client --help
 Usage: open-rpc-generator-client [options]
 
 Options:
-  -d, --document [openrpcDocument]  JSON string or a Path/Url pointing to an open rpc schema
-  -h, --help             output usage information
+  -v, --version                      output the version number
+  -d, --document [openrpcDocument]   JSON string or a Path/Url pointing to an open rpc schema (default: "./openrpc.json")
+  -o, --outputDir [outputDirectory]  output directory that the clients will be generated into (default: "./")
+  --ts-name [packageName]            Name that will go in the package.json for the typescript client (default: "template-client")
+  --rs-name [crateName]              Name that will go in the crate name for the rust client (default: "template-client")
+  -h, --help                         output usage information
 ```
 
 ### Generating a Client
 
 ```shell
 $ open-rpc-generator-client \
-  -d https://raw.githubusercontent.com/open-rpc/examples/master/service-descriptions/petstore-openrpc.json \
+  -d https://raw.githubusercontent.com/open-rpc/examples/master/service-descriptions/petstore-openrpc.json
 ```
 
 Using the `open-rpc-generator-client` command, then passing an example OpenRPC document `petstore-openrpc.json` in the directory of `Petstore`.

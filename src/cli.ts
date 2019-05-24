@@ -16,8 +16,18 @@ program
   )
   .option(
     "-o, --outputDir [outputDirectory]",
-    "JSON string or a Path/Url pointing to an open rpc schema",
-    "./openrpc.json",
+    "output directory that the clients will be generated into",
+    "./",
+  )
+  .option(
+    "--ts-name [packageName]",
+    "Name that will go in the package.json for the typescript client",
+    "template-client",
+  )
+  .option(
+    "--rs-name [crateName]",
+    "Name that will go in the crate name for the rust client",
+    "template-client",
   )
   .action(async () => {
     let openrpcDocument: OpenRPC;
@@ -30,7 +40,12 @@ program
       return;
     }
 
-    await orpcGenerator({ outDir, openrpcDocument });
+    await orpcGenerator({
+      openrpcDocument,
+      outDir,
+      rsName: program.rsName || "template-client",
+      tsName: program.tsName || "template-client",
+    });
 
     console.log("Done!"); // tslint:disable-line
   })

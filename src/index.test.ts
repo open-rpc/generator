@@ -31,6 +31,8 @@ describe(`Examples to generate Js clients`, () => {
       await clientGen({
         openrpcDocument: await parseOpenRPCDocument(example),
         outDir: exampleOutDir,
+        rsName: "template-client",
+        tsName: "template-client",
       });
 
       await expect(stat(exampleOutDir)).resolves.toBeTruthy();
