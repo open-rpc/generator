@@ -1,5 +1,7 @@
 [package]
 name = "template-client"
+description = "JSON-RPC Client"
+license = "Apache-2.0"
 version = "1.0.0"
 authors = ["Zachary Belford <belfordz66@gmail.com>", "Mike Lubinets <public@mersinvald.me>"]
 edition = "2018"
