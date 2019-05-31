@@ -8,9 +8,9 @@ import _ from "lodash";
 import { OpenRPC, MethodObject, ContentDescriptorObject } from "@open-rpc/meta-schema";
 import { MethodCallValidator } from "@open-rpc/schema-utils-js";
 
-<%= methodTypings.getAllUniqueTypings("typescript") %>
+<%= methodTypings.toString("typescript") %>
 
-interface IOptions {
+export interface Options {
   transport: {
     type: "websocket" | "http" | "https";
     host: string;
@@ -23,7 +23,7 @@ export default class <%= className %> {
   private validator: MethodCallValidator;
   private openrpcDocument: OpenRPC;
 
-  constructor(options: IOptions) {
+  constructor(options: Options) {
     this.openrpcDocument = <%= JSON.stringify(openrpcDocument) %>;
 
     if (options.transport === undefined || options.transport.type === undefined) {
@@ -67,8 +67,8 @@ export default class <%= className %> {
   /**
    * <%= method.summary %>
    */
-  <%= methodTypings.getFunctionSignature(method, "typescript") %> {
-    return this.request("<%= method.name %>", Array.from(arguments));
+  public <%= method.name %>: <%= methodTypings.getTypingNames("typescript", method).method %> = (...params) => {
+    return this.request("<%= method.name %>", params);
   }
   <% }); %>
 }

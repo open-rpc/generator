@@ -1,4 +1,5 @@
 import { template } from "lodash";
+import { OpenRPCTypingsSupportedLanguages } from "@open-rpc/typings";
 
 export default template(`
 #[macro_use]
@@ -11,12 +12,10 @@ use autorand::Random;
 #[cfg(test)]
 mod test_harness;
 
-<%= methodTypings.getAllUniqueTypings("rust") %>
+<%= methodTypings.toString("rust", { includeSchemaTypings: true, includeMethodAliasTypings: false }) %>
 
 jsonrpc_client!(pub struct <%= className %> {
-<% openrpcDocument.methods.forEach((method) => { %>
-<%= methodTypings.getFunctionSignature(method, "rust") %>
-<% }); %>
+  <%= methodTypings.toString("rust", { includeSchemaTypings: false, includeMethodAliasTypings: true }) %>
 });
 
 #[cfg(test)]
@@ -27,32 +26,21 @@ mod tests {
     use futures::Future;
 
 <% openrpcDocument.methods.forEach((method) => { %>
+  <% var typeNames = methodTypings.getTypingNames("rust", method); %>
     #[test]
     #[allow(non_snake_case)]
-    fn <%= method.name + "_test" %> () {
-        //- method quety template start
-        let method = <%= '"' + method.name + '"' %>.into();
-        //- method query template end
+    fn <%= method.name %>_test () {
+        let method = "<%= method.name %>".into();
 
-        //- params query template start
         let mut params = Vec::new();
-        //-- loop over params start
-    <% const typingsForMethod = methodTypings.getTypingsForMethod(method, "rust") %>
-    <% typingsForMethod.params.forEach((param) => { %>
-        <% const paramName = param.typeName + "_value" %>
-        let <%= paramName %> = <%= param.typeName + "::random()" %>;
+  <% typeNames.params.forEach((paramTypeName) => { const paramName = paramTypeName + "_value" %>
+        let <%= paramName %> = <%= paramTypeName %>::random();
         let serialized = serde_json::to_value(&<%= paramName %>).unwrap();
         params.push(serialized);
-    <% }); %>
-        //-- loop over params end
-        //- params query template end
-
-        //- result query template start
-        let result = <%= typingsForMethod.result.typeName + "::random()" %>;
-        // transcode result to workaround Some(Null) -> Null serialization detail loss
+  <% }); %>
+        let result = <%= typeNames.result %>::random();
         let result_serialized = serde_json::to_vec(&result).unwrap();
-        let result: <%= typingsForMethod.result.typeName %> = serde_json::from_slice(&result_serialized).unwrap();
-        //- result query template end
+        let result: <%= typeNames.result %> = serde_json::from_slice(&result_serialized).unwrap();
 
         let transport = MockTransport {
             method,
@@ -60,16 +48,11 @@ mod tests {
             result: serde_json::to_value(&result).unwrap(),
         };
 
-        let mut client = <%= className + "::new(transport);" %>
+        let mut client = <%= className %>::new(transport);
         let received_result = client.<%= method.name %>(
-            //- loop over params start
-        <% typingsForMethod.params.forEach((param) => { %>
-            <%= param.typeName + "_value" %>,
-        <% }); %>
-            //- loop over params end
+          <%= typeNames.params.map((n) => n + "_value").join(", ") %>
         ).wait().unwrap();
 
-        // transcode result to workaround Some(Null) -> Null serialization detail loss
         let result_s =
         assert_eq!(result, received_result);
     }
