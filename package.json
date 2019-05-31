@@ -42,7 +42,7 @@
     "@types/lodash": "4.14.133",
     "jest": "24.5.0",
     "ts-jest": "24.0.0",
-    "tslint": "5.16.0",
+    "tslint": "5.17.0",
     "typescript": "3.5.1"
   }
 }
