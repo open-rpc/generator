@@ -17,7 +17,7 @@ export interface Options {
   }
 }
 
-export default class <%= className %> {
+export class <%= className %> {
   public rpc: Client;
   private validator: MethodCallValidator;
   private openrpcDocument: OpenRPC;
@@ -71,4 +71,5 @@ export default class <%= className %> {
   }
   <% }); %>
 }
+export default <%= className %>;
 `);
