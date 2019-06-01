@@ -5,8 +5,7 @@
   "main": "build/index.js",
   "scripts": {
     "build": "tsc && typedoc --out docs",
-    "lint": "tslint --fix -c tslint.json 'src/index.ts'",
-    "publish": "npm publish --access=public"
+    "lint": "tslint --fix -c tslint.json 'src/index.ts'"
   },
   "files": [
     "build/*"
