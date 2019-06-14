@@ -36,6 +36,6 @@ describe(`Examples to generate Js clients`, () => {
       });
 
       await expect(stat(exampleOutDir)).resolves.toBeTruthy();
-    }, 60000);
+    }, 90000);
   });
 });
