@@ -14,6 +14,7 @@ export interface Options {
     type: "websocket" | "http" | "https";
     host: string;
     port: number;
+    path?: string;
   }
 }
 
@@ -28,15 +29,19 @@ export class <%= className %> {
     if (options.transport === undefined || options.transport.type === undefined) {
       throw new Error("Invalid constructor params");
     }
-
+    const {type, host, port} = options.transport; 
+    let path = options.transport.path || "";
+    if(path && path[0] !== "/") {
+        path = "/" + path;
+    }
     let transport;
-    switch (options.transport.type) {
+    switch (type) {
       case 'http':
       case 'https':
-        transport = new HTTPTransport(options.transport.type + "://" + options.transport.host + ":" + options.transport.port)
+        transport = new HTTPTransport(type + "://" + host + ":" + port + path)
         break;
       case 'websocket':
-        transport = new WebSocketTransport("ws://" + options.transport.host + ":" + options.transport.port)
+        transport = new WebSocketTransport("ws://" + host + ":" + port + path)
         break;
       default:
         throw new Error("unsupported transport");
