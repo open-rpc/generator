@@ -29,7 +29,7 @@ export class <%= className %> {
     if (options.transport === undefined || options.transport.type === undefined) {
       throw new Error("Invalid constructor params");
     }
-    const {type, host, port} = options.transport; 
+    const {type, host, port} = options.transport;
     let path = options.transport.path || "";
     if(path && path[0] !== "/") {
         path = "/" + path;
@@ -49,6 +49,39 @@ export class <%= className %> {
     }
     this.rpc = new Client(new RequestManager([transport]));
     this.validator = new MethodCallValidator(this.openrpcDocument);
+  }
+
+  /**
+   * Initiates [[<%= className %>.startBatch]] in order to build a batch call.
+   *
+   * Subsequent calls to [[<%= className %>.request]] will be added to the batch.
+   * Once [[<%= className %>.stopBatch]] is called, the promises for the [[<%= className %>.request]]
+   * will then be resolved.  If there is already a batch in progress this method is a noop.
+   *
+   * @example
+   * myClient.startBatch();
+   * myClient.foo().then(() => console.log("foobar"))
+   * myClient.bar().then(() => console.log("foobarbaz"))
+   * myClient.stopBatch();
+   */
+  public startBatch(): void {
+    return this.rpc.startBatch();
+  }
+
+  /**
+   * Initiates [[Client.stopBatch]] in order to finalize and send the batch to the underlying transport.
+   *
+   * stopBatch will send the [[<%= className %>]] calls made since the last [[<%= className %>.startBatch]] call. For
+   * that reason, [[<%= className %>.startBatch]] MUST be called before [[<%= className %>.stopBatch]].
+   *
+   * @example
+   * myClient.startBatch();
+   * myClient.foo().then(() => console.log("foobar"))
+   * myClient.bar().then(() => console.log("foobarbaz"))
+   * myClient.stopBatch();
+   */
+  public stopBatch(): void {
+    return this.rpc.stopBatch();
   }
 
   private request(methodName: string, params: any[]): Promise<any> {
