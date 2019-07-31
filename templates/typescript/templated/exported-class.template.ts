@@ -5,7 +5,7 @@ export default template(`
 import { RequestManager, WebSocketTransport, HTTPTransport, Client } from '@open-rpc/client-js';
 import _ from "lodash";
 import { OpenRPC, MethodObject, ContentDescriptorObject } from "@open-rpc/meta-schema";
-import { MethodCallValidator } from "@open-rpc/schema-utils-js";
+import { MethodCallValidator, MethodNotFoundError } from "@open-rpc/schema-utils-js";
 
 <%= methodTypings.toString("typescript") %>
 
@@ -20,8 +20,8 @@ export interface Options {
 
 export class <%= className %> {
   public rpc: Client;
+  public openrpcDocument: OpenRPC;
   private validator: MethodCallValidator;
-  private openrpcDocument: OpenRPC;
 
   constructor(options: Options) {
     this.openrpcDocument = <%= JSON.stringify(openrpcDocument) %>;
@@ -87,8 +87,8 @@ export class <%= className %> {
   private request(methodName: string, params: any[]): Promise<any> {
     const methodObject = _.find(this.openrpcDocument.methods, ({name}) => name === methodName) as MethodObject;
     const openRpcMethodValidationErrors = this.validator.validate(methodName, params);
-    if (openRpcMethodValidationErrors.length > 0) {
-      return Promise.reject(openRpcMethodValidationErrors);
+    if ( openRpcMethodValidationErrors instanceof MethodNotFoundError || openRpcMethodValidationErrors.length > 0) {
+        return Promise.reject(openRpcMethodValidationErrors);
     }
 
     let rpcParams;
