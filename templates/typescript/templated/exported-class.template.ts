@@ -21,6 +21,7 @@ export interface Options {
 export class <%= className %> {
   public rpc: Client;
   public openrpcDocument: OpenRPC;
+  public transport: HTTPTransport | WebSocketTransport;
   private validator: MethodCallValidator;
 
   constructor(options: Options) {
@@ -34,20 +35,19 @@ export class <%= className %> {
     if(path && path[0] !== "/") {
         path = "/" + path;
     }
-    let transport;
     switch (type) {
       case 'http':
       case 'https':
-        transport = new HTTPTransport(type + "://" + host + ":" + port + path)
+        this.transport = new HTTPTransport(type + "://" + host + ":" + port + path)
         break;
       case 'websocket':
-        transport = new WebSocketTransport("ws://" + host + ":" + port + path)
+        this.transport = new WebSocketTransport("ws://" + host + ":" + port + path)
         break;
       default:
         throw new Error("unsupported transport");
         break;
     }
-    this.rpc = new Client(new RequestManager([transport]));
+    this.rpc = new Client(new RequestManager([this.transport]));
     this.validator = new MethodCallValidator(this.openrpcDocument);
   }
 
