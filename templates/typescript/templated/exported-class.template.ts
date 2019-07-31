@@ -20,12 +20,11 @@ export interface Options {
 
 export class <%= className %> {
   public rpc: Client;
-  public openrpcDocument: OpenRPC;
+  public static openrpcDocument: OpenRPC = <%= JSON.stringify(openrpcDocument) %> ;
   public transport: HTTPTransport | WebSocketTransport;
   private validator: MethodCallValidator;
 
   constructor(options: Options) {
-    this.openrpcDocument = <%= JSON.stringify(openrpcDocument) %>;
 
     if (options.transport === undefined || options.transport.type === undefined) {
       throw new Error("Invalid constructor params");
@@ -48,7 +47,7 @@ export class <%= className %> {
         break;
     }
     this.rpc = new Client(new RequestManager([this.transport]));
-    this.validator = new MethodCallValidator(this.openrpcDocument);
+    this.validator = new MethodCallValidator(<%= className %>.openrpcDocument);
   }
 
   /**
@@ -85,7 +84,7 @@ export class <%= className %> {
   }
 
   private request(methodName: string, params: any[]): Promise<any> {
-    const methodObject = _.find(this.openrpcDocument.methods, ({name}) => name === methodName) as MethodObject;
+    const methodObject = _.find(<%= className %>.openrpcDocument.methods, ({name}) => name === methodName) as MethodObject;
     const openRpcMethodValidationErrors = this.validator.validate(methodName, params);
     if ( openRpcMethodValidationErrors instanceof MethodNotFoundError || openRpcMethodValidationErrors.length > 0) {
         return Promise.reject(openRpcMethodValidationErrors);
