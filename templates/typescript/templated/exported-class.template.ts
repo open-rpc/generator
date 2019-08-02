@@ -87,7 +87,7 @@ export class <%= className %> {
     const methodObject = _.find(<%= className %>.openrpcDocument.methods, ({name}) => name === methodName) as MethodObject;
     const openRpcMethodValidationErrors = this.validator.validate(methodName, params);
     if ( openRpcMethodValidationErrors instanceof MethodNotFoundError || openRpcMethodValidationErrors.length > 0) {
-        return Promise.reject(openRpcMethodValidationErrors);
+      return Promise.reject(openRpcMethodValidationErrors);
     }
 
     let rpcParams;
