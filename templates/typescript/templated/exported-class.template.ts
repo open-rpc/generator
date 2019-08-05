@@ -5,7 +5,7 @@ export default template(`
 import { RequestManager, WebSocketTransport, HTTPTransport, Client } from '@open-rpc/client-js';
 import _ from "lodash";
 import { OpenRPC, MethodObject, ContentDescriptorObject } from "@open-rpc/meta-schema";
-import { MethodCallValidator } from "@open-rpc/schema-utils-js";
+import { MethodCallValidator, MethodNotFoundError } from "@open-rpc/schema-utils-js";
 
 <%= methodTypings.toString("typescript") %>
 
@@ -20,11 +20,11 @@ export interface Options {
 
 export class <%= className %> {
   public rpc: Client;
+  public static openrpcDocument: OpenRPC = <%= JSON.stringify(openrpcDocument) %> ;
+  public transport: HTTPTransport | WebSocketTransport;
   private validator: MethodCallValidator;
-  private openrpcDocument: OpenRPC;
 
   constructor(options: Options) {
-    this.openrpcDocument = <%= JSON.stringify(openrpcDocument) %>;
 
     if (options.transport === undefined || options.transport.type === undefined) {
       throw new Error("Invalid constructor params");
@@ -34,21 +34,20 @@ export class <%= className %> {
     if(path && path[0] !== "/") {
         path = "/" + path;
     }
-    let transport;
     switch (type) {
       case 'http':
       case 'https':
-        transport = new HTTPTransport(type + "://" + host + ":" + port + path)
+        this.transport = new HTTPTransport(type + "://" + host + ":" + port + path)
         break;
       case 'websocket':
-        transport = new WebSocketTransport("ws://" + host + ":" + port + path)
+        this.transport = new WebSocketTransport("ws://" + host + ":" + port + path)
         break;
       default:
         throw new Error("unsupported transport");
         break;
     }
-    this.rpc = new Client(new RequestManager([transport]));
-    this.validator = new MethodCallValidator(this.openrpcDocument);
+    this.rpc = new Client(new RequestManager([this.transport]));
+    this.validator = new MethodCallValidator(<%= className %>.openrpcDocument);
   }
 
   /**
@@ -85,9 +84,9 @@ export class <%= className %> {
   }
 
   private request(methodName: string, params: any[]): Promise<any> {
-    const methodObject = _.find(this.openrpcDocument.methods, ({name}) => name === methodName) as MethodObject;
+    const methodObject = _.find(<%= className %>.openrpcDocument.methods, ({name}) => name === methodName) as MethodObject;
     const openRpcMethodValidationErrors = this.validator.validate(methodName, params);
-    if (openRpcMethodValidationErrors.length > 0) {
+    if ( openRpcMethodValidationErrors instanceof MethodNotFoundError || openRpcMethodValidationErrors.length > 0) {
       return Promise.reject(openRpcMethodValidationErrors);
     }
 
