@@ -53,7 +53,6 @@ mod tests {
           <%= typeNames.params.map((n) => n + "_value").join(", ") %>
         ).wait().unwrap();
 
-        let result_s =
         assert_eq!(result, received_result);
     }
 <% }); %>
