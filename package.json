@@ -30,7 +30,7 @@
     "@iarna/toml": "2.2.3",
     "@open-rpc/schema-utils-js": "^1.10.3",
     "@open-rpc/typings": "^1.4.2",
-    "commander": "2.19.0",
+    "commander": "3.0.0",
     "fs-extra": "7.0.1",
     "lodash": "4.17.15"
   },
