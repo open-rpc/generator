@@ -13,9 +13,9 @@
   "author": "",
   "license": "Apache-2.0",
   "dependencies": {
-    "@open-rpc/client-js": "^1.1.0",
+    "@open-rpc/client-js": "^1.1.1",
     "@open-rpc/meta-schema": "^1.5.3",
-    "@open-rpc/schema-utils-js": "^1.10.2",
+    "@open-rpc/schema-utils-js": "^1.11.4",
     "lodash": "^4.17.15"
   },
   "devDependencies": {
