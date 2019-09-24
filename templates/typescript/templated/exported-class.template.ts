@@ -128,7 +128,7 @@ export class <%= className %> {
     } else {
       rpcParams = params;
     }
-    if(notification) {
+    if (notification) {
       return this.rpc.notify(methodName, rpcParams);
     }
     return this.rpc.request(methodName, rpcParams, this.timeout);
