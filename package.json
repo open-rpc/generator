@@ -41,7 +41,7 @@
     "@types/jest": "24.0.18",
     "@types/lodash": "4.14.139",
     "jest": "^24.9.0",
-    "ts-jest": "24.0.0",
+    "ts-jest": "24.1.0",
     "tslint": "5.20.0",
     "typescript": "3.6.3"
   }
