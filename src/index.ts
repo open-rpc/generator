@@ -14,11 +14,6 @@ import rsTemplate from "../templates/rust/templated/client.template";
 
 const writeFile = promisify(fs.writeFile);
 
-const warnIfDirectoryNotEmpty = async (destinationDirectoryName: string): Promise<any> => {
-  await ensureDir(destinationDirectoryName);
-  await emptyDir(destinationDirectoryName);
-};
-
 const compileTemplate = (openrpcDocument: OpenRPC, language: string, methodTypings: MethodTypings): string => {
   const template = language === "rust" ? rsTemplate : jsTemplate;
   return template({
