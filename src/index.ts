@@ -22,11 +22,7 @@ const cleanBuildDir = async (destinationDirectoryName: string): Promise<any> => 
   await emptyDir(destinationDirectoryName);
 };
 
-const compileTemplate = async (
-  openrpcDocument: OpenRPC,
-  language: string,
-  methodTypings: MethodTypings,
-): Promise<string> => {
+const compileTemplate = (openrpcDocument: OpenRPC, language: string, methodTypings: MethodTypings): string => {
   const template = language === "rust" ? rsTemplate : jsTemplate;
   return template({
     className: startCase(openrpcDocument.info.title).replace(/\s/g, ""),
@@ -114,10 +110,9 @@ export default async (generatorOptions: IGeneratorOptions) => {
   const { openrpcDocument, outDir } = generatorOptions;
 
   const methodTypings = new MethodTypings(openrpcDocument);
-  await methodTypings.generateTypings();
 
   return Promise.all(["typescript", "rust"].map(async (language) => {
-    const compiledResult = await compileTemplate(openrpcDocument, language, methodTypings);
+    const compiledResult = compileTemplate(openrpcDocument, language, methodTypings);
 
     const destinationDirectoryName = `${outDir}/${language}`;
     await cleanBuildDir(destinationDirectoryName);
