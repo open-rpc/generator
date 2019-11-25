@@ -9,24 +9,12 @@ import TOML from "@iarna/toml";
 
 import MethodTypings from "@open-rpc/typings";
 
-import _bootstrapGeneratedPackage from "./bootstrapGeneratedPackage";
-
 import jsTemplate from "../templates/typescript/templated/exported-class.template";
 import rsTemplate from "../templates/rust/templated/client.template";
 
-const bootstrapGeneratedPackage = _bootstrapGeneratedPackage(exec);
 const writeFile = promisify(fs.writeFile);
 
-const cleanBuildDir = async (destinationDirectoryName: string): Promise<any> => {
-  await ensureDir(destinationDirectoryName);
-  await emptyDir(destinationDirectoryName);
-};
-
-const compileTemplate = async (
-  openrpcDocument: OpenRPC,
-  language: string,
-  methodTypings: MethodTypings,
-): Promise<string> => {
+const compileTemplate = (openrpcDocument: OpenRPC, language: string, methodTypings: MethodTypings): string => {
   const template = language === "rust" ? rsTemplate : jsTemplate;
   return template({
     className: startCase(openrpcDocument.info.title).replace(/\s/g, ""),
@@ -89,8 +77,6 @@ const moveFiles = async (dirName: string, file1: string, file2: string) => {
 };
 
 const copyStatic = async (destinationDirectoryName: string, language: string) => {
-  await cleanBuildDir(destinationDirectoryName);
-
   const staticPath = path.join(__dirname, "../", `/templates/${language}/static`);
   await copy(staticPath, destinationDirectoryName);
 
@@ -114,17 +100,13 @@ export default async (generatorOptions: IGeneratorOptions) => {
   const { openrpcDocument, outDir } = generatorOptions;
 
   const methodTypings = new MethodTypings(openrpcDocument);
-  await methodTypings.generateTypings();
 
   return Promise.all(["typescript", "rust"].map(async (language) => {
-    const compiledResult = await compileTemplate(openrpcDocument, language, methodTypings);
+    const compiledResult = compileTemplate(openrpcDocument, language, methodTypings);
 
     const destinationDirectoryName = `${outDir}/${language}`;
-    await cleanBuildDir(destinationDirectoryName);
     await copyStatic(destinationDirectoryName, language);
     await postProcessStatic(destinationDirectoryName, generatorOptions, language);
     await writeFile(`${destinationDirectoryName}/src/${languageFilenameMap[language]}`, compiledResult, "utf8");
-
-    await bootstrapGeneratedPackage(destinationDirectoryName, language);
   }));
 };
