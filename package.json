@@ -16,6 +16,7 @@
     ".node-version"
   ],
   "scripts": {
+    "start": "./build/src/cli.js",
     "test": "npm run test:lint && npm run test:unit",
     "test:unit": "jest --coverage",
     "test:lint": "tslint -c tslint.json 'src/**/*.ts' --fix",
