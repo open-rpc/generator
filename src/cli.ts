@@ -32,7 +32,7 @@ program
     const outDir = program.outputDir || process.cwd();
 
     await orpcGenerator({
-      program.document,
+      openrpcDocument: program.document,
       outDir,
       rsName: program.rsName || "template-client",
       tsName: program.tsName || "template-client",

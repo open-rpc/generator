@@ -100,7 +100,7 @@ const languageFilenameMap: any = {
 export default async (generatorOptions: IGeneratorOptions) => {
   const { openrpcDocument, outDir } = generatorOptions;
   let dereffedDocument;
-  
+
   try {
     dereffedDocument = await parseOpenRPCDocument(openrpcDocument);
   } catch (e) {
@@ -108,7 +108,7 @@ export default async (generatorOptions: IGeneratorOptions) => {
     console.error("Please revise the validation errors above and try again."); // tslint:disable-line
     return;
   }
-  
+
   const methodTypings = new MethodTypings(dereffedDocument);
 
   return Promise.all(["typescript", "rust"].map(async (language) => {
