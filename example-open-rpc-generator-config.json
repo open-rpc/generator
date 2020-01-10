@@ -1,0 +1,11 @@
+{
+  "outputDirectory": "./lib",
+  "typescript": {
+    "name": "bloob",
+    "directoryName": "ts"
+  },
+  "rust": {
+    "name": "blaab",
+    "directoryName": "rs"
+  }
+}
