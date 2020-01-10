@@ -2,7 +2,6 @@
 
 import program = require("commander");
 import orpcGenerator from "./";
-import { parseOpenRPCDocument } from "@open-rpc/schema-utils-js";
 import { OpenRPC } from "@open-rpc/meta-schema";
 
 const version = require("../../package.json").version; // tslint:disable-line
@@ -32,16 +31,9 @@ program
   .action(async () => {
     let openrpcDocument: OpenRPC;
     const outDir = program.outputDir || process.cwd();
-    try {
-      openrpcDocument = await parseOpenRPCDocument(program.document);
-    } catch (e) {
-      console.error(e.message); // tslint:disable-line
-      console.error("Please revise the validation errors above and try again."); // tslint:disable-line
-      return;
-    }
 
     await orpcGenerator({
-      openrpcDocument,
+      program.document,
       outDir,
       rsName: program.rsName || "template-client",
       tsName: program.tsName || "template-client",
