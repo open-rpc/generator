@@ -98,7 +98,7 @@ const languageFilenameMap: any = {
 
 export default async (generatorOptions: IGeneratorOptions) => {
   const { openrpcDocument, outDir } = generatorOptions;
-
+  const dereffed = await parseOpenRPCDocument(openrpcDocument);
   const methodTypings = new MethodTypings(openrpcDocument);
 
   return Promise.all(["typescript", "rust"].map(async (language) => {
