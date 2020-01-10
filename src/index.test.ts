@@ -22,12 +22,50 @@ describe(`Examples to generate Js clients`, () => {
     return await rmdir(testDir);
   });
 
+  it.only("fails when the open rpc document is invalid", () => {
+    return expect(clientGen({
+      openrpcDocument: {
+        openrpc: "1.2.1",
+        info: {
+          version: "1",
+          title: "test",
+        },
+        methods: [
+          {
+            name: "foo",
+            params: [
+              { $ref: "#/components/contentDescriptors/LeFoo" },
+            ],
+            result: {
+              name: "bar",
+              schema: { $ref: "#/components/contentDescriptors/LeFoo" },
+            },
+          },
+        ],
+        components: {
+          schemas: {
+            LeBar: { title: "LeBar", type: "string" },
+          },
+          contentDescriptors: {
+            LeFoo: {
+              name: "LeFoo",
+              required: true,
+              schema: { $ref: "#/components/schemas/LeBar" },
+            },
+          },
+        },
+      },
+      outDir: testDir,
+      rsName: "template-client",
+      tsName: "template-client",
+    })).rejects.toThrow();
+  });
+
   forEach(examples, (example: OpenRPC, exampleName: string) => {
     it(`creates a new client for example: ${exampleName}`, async () => {
       const exampleOutDir = `${testDir}/${exampleName}`;
       expect.assertions(1);
 
-      const cwd = process.cwd();
       await clientGen({
         openrpcDocument: await parseOpenRPCDocument(example),
         outDir: exampleOutDir,

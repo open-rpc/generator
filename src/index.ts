@@ -104,10 +104,11 @@ export default async (generatorOptions: IGeneratorOptions) => {
   try {
     dereffedDocument = await parseOpenRPCDocument(openrpcDocument);
   } catch (e) {
-    console.error(e.message); // tslint:disable-line
-    console.error("Please revise the validation errors above and try again."); // tslint:disable-line
-    return;
+    console.error("Invalid OpenRPC document. Please revise the validation errors below:"); // tslint:disable-line
+    console.error(e);
+    throw e;
   }
+  console.log(JSON.stringify(dereffedDocument)); // tslint:disable-line
 
   const methodTypings = new MethodTypings(dereffedDocument);
 
