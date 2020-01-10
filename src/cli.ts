@@ -29,7 +29,6 @@ program
     "template-client",
   )
   .action(async () => {
-    let openrpcDocument: OpenRPC;
     const outDir = program.outputDir || process.cwd();
 
     await orpcGenerator({
