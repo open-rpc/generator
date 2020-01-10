@@ -102,7 +102,7 @@ export default async (generatorOptions: IGeneratorOptions) => {
   let dereffedDocument;
   
   try {
-    dereffedDocument = await parseOpenRPCDocument(program.document);
+    dereffedDocument = await parseOpenRPCDocument(openrpcDocument);
   } catch (e) {
     console.error(e.message); // tslint:disable-line
     console.error("Please revise the validation errors above and try again."); // tslint:disable-line
