@@ -6,6 +6,7 @@ import { promisify } from "util";
 import { startCase } from "lodash";
 import { OpenRPC } from "@open-rpc/meta-schema";
 import TOML from "@iarna/toml";
+import { parseOpenRPCDocument } from "@open-rpc/schema-utils-js";
 
 import MethodTypings from "@open-rpc/typings";
 
