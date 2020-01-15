@@ -4,7 +4,7 @@ import { ensureDir, emptyDir, copy, move, readFile } from "fs-extra";
 import * as path from "path";
 import { promisify } from "util";
 import { startCase } from "lodash";
-import { OpenRPC } from "@open-rpc/meta-schema";
+import { OpenrpcDocument as OpenRPC, JSONSchema } from "@open-rpc/meta-schema";
 import TOML from "@iarna/toml";
 import { parseOpenRPCDocument } from "@open-rpc/schema-utils-js";
 
@@ -108,7 +108,6 @@ export default async (generatorOptions: IGeneratorOptions) => {
     console.error(e);
     throw e;
   }
-  console.log(JSON.stringify(dereffedDocument)); // tslint:disable-line
 
   const methodTypings = new MethodTypings(dereffedDocument);
 
