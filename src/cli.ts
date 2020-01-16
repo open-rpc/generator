@@ -2,7 +2,7 @@
 
 import program = require("commander");
 import orpcGenerator from "./";
-import { OpenRPC } from "@open-rpc/meta-schema";
+import { OpenrpcDocument as OpenRPC } from "@open-rpc/meta-schema";
 
 const version = require("../../package.json").version; // tslint:disable-line
 
