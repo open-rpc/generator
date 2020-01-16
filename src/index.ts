@@ -99,7 +99,7 @@ const languageFilenameMap: any = {
 
 export default async (generatorOptions: IGeneratorOptions) => {
   const { openrpcDocument, outDir } = generatorOptions;
-  let dereffedDocument;
+  let dereffedDocument: OpenRPC;
 
   try {
     dereffedDocument = await parseOpenRPCDocument(openrpcDocument);
@@ -112,11 +112,14 @@ export default async (generatorOptions: IGeneratorOptions) => {
   const methodTypings = new MethodTypings(dereffedDocument);
 
   return Promise.all(["typescript", "rust"].map(async (language) => {
-    const compiledResult = compileTemplate(openrpcDocument, language, methodTypings);
+    const compiledResult = compileTemplate(dereffedDocument, language, methodTypings);
 
     const destinationDirectoryName = `${outDir}/${language}`;
     await copyStatic(destinationDirectoryName, language);
-    await postProcessStatic(destinationDirectoryName, generatorOptions, language);
+    await postProcessStatic(destinationDirectoryName, {
+      ...generatorOptions,
+      openrpcDocument: dereffedDocument,
+    }, language);
     await writeFile(`${destinationDirectoryName}/src/${languageFilenameMap[language]}`, compiledResult, "utf8");
   }));
 };
