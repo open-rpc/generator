@@ -4,8 +4,9 @@ import { ensureDir, emptyDir, copy, move, readFile } from "fs-extra";
 import * as path from "path";
 import { promisify } from "util";
 import { startCase } from "lodash";
-import { OpenRPC } from "@open-rpc/meta-schema";
+import { OpenrpcDocument as OpenRPC, JSONSchema } from "@open-rpc/meta-schema";
 import TOML from "@iarna/toml";
+import { parseOpenRPCDocument } from "@open-rpc/schema-utils-js";
 
 import MethodTypings from "@open-rpc/typings";
 
@@ -98,8 +99,17 @@ const languageFilenameMap: any = {
 
 export default async (generatorOptions: IGeneratorOptions) => {
   const { openrpcDocument, outDir } = generatorOptions;
+  let dereffedDocument;
 
-  const methodTypings = new MethodTypings(openrpcDocument);
+  try {
+    dereffedDocument = await parseOpenRPCDocument(openrpcDocument);
+  } catch (e) {
+    console.error("Invalid OpenRPC document. Please revise the validation errors below:"); // tslint:disable-line
+    console.error(e);
+    throw e;
+  }
+
+  const methodTypings = new MethodTypings(dereffedDocument);
 
   return Promise.all(["typescript", "rust"].map(async (language) => {
     const compiledResult = compileTemplate(openrpcDocument, language, methodTypings);
