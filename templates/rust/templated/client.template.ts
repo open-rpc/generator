@@ -4,7 +4,6 @@ import { OpenRPCTypingsSupportedLanguages } from "@open-rpc/typings";
 export default template(`
 #[macro_use]
 extern crate jsonrpc_client_core;
-use serde::{Serialize, Deserialize};
 
 <%= methodTypings.toString("rust", { includeSchemaTypings: true, includeMethodAliasTypings: false }) %>
 
