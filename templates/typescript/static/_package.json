@@ -14,8 +14,8 @@
   "license": "Apache-2.0",
   "dependencies": {
     "@open-rpc/client-js": "^1.2.3",
-    "@open-rpc/meta-schema": "^1.5.3",
-    "@open-rpc/schema-utils-js": "^1.11.5",
+    "@open-rpc/meta-schema": "^1.6.0",
+    "@open-rpc/schema-utils-js": "^1.12.0",
     "lodash": "^4.17.15"
   },
   "devDependencies": {

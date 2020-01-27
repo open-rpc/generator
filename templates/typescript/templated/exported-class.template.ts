@@ -80,7 +80,6 @@ export class <%= className %> {
     this.timeout = ms;
   }
 
-
   /**
    * Initiates [[<%= className %>.startBatch]] in order to build a batch call.
    *
