@@ -1,0 +1,9 @@
+{
+  "openrpcDocument": "https://raw.githubusercontent.com/open-rpc/examples/master/service-descriptions/simple-math-openrpc.json",
+  "outDir": "./generated",
+  "components": [
+    { "type": "server", "name": "simple-math-server", "language": "typescript" },
+    { "type": "client", "name": "simple-math-client-ts", "language": "typescript" },
+    { "type": "client", "name": "simple-math-client-rs", "language": "rust" }
+  ]
+}
