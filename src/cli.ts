@@ -26,16 +26,19 @@ program
     "-c, --config [generatorConfigPath]",
     "Path to a JSON file with declarative generator config"
   )
-  .command("generate <component>", "generate a particular component")
   .option(
-    "-l, --language <language>",
-    "Path to a JSON file with declarative generator config"
+    "--type [type]",
+    "component type"
   )
   .option(
-    "-n, --name <name>",
-    "Path to a JSON file with declarative generator config"
+    "--language [language]",
+    "component language"
   )
-  .action(async (component: "client" | "server", cmdObj: any) => {
+  .option(
+    "--useName [useName]",
+    "Name to use for the generated component"
+  )
+  .action(async () => {
     const outDir = program.outputDir || process.cwd();
 
     let config = {
@@ -48,14 +51,17 @@ program
       config = JSON.parse(await readFile(program.config, "utf8"));
     } else {
       config.components.push({
-        type: component,
-        name: cmdObj.name,
-        language: cmdObj.language,
+        type: program.type,
+        name: program.useName,
+        language: program.language,
       });
     }
 
+    console.log(JSON.stringify(config)); //tslint:disable-line
     await orpcGenerator(config);
 
     console.log("Done!"); // tslint:disable-line
-  })
-  .parse(process.argv);
+  });
+
+
+program.parseAsync(process.argv);

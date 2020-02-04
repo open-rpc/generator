@@ -2,11 +2,14 @@ import * as fs from "fs";
 import { ensureDir, copy, move } from "fs-extra";
 import * as path from "path";
 import { promisify } from "util";
-import { startCase } from "lodash";
-import { OpenrpcDocument as OpenRPC, JSONSchema } from "@open-rpc/meta-schema";
+import { startCase, TemplateExecutor } from "lodash";
+import { OpenrpcDocument as OpenRPC } from "@open-rpc/meta-schema";
 import { parseOpenRPCDocument } from "@open-rpc/schema-utils-js";
 
 import MethodTypings from "@open-rpc/typings";
+
+import clientComponent from "./components/client";
+import serverComponent from "./components/server";
 
 const writeFile = promisify(fs.writeFile);
 const readDir = promisify(fs.readdir);
@@ -32,12 +35,22 @@ export interface IHooks {
   afterCopyStatic?: FHook[];
   beforeCompileTemplate?: FHook[];
   afterCompileTemplate?: FHook[];
+  templateFiles: {
+    [key: string]: Array<{
+      path: string;
+      template: TemplateExecutor;
+    }>;
+  };
 }
 
 interface IComponentHooks {
   [k: string]: IHooks;
 }
-const componentHooks: IComponentHooks = {};
+
+const componentHooks: IComponentHooks = {
+  client: clientComponent,
+  server: serverComponent,
+};
 
 const getComponentTemplatePath = (component: TComponentConfig) => {
   const d = `/templates/${component.type}/${component.language}/`;
@@ -143,7 +156,7 @@ const compileTemplate = async (
   const templates = await readDir(templatedPath);
   await Promise.all(
     templates.map(async (t) => {
-      const template = await import(`${templatedPath}/t`);
+      const template = await import(`${templatedPath}/${t}`);
       const result = template({
         className: startCase(dereffedDocument.info.title).replace(/\s/g, ""),
         methodTypings,
