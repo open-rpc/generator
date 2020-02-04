@@ -1,8 +1,12 @@
 #!/usr/bin/env node
 
 import program = require("commander");
-import orpcGenerator from "./";
+import orpcGenerator, {IGeneratorOptions} from "./";
 import { OpenrpcDocument as OpenRPC } from "@open-rpc/meta-schema";
+
+import * as fs from "fs";
+import { promisify } from "util";
+const readFile = promisify(fs.readFile);
 
 const version = require("../../package.json").version; // tslint:disable-line
 
@@ -19,24 +23,38 @@ program
     "./",
   )
   .option(
-    "--ts-name [packageName]",
-    "Name that will go in the package.json for the typescript client",
-    "template-client",
+    "-c, --config [generatorConfigPath]",
+    "Path to a JSON file with declarative generator config"
+  )
+  .command("generate <component>", "generate a particular component")
+  .option(
+    "-l, --language <language>",
+    "Path to a JSON file with declarative generator config"
   )
   .option(
-    "--rs-name [crateName]",
-    "Name that will go in the crate name for the rust client",
-    "template-client",
+    "-n, --name <name>",
+    "Path to a JSON file with declarative generator config"
   )
-  .action(async () => {
+  .action(async (component: "client" | "server", cmdObj: any) => {
     const outDir = program.outputDir || process.cwd();
 
-    await orpcGenerator({
+    let config = {
       openrpcDocument: program.document,
       outDir,
-      rsName: program.rsName || "template-client",
-      tsName: program.tsName || "template-client",
-    });
+      components: []
+    } as IGeneratorOptions;
+
+    if (program.config) {
+      config = JSON.parse(await readFile(program.config, "utf8"));
+    } else {
+      config.components.push({
+        type: component,
+        name: cmdObj.name,
+        language: cmdObj.language,
+      });
+    }
+
+    await orpcGenerator(config);
 
     console.log("Done!"); // tslint:disable-line
   })
