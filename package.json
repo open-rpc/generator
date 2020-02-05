@@ -20,8 +20,10 @@
     "start": "npm run build && ./build/cli.js",
     "test": "npm run test:lint && npm run test:unit",
     "test:unit": "jest --coverage",
+    "test:integration": "npm run build && ./build/cli.js -c test-generator-config.json",
     "test:lint": "tslint -c tslint.json 'src/**/*.ts' --fix",
-    "build": "tsc && chmod +x build/cli.js",
+    "build": "npm run build:clean && tsc && chmod +x build/cli.js",
+    "build:clean": "rm -rf build",
     "watch:build": "tsc --watch",
     "watch:test": "jest --watch"
   },

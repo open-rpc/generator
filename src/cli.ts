@@ -48,7 +48,10 @@ program
     } as IGeneratorOptions;
 
     if (program.config) {
-      config = JSON.parse(await readFile(program.config, "utf8"));
+      config = {
+        ...config,
+        ...JSON.parse(await readFile(program.config, "utf8"))
+      };
     } else {
       config.components.push({
         type: program.type,
