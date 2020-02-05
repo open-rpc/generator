@@ -1,4 +1,4 @@
-# OpenRPC Generator: Client
+# OpenRPC Generator
 
 <center>
   <span>
@@ -15,16 +15,21 @@
 </center>
 
 
-Multi-language client generator tool for [open-rpc](https://github.com/open-rpc/spec) APIs. Developers generate a client by passing an OpenRPC Document to _this_ tool which generates a client based on the supported language templates.
+A Generator tool for [open-rpc](https://github.com/open-rpc/spec) APIs.
 
-![overview diagram](https://github.com/open-rpc/design/blob/master/diagrams/generator-client/open-rpc-diagrams.png?raw=true)
+## Features:
 
-Supported client languages:
+- Multi-language
+  - typescript
+  - rust
+- Can generate:
+  - clients for accessing your service
+  - server scaffolding
 
 ## Install
 
 ```shell
-$ npm install -g @open-rpc/generator-client
+$ npm install -g @open-rpc/generator
 ```
 
 ## Usage
