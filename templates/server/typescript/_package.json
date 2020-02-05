@@ -13,11 +13,11 @@
     ".node-version"
   ],
   "scripts": {
-    "start": "./build/src/cli.js",
+    "start": "npm run build && node ./build/index.js",
     "test": "npm run test:lint && npm run test:unit",
     "test:unit": "jest --coverage",
     "test:lint": "tslint -c tslint.json 'src/**/*.ts' --fix",
-    "build": "tsc && cp -R templates build/. && chmod +x build/src/cli.js",
+    "build": "tsc",
     "watch:build": "tsc --watch",
     "watch:test": "jest --watch"
   },
@@ -30,7 +30,8 @@
   "devDependencies": {
     "@open-rpc/meta-schema": "^1.6.0",
     "@types/jest": "25.1.0",
-    "@types/lodash": "4.14.149",
+    "@types/connect": "^3.4.33",
+    "@types/cors": "^2.8.6",
     "jest": "^25.1.0",
     "ts-jest": "25.0.0",
     "tslint": "6.0.0",

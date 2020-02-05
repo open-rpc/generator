@@ -12,7 +12,6 @@ import clientComponent from "./components/client";
 import serverComponent from "./components/server";
 
 const writeFile = promisify(fs.writeFile);
-const readDir = promisify(fs.readdir);
 
 const moveFiles = async (dirName: string, file1: string, file2: string) => {
   try {
@@ -63,7 +62,7 @@ const copyStaticForComponent = async (
   dereffedDocument: OpenRPC,
   methodTypings: MethodTypings,
 ) => {
-  const staticPath = `${getComponentTemplatePath(component)}/static`;
+  const staticPath = getComponentTemplatePath(component);
 
   const hooks = componentHooks[component.type];
   const { beforeCopyStatic, afterCopyStatic } = hooks;
@@ -119,7 +118,7 @@ type TComponentConfig = IClientConfig | IServerConfig;
 
 export interface IGeneratorOptions {
   outDir: string;
-  openrpcDocument: OpenRPC;
+  openrpcDocument: OpenRPC | string;
   components: TComponentConfig[];
 }
 
@@ -131,6 +130,17 @@ const languageFilenameMap: any = {
 const prepareOutputDirectory = async (outDir: string, component: TComponentConfig) => {
   const destinationDirectoryName = `${outDir}/${component.type}/${component.language}`;
   await ensureDir(destinationDirectoryName);
+  return destinationDirectoryName;
+};
+
+const writeOpenRpcDocument = async (
+  outDir: string,
+  doc: OpenRPC | string,
+  component: TComponentConfig,
+) => {
+  const toWrite = typeof doc === "string" ? await parseOpenRPCDocument(doc, { dereference: false }) : doc;
+  const destinationDirectoryName = `${outDir}/${component.type}/${component.language}/src/openrpc.json`;
+  await writeFile(destinationDirectoryName, JSON.stringify(toWrite, undefined, "  "), "utf8");
   return destinationDirectoryName;
 };
 
@@ -147,29 +157,32 @@ const compileTemplate = async (
 
   if (beforeCompileTemplate && beforeCompileTemplate.length && beforeCompileTemplate.length > 0) {
     await Promise.all(
-      beforeCompileTemplate.map((hookFn: any) => hookFn(destDir, templatedPath, component, dereffedDocument)),
+      beforeCompileTemplate.map(
+        (hookFn: any) => hookFn(destDir, templatedPath, component, dereffedDocument, methodTypings),
+      ),
     );
   }
 
   // 1. read files in the templated directory,
   // 2. for each one, pass in the template params
-  const templates = await readDir(templatedPath);
+  const templates = hooks.templateFiles[component.language];
   await Promise.all(
     templates.map(async (t) => {
-      const template = await import(`${templatedPath}/${t}`);
-      const result = template({
+      const result = t.template({
         className: startCase(dereffedDocument.info.title).replace(/\s/g, ""),
         methodTypings,
-        dereffedDocument,
+        openrpcDocument: dereffedDocument,
       });
 
-      await writeFile(`${destDir}/src/${t.replace(".template", "")}`, result, "utf8");
+      await writeFile(`${destDir}/${t.path}`, result, "utf8");
     }),
   );
 
   if (afterCompileTemplate && afterCompileTemplate.length && afterCompileTemplate.length > 0) {
     await Promise.all(
-      afterCompileTemplate.map((hookFn: any) => hookFn(destDir, templatedPath, component, dereffedDocument)),
+      afterCompileTemplate.map(
+        (hookFn: any) => hookFn(destDir, templatedPath, component, dereffedDocument, methodTypings),
+      ),
     );
   }
 };
@@ -191,6 +204,7 @@ export default async (generatorOptions: IGeneratorOptions) => {
   const componentGeneratorPromises = generatorOptions.components.map(async (component) => {
     const destDir = await prepareOutputDirectory(outDir, component);
     await copyStaticForComponent(destDir, component, dereffedDocument, methodTypings);
+    await writeOpenRpcDocument(outDir, openrpcDocument, component);
     await compileTemplate(destDir, component, dereffedDocument, methodTypings);
   });
 

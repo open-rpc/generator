@@ -7,20 +7,21 @@
     "type": "git",
     "url": "https://github.com/open-rpc/generator-client.git"
   },
-  "main": "./build/src/index.js",
+  "main": "./build/index.js",
   "bin": {
-    "open-rpc-generator-client": "./build/src/cli.js"
+    "open-rpc-generator-client": "./build/cli.js"
   },
   "files": [
     "build/**/*",
+    "templates/**/*",
     ".node-version"
   ],
   "scripts": {
-    "start": "./build/src/cli.js",
+    "start": "npm run build && ./build/cli.js",
     "test": "npm run test:lint && npm run test:unit",
     "test:unit": "jest --coverage",
     "test:lint": "tslint -c tslint.json 'src/**/*.ts' --fix",
-    "build": "tsc && cp -R templates build/. && chmod +x build/src/cli.js",
+    "build": "tsc && chmod +x build/cli.js",
     "watch:build": "tsc --watch",
     "watch:test": "jest --watch"
   },

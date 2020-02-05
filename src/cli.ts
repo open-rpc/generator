@@ -8,7 +8,7 @@ import * as fs from "fs";
 import { promisify } from "util";
 const readFile = promisify(fs.readFile);
 
-const version = require("../../package.json").version; // tslint:disable-line
+const version = require("../package.json").version; // tslint:disable-line
 
 program
   .version(version, "-v, --version")
@@ -27,15 +27,15 @@ program
     "Path to a JSON file with declarative generator config"
   )
   .option(
-    "--type [type]",
+    "-t, --type [type]",
     "component type"
   )
   .option(
-    "--language [language]",
+    "-l, --language [language]",
     "component language"
   )
   .option(
-    "--useName [useName]",
+    "-n, --useName [useName]",
     "Name to use for the generated component"
   )
   .action(async () => {
@@ -57,8 +57,14 @@ program
       });
     }
 
-    console.log(JSON.stringify(config)); //tslint:disable-line
-    await orpcGenerator(config);
+    try {
+      await orpcGenerator(config);
+    } catch(e) {
+      console.error("There was error at generator runtime:");
+      console.error(e);
+      process.exit(1);
+
+    }
 
     console.log("Done!"); // tslint:disable-line
   });
