@@ -10,7 +10,7 @@ aliases:
   - &save-deps-cache
     key: deps-cache-{{ checksum "package.json" }}
     paths:
-      - ~/generator-client/node_modules
+      - ~/generator/node_modules
 
   # -------------------------
   #  ALIASES: Branch Filters
@@ -26,7 +26,7 @@ aliases:
       only:  /^pull\/.*$/
 
 defaults: &defaults
-  working_directory: ~/generator-client
+  working_directory: ~/generator
   docker:
     - image: circleci/node:12
 
@@ -35,9 +35,6 @@ jobs:
     <<: *defaults
     steps:
       - checkout
-      - run: curl https://sh.rustup.rs -sSf | sh -s -- -y
-      - run: echo 'export PATH=$HOME/.cargo/bin:$PATH' >> $BASH_ENV
-      - run: source /home/circleci/.bashrc
       - restore_cache: *restore-deps-cache
       - run: npm install
       - run: npm install codecov
@@ -61,7 +58,7 @@ jobs:
       - restore_cache: *restore-deps-cache
       - run: npm install
       - run: npm run build
-      - run: npm install semantic-release @semantic-release/changelog @semantic-release/git @semantic-release/github @semantic-release/npm @semantic-release/commit-analyzer @semantic-release/release-notes-generator @qiwi/semantic-release-gh-pages-plugin
+      - run: npm install semantic-release @semantic-release/changelog @semantic-release/git @semantic-release/github @semantic-release/npm @semantic-release/commit-analyzer @semantic-release/release-notes-generator
       - run: git checkout package.json package-lock.json
       - run: ./node_modules/.bin/semantic-release
       - save_cache: *save-deps-cache
