@@ -1,5 +1,5 @@
 import * as path from "path";
-import { move, ensureDir } from "fs-extra";
+import { move, ensureDir, remove } from "fs-extra";
 import { IHooks } from "..";
 import * as fs from "fs";
 import { promisify } from "util";
@@ -31,9 +31,39 @@ const generatedTypingsTemplate = template(`<%= methodTypings.toString("typescrip
 
 const hooks: IHooks = {
   afterCopyStatic: [
-    async (dest, frm, component) => {
+    async (dest, frm, component, openrpcDocument) => {
       onlyHandleTS(component);
-      await move(path.join(dest, "_package.json"), path.join(dest, "package.json"), { overwrite: true });
+      const destPath = path.join(dest, "package.json");
+      const tmplPath = path.join(dest, "_package.json");
+
+      const tmplPkgStr = await readFile(tmplPath, "utf8");
+      let tmplPkg = JSON.parse(tmplPkgStr);
+
+      tmplPkg.name = component.name || openrpcDocument.info.title;
+      tmplPkg.version = openrpcDocument.info.version;
+
+      let currPkgStr;
+      try {
+        currPkgStr = await readFile(destPath, "utf8");
+        const currPkg = JSON.parse(currPkgStr);
+        tmplPkg = {
+          ...currPkg,
+          ...tmplPkg,
+          dependencies: {
+            ...currPkg.dependencies,
+            ...tmplPkg.dependencies,
+          },
+          devDependencies: {
+            ...currPkg.devDependencies,
+            ...tmplPkg.devDependencies,
+          },
+        };
+      } catch (e) {
+        // do nothing
+      }
+
+      await writeFile(destPath, JSON.stringify(tmplPkg, undefined, "  "));
+      await remove(tmplPath);
     },
   ],
   afterCompileTemplate: [

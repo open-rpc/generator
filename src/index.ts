@@ -1,5 +1,5 @@
 import * as fs from "fs";
-import { ensureDir, copy, move } from "fs-extra";
+import { ensureDir, copy, move, remove } from "fs-extra";
 import * as path from "path";
 import { promisify } from "util";
 import { startCase, TemplateExecutor } from "lodash";
@@ -73,7 +73,6 @@ const copyStaticForComponent = async (
           destinationDirectoryName,
           staticPath,
           component,
-          component,
           dereffedDocument,
           methodTypings,
         ),
@@ -86,6 +85,7 @@ const copyStaticForComponent = async (
   // ignores errors incase there is no gitignore...
   // gets around an issue with the copy function whereby hidden dotfiles are not copied.
   await moveFiles(destinationDirectoryName, "gitignore", ".gitignore");
+  await remove(`${destinationDirectoryName}/gitignore`);
 
   // this is where we would do things like move _package.json to package.json, etc, etc
   if (afterCopyStatic && afterCopyStatic.length && afterCopyStatic.length > 0) {
@@ -93,7 +93,6 @@ const copyStaticForComponent = async (
       afterCopyStatic.map((hookFn: any) => hookFn(
         destinationDirectoryName,
         staticPath,
-        component,
         component,
         dereffedDocument,
         methodTypings,
