@@ -10,7 +10,7 @@ aliases:
   - &save-deps-cache
     key: deps-cache-{{ checksum "package.json" }}
     paths:
-      - ~/generator-client/node_modules
+      - ~/generator/node_modules
 
   # -------------------------
   #  ALIASES: Branch Filters
@@ -26,7 +26,7 @@ aliases:
       only:  /^pull\/.*$/
 
 defaults: &defaults
-  working_directory: ~/generator-client
+  working_directory: ~/generator
   docker:
     - image: circleci/node:12
 
