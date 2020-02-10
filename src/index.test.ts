@@ -65,14 +65,30 @@ describe(`Examples to generate Js clients`, () => {
   });
 
   forEach(examples, (example: OpenRPC, exampleName: string) => {
-    it(`creates a new client for example: ${exampleName}`, async () => {
+    it(`creates a new client for example: ${exampleName} and regenerates after`, async () => {
       const exampleOutDir = `${testDir}/${exampleName}`;
-      expect.assertions(1);
+      expect.assertions(2);
 
       await clientGen({
         openrpcDocument: await parseOpenRPCDocument(example),
         outDir: exampleOutDir,
-        components: [],
+        components: [
+          { type: "client", language: "rust", name: "testclient-rs" },
+          { type: "client", language: "typescript", name: "testclient-ts" },
+          { type: "server", language: "typescript", name: "testserver-ts" },
+        ],
+      });
+
+      await expect(stat(exampleOutDir)).resolves.toBeTruthy();
+
+      await clientGen({
+        openrpcDocument: await parseOpenRPCDocument(example),
+        outDir: exampleOutDir,
+        components: [
+          { type: "client", language: "rust", name: "testclient-rs" },
+          { type: "client", language: "typescript", name: "testclient-ts" },
+          { type: "server", language: "typescript", name: "testserver-ts" },
+        ],
       });
 
       await expect(stat(exampleOutDir)).resolves.toBeTruthy();

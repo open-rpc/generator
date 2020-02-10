@@ -119,8 +119,6 @@ const hooks: IHooks = {
         await writeFile(methodFileName, codeToWrite, "utf8");
       }));
 
-      // Need a step that cleans out deleted methods
-
       const imports = openrpcDocument.methods.map(({ name }) => `import ${name} from "./${name}";`);
       const methodMappingStr = [
         "const methods = {",
