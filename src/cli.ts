@@ -117,6 +117,8 @@ program
     console.log("open-rpc-generator generate -c ./open-rpc-generator-config.json ");
   });
 
+const configFileOpts = [ "-c, --config [generatorConfigPath]", "Path to a JSON file with declarative generator config" ];
+
 program
   .command("generate")
   .option(
@@ -129,10 +131,7 @@ program
     "output directory that the clients will be generated into",
     "./",
   )
-  .option(
-    "-c, --config [generatorConfigPath]",
-    "Path to a JSON file with declarative generator config"
-  )
+  .option(...configFileOpts)
   .option(
     "-t, --type [type]",
     "component type"
@@ -179,5 +178,24 @@ program
     console.log("Done!"); // tslint:disable-line
   });
 
+
+program
+  .command("update")
+  .option(...configFileOpts)
+  .action(() => {
+    const config = JSON.parse(await readFile(opts.config, "utf8"));
+
+    // inquirer stuff to:
+    // for each component that has an update hook
+
+    // collect all the new methods
+    // collect all the removed methods
+    // calculate probabilty of rename
+    // display list of rename candidates, prompt for response
+    // display list of removed methods, prompt if user wants to delete the method
+    // call updateCreate for the added
+    // call updateRemove from the removed
+    // call updateRename for the ones the user selected as being renames.
+  });
 
 program.parseAsync(process.argv);

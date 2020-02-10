@@ -4,7 +4,7 @@ import { IHooks } from "..";
 import * as fs from "fs";
 import { promisify } from "util";
 import { template } from "lodash";
-import { ContentDescriptorObject, ExamplePairingObject, ExamplePairingObjectresult, ExampleObject } from "@open-rpc/meta-schema";
+import { ContentDescriptorObject, ExamplePairingObject, ExampleObject, MethodObject } from "@open-rpc/meta-schema";
 const writeFile = promisify(fs.writeFile);
 
 const onlyHandleTS = ({ language }: any) => {
@@ -26,6 +26,36 @@ export default methodMapping;
 `);
 
 const generatedTypingsTemplate = template(`<%= methodTypings.toString("typescript") %>`);
+
+const updateHooks = {
+  create: () => {
+    // makes new file for the method (with the method template setup)
+  },
+  remove: () => {
+    // delete the file for the method
+  },
+  rename: () => {
+    // read contents of file A
+    // search and replace the function name / param / return value type
+    // delete file A
+    // write new file with replaced stuff to file name B
+  },
+};
+
+interface IUpdateHookDiff {
+  create: MethodObject[];
+  remove: MethodObject[];
+  rename: MethodObject[];
+}
+
+const updateHook = (diff: IUpdateHookDiff) => {
+  diff.create.forEach(updateHooks.create);
+  diff.remove.forEach(updateHooks.remove);
+  diff.rename.forEach(updateHooks.rename);
+
+  // regenerate method mapping
+  // regenerate method index file
+};
 
 const hooks: IHooks = {
   afterCopyStatic: [

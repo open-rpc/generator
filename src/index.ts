@@ -117,6 +117,7 @@ interface IServerConfig {
 type TComponentConfig = IClientConfig | IServerConfig;
 
 export interface IGeneratorOptions {
+  action: "generate" | "update";
   outDir: string;
   openrpcDocument: OpenRPC | string;
   components: TComponentConfig[];
@@ -206,6 +207,10 @@ export default async (generatorOptions: IGeneratorOptions) => {
     await copyStaticForComponent(destDir, component, dereffedDocument, methodTypings);
     await writeOpenRpcDocument(outDir, openrpcDocument, component);
     await compileTemplate(destDir, component, dereffedDocument, methodTypings);
+
+    if (generatorOptions.action === "update") {
+      await callUpdateHooks(destDir, component, dereffedDocument, methodTypings);
+    }
   });
 
   await Promise.all(componentGeneratorPromises);
