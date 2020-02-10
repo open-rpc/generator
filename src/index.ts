@@ -35,10 +35,10 @@ export interface IHooks {
   beforeCompileTemplate?: FHook[];
   afterCompileTemplate?: FHook[];
   templateFiles: {
-    [key: string]: Array<{
+    [key: string]: {
       path: string;
       template: TemplateExecutor;
-    }>;
+    }[];
   };
 }
 

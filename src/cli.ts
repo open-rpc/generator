@@ -17,7 +17,7 @@ program
   .version(version, "-v, --version")
   .command("init")
   .action(async () => {
-    const answers = await inquirer.prompt([
+    const initAnswers = await inquirer.prompt([
       {
         name: "document",
         type: "input",
@@ -88,33 +88,33 @@ program
 
     const components: any  = [];
 
-    console.log("Here is a summary of your Generator configuration:");
-    console.log(JSON.stringify(answers, undefined, "\t"));
+    console.log("Here is a summary of your Generator configuration:");//tslint:disable-line
+    console.log(JSON.stringify(initAnswers, undefined, "\t"));//tslint:disable-line
 
-    answers.componentTypes.forEach((componentType: string) => {
-      answers[`${componentType}Languages`].forEach((language: any) => {
+    initAnswers.componentTypes.forEach((componentType: string) => {
+      initAnswers[`${componentType}Languages`].forEach((language: any) => {
         components.push({
           type: componentType,
-          name: answers[`${language}${capitalize(componentType)}Name`],
+          name: initAnswers[`${language}${capitalize(componentType)}Name`],
           language
         });
       });
     });
 
     const config = {
-      openrpcDocument: answers.document,
-      outDir: answers.outDir,
+      openrpcDocument: initAnswers.document,
+      outDir: initAnswers.outDir,
       components
     };
 
-    console.log("Writing your config...");
+    console.log("Writing your config..."); //tslint:disable-line
     await writeFile(
       "./open-rpc-generator-config.json",
       JSON.stringify(config, undefined, "    "),
       "utf8",
     );
-    console.log("Config created at open-rpc-generator-config.json. To generate components for the first time run:");
-    console.log("open-rpc-generator generate -c ./open-rpc-generator-config.json ");
+    console.log("Config created at open-rpc-generator-config.json. To generate components for the first time run:"); // tslint:disable-line
+    console.log("open-rpc-generator generate -c ./open-rpc-generator-config.json "); // tslint:disable-line
   });
 
 
