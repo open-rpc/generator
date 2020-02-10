@@ -35,9 +35,6 @@ jobs:
     <<: *defaults
     steps:
       - checkout
-      - run: curl https://sh.rustup.rs -sSf | sh -s -- -y
-      - run: echo 'export PATH=$HOME/.cargo/bin:$PATH' >> $BASH_ENV
-      - run: source /home/circleci/.bashrc
       - restore_cache: *restore-deps-cache
       - run: npm install
       - run: npm install codecov
