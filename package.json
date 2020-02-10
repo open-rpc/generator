@@ -1,15 +1,15 @@
 {
-  "name": "@open-rpc/generator-client",
+  "name": "@open-rpc/generator",
   "private": false,
   "version": "1.0.34",
   "description": "",
   "repository": {
     "type": "git",
-    "url": "https://github.com/open-rpc/generator-client.git"
+    "url": "https://github.com/open-rpc/generator.git"
   },
   "main": "./build/index.js",
   "bin": {
-    "open-rpc-generator-client": "./build/cli.js"
+    "open-rpc-generator": "./build/cli.js"
   },
   "files": [
     "build/**/*",
