@@ -1,10 +1,9 @@
 **/node_modules
 **/build
 **/coverage
-docs
 **/.idea
 coverage
-docs
+./docs
 .DS_Store
 test
 generated

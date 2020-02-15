@@ -1,0 +1,8 @@
+.react-json-view, .object-key-val, .object-container, .object-content {
+  background: transparent !important;
+  z-index: 0;
+}
+
+.MuiExpansionPanelDetails-root .MuiAppBar-colorPrimary {
+  background-color: transparent !important;
+}
