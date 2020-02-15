@@ -1,7 +1,7 @@
 **/node_modules
 **/build
 **/coverage
-**/docs
+docs
 **/.idea
 coverage
 docs
