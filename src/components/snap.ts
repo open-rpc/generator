@@ -96,11 +96,16 @@ const hooks: IHooks = {
             returnVal = exRes.value;
           }
 
+          let outputReturnVal = returnVal;
+          if (typeof returnVal === "string") {
+            outputReturnVal = `"${returnVal}"`;
+          }
+
           codeToWrite = [
             `import { ${functionAliasName} } from "../generated-typings";`,
             "",
             newFunctionInterface,
-            `  return Promise.resolve(${returnVal});`,
+            `  return Promise.resolve(${outputReturnVal});`,
             `};`,
             "",
             `export default ${method.name};`,

@@ -21,12 +21,11 @@ A Generator tool for creating [Metamask Snaps](https://github.com/MetaMask/snaps
 
 ## Features:
 
-- Multi-language
-  - typescript
-  - rust
 - Can generate:
-  - Clients for accessing your plugin
-  - Typed plugin scaffolding
+  - Clients for accessing your snap
+  - Documentation
+  - Typed Snap Scaffold
+
 
 ## Install
 
@@ -40,7 +39,7 @@ $ npm install -g @xops.net/snaps-openrpc-generator
 
 Make a new folder for your Plugin project
 ```shell
-$ mkdir MyPlugin && cd MyPlugin
+$ mkdir MySnap && cd MySnap
 ```
 
 Write an OpenRPC Document that describes your plugins interface, and includes any documentation, examples, etc you may want. You can start with one of the [OpenRPC examples](http://github.com/open-rpc/examples), write your own with the help of the [OpenRPC Playground](playground.open-rpc.org), or start from the hello world snap:
@@ -60,17 +59,17 @@ echo '{
         "schema": {
           "type": "string"
         }
-      }
-    }
-  ],
-  "examples": [
-    {
-      "name": "helloWorldExample",
-      "params": [],
-      "result": {
-        "name": "world",
-        "value": "world"
-      }
+      },
+      "examples": [
+        {
+          "name": "helloWorldExample",
+          "params": [],
+          "result": {
+            "name": "world",
+            "value": "world"
+          }
+        }
+      ]
     }
   ]
 }' > openrpc.json
