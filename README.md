@@ -38,6 +38,16 @@ $ npm install -g @xops.net/snaps-openrpc-generator
 
 ### Using it in your project
 
+Make a new folder for your Plugin project
+```shell
+$ mkdir MyPlugin
+```
+
+Write an OpenRPC Document that describes your plugins interface, and includes any documentation, examples, etc you may want. You can start with one of the [OpenRPC examples](http://github.com/open-rpc/examples), or write your own with the help of the [OpenRPC Playground](playground.open-rpc.org). If you already have one, be it on disk or as a url, skip this step.
+```shell
+$ touch openrpc.json # write your OpenRPC Document to here (this is just the default title, you can name it what ever you want)
+```
+
 Create a generator config file
 
 ```shell
