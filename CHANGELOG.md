@@ -1,3 +1,10 @@
+## [1.16.1](https://github.com/open-rpc/generator/compare/1.16.0...1.16.1) (2020-02-16)
+
+
+### Bug Fixes
+
+* add description ([d165376](https://github.com/open-rpc/generator/commit/d1653760654c167dbee2a09d4fb25fc79c8dbc71))
+
 # [1.16.0](https://github.com/open-rpc/generator/compare/1.15.2...1.16.0) (2020-02-16)
 
 
