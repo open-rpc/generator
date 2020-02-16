@@ -9,7 +9,7 @@
   },
   "main": "./build/index.js",
   "bin": {
-    "open-rpc-generator": "./build/cli.js"
+    "snaps-openrpc-generator": "./build/cli.js"
   },
   "files": [
     "build/**/*",
