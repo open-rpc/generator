@@ -52,7 +52,7 @@ import useDarkMode from "use-dark-mode";
 import "./api-documentation.css";
 import InspectorPlugin from "../docs-react-plugins";
 import * as monaco from "monaco-editor";
-import { Button } from "@material-ui/core";
+import { Button, Grid, Typography, InputBase } from "@material-ui/core";
 
 const ApiDocumentation: React.FC = () => {
   const darkmode = useDarkMode();
@@ -76,18 +76,24 @@ const ApiDocumentation: React.FC = () => {
     name: false,
   });
 
-  const snapId = "wallet_plugin_http://localhost:8081/package.json:";
+  const [snapId, setSnapId] = useState("wallet_plugin_http://localhost:8081/package.json");
 
   const handleConnect = () => {
     (window as any).ethereum.send({
-      method: "wallet_requestPermissions",
+      method: "wallet_enable",
       params: [{ [snapId]: {} }]
     });
   };
 
   return (
     <>
-      <Button onClick={handleConnect}>Connect</Button>
+      <Grid container direction="row" justify="center" alignItems="center">
+        <Typography variant="h3" style={{ marginRight: "15px" }}>snapId</Typography>
+        <InputBase value={snapId} onChange={(e) => setSnapId(e.target.value)}
+          style={{ background: "rgba(0,0,0,0.1)", fontSize: "20px", borderRadius: "4px", padding: "0px 10px", marginRight: "5px", width: "500px" }}
+        />
+        <Button onClick={handleConnect} variant="outlined" style={{fontSize: "15px"}}>Connect</Button>
+      </Grid>
       <Documentation
         methodPlugins={[InspectorPlugin]}
         reactJsonOptions={reactJsonOptions}

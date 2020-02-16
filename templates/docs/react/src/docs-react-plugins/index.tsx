@@ -13,7 +13,7 @@ const InspectorPlugin: React.FC<IMethodPluginProps> = (props) => {
     exampleParams = (example.params as any[]).map((p) => p.value);
   }
   return (
-    <Grid style={{ height: "300px", width: "100%", overflowY: "hidden" }}>
+    <Grid style={{ height: "300px", width: "100%", overflowY: "hidden", position: "relative" }}>
       <Inspector
         snapId="wallet_plugin_http://localhost:8081/package.json"
         ethereum={window ? window.ethereum : {}}

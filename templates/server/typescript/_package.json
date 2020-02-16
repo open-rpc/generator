@@ -21,8 +21,8 @@
     "test": "npm run test:lint && npm run test:unit",
     "test:unit": "jest --coverage",
     "test:lint": "tslint -c tslint.json 'src/**/*.ts' --fix",
-    "build": "tsc && npm run build:webpack && cp package.json dist/.",
-    "build:webpack": "webpack",
+    "build": "tsc && npm run build:snap",
+    "build:snap": "snap build",
     "watch:build": "tsc --watch",
     "watch:test": "jest --watch",
     "serve": "npx serve -p 8081 dist"
@@ -30,6 +30,7 @@
   "author": "",
   "license": "Apache-2.0",
   "dependencies": {
+    "snaps-cli": "^0.4.1",
     "@open-rpc/server-js": "^1.5.2"
   },
   "devDependencies": {
