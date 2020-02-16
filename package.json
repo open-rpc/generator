@@ -19,7 +19,7 @@
   "scripts": {
     "start": "npm run build && ./build/cli.js",
     "test": "npm run test:lint && npm run test:unit && npm run test:integration",
-    "test:unit": "jest --coverage",
+    "test:unit": "jest --coverage --passWithNoTests",
     "test:integration": "npm run build && ./build/cli.js generate -c test-generator-config.json && ((cd ./generated/server/typescript/ && npm install && npm start) & (cd ./generated/client/typescript && npm install && npm run build && cd - && sleep 15 && node ./integration-test.js))",
     "test:lint": "tslint -c tslint.json 'src/**/*.ts' --fix",
     "build": "npm run build:clean && tsc && chmod +x build/cli.js",
