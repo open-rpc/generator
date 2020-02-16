@@ -1,7 +1,7 @@
 {
-  "name": "@etclabscore/pristine-typescript-gatsby-react-material-ui",
+  "name": "snap-docs-openrpc",
   "private": true,
-  "description": "A pristine starting point for typescript, gatsby, and material-ui",
+  "description": "",
   "version": "0.0.0-development",
   "dependencies": {
     "@etclabscore/gatsby-theme-pristine": "^1.1.4",
@@ -68,12 +68,5 @@
     "clean": "gatsby clean",
     "test": "exit 0",
     "type-check": "tsc --noEmit"
-  },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/etclabscore/pristine-typescript-gatsby-react-material-ui"
-  },
-  "bugs": {
-    "url": "https://github.com/etclabscore/pristine-typescript-gatsby-react-material-ui/issues"
   }
 }

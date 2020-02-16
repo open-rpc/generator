@@ -39,50 +39,30 @@ program
         default: () => "./"
       },
       {
+        name: "snapName",
+        type: "input",
+        message: "What would you like the snap to be named?",
+      },
+      {
         name: "componentTypes",
         type: "checkbox",
-        message: "Which components would you like to generate?",
+        message: "What additional components would you like to generate?",
         choices: [
           { name: "client" },
-          { name: "server" },
+          { name: "docs" },
         ]
       },
       {
-        name: "clientLanguages",
-        type: "checkbox",
-        message: "What language(s) would you like to generate a client for?",
-        choices: [
-          { name: "typescript" },
-          { name: "rust" },
-        ],
+        name: "clientName",
+        type: "input",
+        message: "What would you like the client package to be named?",
         when: (answers: any) => answers.componentTypes && answers.componentTypes.find((ct: string) => ct === "client") !== undefined
       },
       {
-        name: "serverLanguages",
-        type: "checkbox",
-        message: "What language(s) would you like to generate a server for?",
-        choices: [
-          { name: "typescript" }
-        ],
-        when: (answers: any) => answers.componentTypes && answers.componentTypes.find((ct: string) => ct === "server") !== undefined
-      },
-      {
-        name: "typescriptClientName",
+        name: "docsName",
         type: "input",
-        message: "What would you like the typescript client package to be named?",
-        when: (answers: any) => answers.clientLanguages && answers.clientLanguages.find((ct: string) => ct === "typescript") !== undefined
-      },
-      {
-        name: "rustClientName",
-        type: "input",
-        message: "What would you like the rust client crate to be named?",
-        when: (answers: any) => answers.clientLanguages && answers.clientLanguages.find((ct: string) => ct === "rust") !== undefined
-      },
-      {
-        name: "typescriptServerName",
-        type: "input",
-        message: "What would you like the typescript server package to be named?",
-        when: (answers: any) => answers.serverLanguages && answers.serverLanguages.find((ct: string) => ct === "typescript") !== undefined
+        message: "What would you like the docs package to be named?",
+        when: (answers: any) => answers.componentTypes && answers.componentTypes.find((ct: string) => ct === "docs") !== undefined
       },
     ]);
 
@@ -92,13 +72,14 @@ program
     console.log(JSON.stringify(initAnswers, undefined, "\t"));//tslint:disable-line
 
     initAnswers.componentTypes.forEach((componentType: string) => {
-      initAnswers[`${componentType}Languages`].forEach((language: any) => {
-        components.push({
-          type: componentType,
-          name: initAnswers[`${language}${capitalize(componentType)}Name`],
-          language
-        });
+      components.push({
+        type: componentType,
+        name: initAnswers[`${capitalize(componentType)}Name`]
       });
+    });
+    components.push({
+      type: "snap",
+      name: initAnswers.snapName
     });
 
     const config = {
@@ -114,35 +95,18 @@ program
       "utf8",
     );
     console.log("Config created at open-rpc-generator-config.json. To generate components for the first time run:"); // tslint:disable-line
-    console.log("open-rpc-generator generate -c ./open-rpc-generator-config.json "); // tslint:disable-line
+    console.log("snaps-openrpc-generator generate -c ./open-rpc-generator-config.json "); // tslint:disable-line
   });
 
 
 program
   .command("generate")
   .option(
-    "-d, --document [openrpcDocument]",
-    "JSON string or a Path/Url pointing to an open rpc schema",
-    "./openrpc.json",
-  )
-  .option(
     "-o, --outputDir [outputDirectory]",
-    "output directory that the clients will be generated into",
+    "output directory that the components will be generated to",
     "./",
   )
   .option("-c, --config [generatorConfigPath]", "Path to a JSON file with declarative generator config")
-  .option(
-    "-t, --type [type]",
-    "component type"
-  )
-  .option(
-    "-l, --language [language]",
-    "component language"
-  )
-  .option(
-    "-n, --useName [useName]",
-    "Name to use for the generated component"
-  )
   .action(async (opts: any) => {
     const outDir = opts.outputDir || process.cwd();
 
@@ -161,7 +125,6 @@ program
       config.components.push({
         type: opts.type,
         name: opts.useName,
-        language: opts.language,
       });
     }
 

@@ -9,7 +9,7 @@ import { parseOpenRPCDocument } from "@open-rpc/schema-utils-js";
 import MethodTypings from "@open-rpc/typings";
 
 import clientComponent from "./components/client";
-import serverComponent from "./components/server";
+import snapComponent from "./components/snap";
 import docsComponent from "./components/docs";
 
 const writeFile = promisify(fs.writeFile);
@@ -49,12 +49,12 @@ interface IComponentHooks {
 
 const componentHooks: IComponentHooks = {
   client: clientComponent,
-  server: serverComponent,
+  snap: snapComponent,
   docs: docsComponent,
 };
 
 const getComponentTemplatePath = (component: TComponentConfig) => {
-  const d = `/templates/${component.type}/${component.language}/`;
+  const d = `/templates/${component.type}/`;
   return path.join(__dirname, "../", d);
 };
 
@@ -106,22 +106,19 @@ const copyStaticForComponent = async (
 interface IClientConfig {
   type: "client";
   name: string;
-  language: "typescript" | "rust";
 }
 
-interface IServerConfig {
-  type: "server";
+interface ISnapConfig {
+  type: "snap";
   name: string;
-  language: "typescript";
 }
 
 interface IDocsConfig {
   type: "docs";
   name: string;
-  language: "react";
 }
 
-type TComponentConfig = IClientConfig | IServerConfig | IDocsConfig;
+type TComponentConfig = IClientConfig | ISnapConfig | IDocsConfig;
 
 export interface IGeneratorOptions {
   outDir: string;
@@ -130,7 +127,7 @@ export interface IGeneratorOptions {
 }
 
 const prepareOutputDirectory = async (outDir: string, component: TComponentConfig) => {
-  const destinationDirectoryName = `${outDir}/${component.type}/${component.language}`;
+  const destinationDirectoryName = `${outDir}/${component.type}`;
   await ensureDir(destinationDirectoryName);
   return destinationDirectoryName;
 };
@@ -141,7 +138,7 @@ const writeOpenRpcDocument = async (
   component: TComponentConfig,
 ) => {
   const toWrite = typeof doc === "string" ? await parseOpenRPCDocument(doc, { dereference: false }) : doc;
-  const destinationDirectoryName = `${outDir}/${component.type}/${component.language}/src/openrpc.json`;
+  const destinationDirectoryName = `${outDir}/${component.type}/src/openrpc.json`;
   await writeFile(destinationDirectoryName, JSON.stringify(toWrite, undefined, "  "), "utf8");
   return destinationDirectoryName;
 };
@@ -167,7 +164,7 @@ const compileTemplate = async (
 
   // 1. read files in the templated directory,
   // 2. for each one, pass in the template params
-  const templates = hooks.templateFiles[component.language];
+  const templates = hooks.templateFiles[component.type];
   await Promise.all(
     templates.map(async (t) => {
       const result = t.template({

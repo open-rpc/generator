@@ -1,0 +1,19 @@
+{
+  "openrpc": "1.2.4",
+  "info": {
+    "title": "My First Snap Plugin",
+    "version": "1.0.0"
+  },
+  "methods": [
+    {
+      "name": "hello",
+      "params": [],
+      "result": {
+        "name": "helloWorldResult",
+        "schema": {
+          "type": "string"
+        }
+      }
+    }
+  ]
+}

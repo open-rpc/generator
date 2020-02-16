@@ -9,12 +9,6 @@ const writeFile = promisify(fs.writeFile);
 const readFile = promisify(fs.readFile);
 const access = promisify(fs.access);
 
-const onlyHandleReact = ({ language }: any) => {
-  if (language !== "react") {
-    throw new Error("Cannot handle any other output formats other than react TS for docs generator");
-  }
-};
-
 const indexTemplate = template(`import React, { useEffect } from "react";
 import { Grid, Typography, Box, Button } from "@material-ui/core";
 import { Link as GatsbyLink } from "gatsby";
@@ -110,7 +104,6 @@ export default ApiDocumentation;
 const hooks: IHooks = {
   afterCopyStatic: [
     async (dest, frm, component, openrpcDocument) => {
-      onlyHandleReact(component);
       const destPath = path.join(dest, "package.json");
       const tmplPath = path.join(dest, "_package.json");
 
@@ -144,13 +137,8 @@ const hooks: IHooks = {
       await remove(tmplPath);
     },
   ],
-  afterCompileTemplate: [
-    async (dest, frm, component, openrpcDocument, typings) => {
-      onlyHandleReact(component);
-    },
-  ],
   templateFiles: {
-    react: [
+    docs: [
       {
         path: "src/pages/index.tsx",
         template: indexTemplate,

@@ -154,64 +154,30 @@ export class <%= className %> {
 export default <%= className %>;
 `);
 
-const rsTemplate = template(`
-#[macro_use]
-extern crate jsonrpc_client_core;
-
-<%= methodTypings.toString("rust", { includeSchemaTypings: true, includeMethodAliasTypings: false }) %>
-
-jsonrpc_client!(pub struct <%= className %> {
-<%= methodTypings.toString("rust", { includeSchemaTypings: false, includeMethodAliasTypings: true }) %>
-});
-`);
-
 const hooks: IHooks = {
   afterCopyStatic: [
     async (dest, frm, component) => {
-      if (component.language === "typescript") {
-        await move(path.join(dest, "_package.json"), path.join(dest, "package.json"), { overwrite: true });
-      }
+      await move(path.join(dest, "_package.json"), path.join(dest, "package.json"), { overwrite: true });
     },
   ],
   afterCompileTemplate: [
     async (dest, frm, component, openrpcDocument) => {
-      if (component.language === "typescript") {
-        const packagePath = path.join(dest, "package.json");
-        const fileContents = await readFile(packagePath);
-        const pkg = JSON.parse(fileContents.toString());
-        const updatedPkg = JSON.stringify({
-          ...pkg,
-          name: component.name,
-          version: openrpcDocument.info.version,
-        });
-        await writeFile(packagePath, updatedPkg);
-      } else if (component.language === "rust") {
-        const cargoTOMLPath = path.join(dest, "Cargo.toml");
-        const fileContents = await readFile(cargoTOMLPath);
-        const cargoTOML = TOML.parse(fileContents.toString());
-        const updatedCargo = TOML.stringify({
-          ...cargoTOML,
-          package: {
-            ...cargoTOML.package as object,
-            name: component.name,
-            version: openrpcDocument.info.version,
-          },
-        });
-        await writeFile(cargoTOMLPath, updatedCargo);
-      }
+      const packagePath = path.join(dest, "package.json");
+      const fileContents = await readFile(packagePath);
+      const pkg = JSON.parse(fileContents.toString());
+      const updatedPkg = JSON.stringify({
+        ...pkg,
+        name: component.name,
+        version: openrpcDocument.info.version,
+      });
+      await writeFile(packagePath, updatedPkg);
     },
   ],
   templateFiles: {
-    typescript: [
+    client: [
       {
         path: "src/index.ts",
         template: tsTemplate,
-      },
-    ],
-    rust: [
-      {
-        path: "src/index.rs",
-        template: rsTemplate,
       },
     ],
   },
