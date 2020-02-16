@@ -1,11 +1,11 @@
 {
-  "name": "@open-rpc/generator",
+  "name": "@xops/snaps-openrpc-generator",
   "private": false,
   "version": "1.0.34",
   "description": "",
   "repository": {
     "type": "git",
-    "url": "https://github.com/open-rpc/generator.git"
+    "url": "https://github.com/xops/snaps-openrpc-generator.git"
   },
   "main": "./build/index.js",
   "bin": {
