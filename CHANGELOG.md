@@ -1,3 +1,14 @@
+## [1.16.2](https://github.com/xops/snaps-openrpc-generator/compare/1.16.1...1.16.2) (2020-02-16)
+
+
+### Bug Fixes
+
+* add cd in readme ([c2f3e29](https://github.com/xops/snaps-openrpc-generator/commit/c2f3e2954b23c3f348d92aac6e1460d1ccf890fb))
+* **package.json:** bin ([e6cbd22](https://github.com/xops/snaps-openrpc-generator/commit/e6cbd22e0b237cd328ac3f2c8d6ed1485948ee9b))
+* readme incorrect ([8c64ab7](https://github.com/xops/snaps-openrpc-generator/commit/8c64ab7ddb415ed9b134e737bda2b72af4669897))
+* shuffle things around ([ea2d755](https://github.com/xops/snaps-openrpc-generator/commit/ea2d75545a3bff72884d4489e94f5daf51971b1a))
+* update readme with more info ([ab33c66](https://github.com/xops/snaps-openrpc-generator/commit/ab33c66173a0c6cd03557b8305dc54308f04abd4))
+
 ## [1.16.1](https://github.com/xops/snaps-openrpc-generator/compare/1.16.0...1.16.1) (2020-02-16)
 
 
