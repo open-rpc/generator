@@ -1,27 +1,23 @@
 {
-  "name": "templated-server",
+  "name": "MySnap",
   "private": false,
-  "version": "0.0.0",
+  "version": "1.0.0",
   "description": "",
   "repository": {
     "type": "git",
-    "url": "https://github.com/open-rpc/generator-client.git"
+    "url": "git+https://github.com/open-rpc/schema-utils-js.git"
   },
   "main": "./build/index.js",
   "files": [
     "build/**/*",
     ".node-version"
   ],
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/open-rpc/schema-utils-js.git"
-  },
   "scripts": {
     "start": "npm run build && node ./build/index.js",
     "test": "npm run test:lint && npm run test:unit",
     "test:unit": "jest --coverage",
     "test:lint": "tslint -c tslint.json 'src/**/*.ts' --fix",
-    "build": "tsc && npm run build:snap && mkdir -p dist && cp bundle.js dist/. && cp package.json dist/.",
+    "build": "tsc && npm run build:snap && cp package.json dist/.",
     "build:snap": "snap build",
     "watch:build": "tsc --watch",
     "watch:test": "jest --watch",

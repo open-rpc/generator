@@ -1,0 +1,16 @@
+{
+    "openrpcDocument": "openrpc.json",
+    "outDir": "./",
+    "components": [
+        {
+            "type": "client"
+        },
+        {
+            "type": "docs"
+        },
+        {
+            "type": "snap",
+            "name": "MySnap"
+        }
+    ]
+}

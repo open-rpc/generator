@@ -48,7 +48,7 @@ Write an OpenRPC Document that describes your plugins interface, and includes an
 echo '{
   "openrpc": "1.2.4",
   "info": {
-    "title": "My First Snap Plugin",
+    "title": "MySnap",
     "version": "1.0.0"
   },
   "methods": [
@@ -60,6 +60,16 @@ echo '{
         "schema": {
           "type": "string"
         }
+      }
+    }
+  ],
+  "examples": [
+    {
+      "name": "helloWorldExample",
+      "params": [],
+      "result": {
+        "name": "world",
+        "value": "world"
       }
     }
   ]
