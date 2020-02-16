@@ -43,9 +43,27 @@ Make a new folder for your Plugin project
 $ mkdir MyPlugin
 ```
 
-Write an OpenRPC Document that describes your plugins interface, and includes any documentation, examples, etc you may want. You can start with one of the [OpenRPC examples](http://github.com/open-rpc/examples), or write your own with the help of the [OpenRPC Playground](playground.open-rpc.org). If you already have one, be it on disk or as a url, skip this step.
+Write an OpenRPC Document that describes your plugins interface, and includes any documentation, examples, etc you may want. You can start with one of the [OpenRPC examples](http://github.com/open-rpc/examples), write your own with the help of the [OpenRPC Playground](playground.open-rpc.org), or start from the hello world snap:
 ```shell
-$ touch openrpc.json # write your OpenRPC Document to here (this is just the default title, you can name it what ever you want)
+echo '{
+  "openrpc": "1.2.4",
+  "info": {
+    "title": "My First Snap Plugin",
+    "version": "1.0.0"
+  },
+  "methods": [
+    {
+      "name": "hello",
+      "params": [],
+      "result": {
+        "name": "helloWorldResult",
+        "schema": {
+          "type": "string"
+        }
+      }
+    }
+  ]
+}' > openrpc.json
 ```
 
 Create a generator config file
