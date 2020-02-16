@@ -5,7 +5,6 @@ import { readFile } from "fs-extra";
 import * as fs from "fs";
 import { promisify } from "util";
 const writeFile = promisify(fs.writeFile);
-import TOML from "@iarna/toml";
 import { template } from "lodash";
 
 const tsTemplate = template(`
