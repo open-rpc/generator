@@ -1,3 +1,10 @@
+## [1.16.1](https://github.com/xops/snaps-openrpc-generator/compare/1.16.0...1.16.1) (2020-02-16)
+
+
+### Bug Fixes
+
+* pacakge name ([5b0fb6b](https://github.com/xops/snaps-openrpc-generator/commit/5b0fb6b8844530dc9e4d83b628769a0c32768616))
+
 # [1.16.0](https://github.com/xops/snaps-openrpc-generator/compare/1.15.2...1.16.0) (2020-02-16)
 
 
