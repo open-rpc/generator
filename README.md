@@ -31,7 +31,7 @@ A Generator tool for creating [Metamask Snaps](https://github.com/MetaMask/snaps
 ## Install
 
 ```shell
-$ npm install -g @xops/snaps-openrpc-generator
+$ npm install -g @xops.net/snaps-openrpc-generator
 ```
 
 ## Usage
