@@ -16,14 +16,14 @@
     "@open-rpc/client-js": "^1.2.3",
     "@open-rpc/meta-schema": "^1.6.0",
     "@open-rpc/schema-utils-js": "^1.12.0",
-    "lodash": "^4.17.15"
-  },
-  "devDependencies": {
+    "lodash": "^4.17.15",
     "@types/json-schema": "7.0.3",
     "@types/ws": "^6.0.1",
+    "@types/lodash": "^4.14.149"
+  },
+  "devDependencies": {
     "tslint": "^5.13.1",
     "typedoc": "^0.15.0",
-    "@types/lodash": "^4.14.149",
     "typescript": "^3.2.4"
   }
 }
