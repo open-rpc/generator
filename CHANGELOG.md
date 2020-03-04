@@ -1,3 +1,10 @@
+## [1.15.3](https://github.com/open-rpc/generator/compare/1.15.2...1.15.3) (2020-03-04)
+
+
+### Bug Fixes
+
+* move type packages to non dev deps ([18d2c89](https://github.com/open-rpc/generator/commit/18d2c89c35e727a035458ed5eb99b15a649ef5ed)), closes [#363](https://github.com/open-rpc/generator/issues/363)
+
 ## [1.15.2](https://github.com/open-rpc/generator/compare/1.15.1...1.15.2) (2020-02-10)
 
 
