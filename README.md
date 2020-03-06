@@ -45,7 +45,7 @@ $ open-rpc-generator init
 Generate artifacts based on your config
 
 ```shell
-$ open-rpc-generator generate -c openrpc-generator-config.json
+$ open-rpc-generator generate -c open-rpc-generator-config.json
 ```
 
 Usage: open-rpc-generator [options]
