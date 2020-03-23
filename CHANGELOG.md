@@ -1,3 +1,10 @@
+## [1.15.4](https://github.com/open-rpc/generator/compare/1.15.3...1.15.4) (2020-03-23)
+
+
+### Bug Fixes
+
+* **README:** path to config file ([afaa399](https://github.com/open-rpc/generator/commit/afaa399cf4592e4382b91cb4732280b69a1cecd8))
+
 ## [1.15.3](https://github.com/open-rpc/generator/compare/1.15.2...1.15.3) (2020-03-04)
 
 
