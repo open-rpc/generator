@@ -31,7 +31,7 @@
   "license": "Apache-2.0",
   "dependencies": {
     "@etclabscore/json-schema-to-types": "^1.10.1",
-    "@iarna/toml": "2.2.3",
+    "@iarna/toml": "2.2.5",
     "@open-rpc/typings": "^1.8.0",
     "commander": "5.0.0",
     "fs-extra": "9.0.0",
