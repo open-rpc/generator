@@ -1,3 +1,10 @@
+## [1.15.5](https://github.com/open-rpc/generator/compare/1.15.4...1.15.5) (2020-05-01)
+
+
+### Bug Fixes
+
+* remove i prefix on server types ([cabbb29](https://github.com/open-rpc/generator/commit/cabbb297b7c3fb1e61d98172b9c885c1562930e3)), closes [#414](https://github.com/open-rpc/generator/issues/414)
+
 ## [1.15.4](https://github.com/open-rpc/generator/compare/1.15.3...1.15.4) (2020-03-23)
 
 
