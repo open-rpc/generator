@@ -48,7 +48,7 @@
     "@types/fs-extra": "9.0.1",
     "@types/jest": "26.0.0",
     "@types/inquirer": "^6.5.0",
-    "@types/lodash": "4.14.155",
+    "@types/lodash": "4.14.156",
     "jest": "^25.1.0",
     "ts-jest": "25.5.1",
     "tslint": "6.1.2",
