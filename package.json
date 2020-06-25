@@ -34,7 +34,7 @@
     "@iarna/toml": "2.2.5",
     "@open-rpc/typings": "^1.8.0",
     "commander": "5.0.0",
-    "fs-extra": "9.0.0",
+    "fs-extra": "9.0.1",
     "inquirer": "^7.0.4",
     "lodash": "4.17.15"
   },
