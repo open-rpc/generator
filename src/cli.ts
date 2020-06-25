@@ -35,7 +35,7 @@ program
       {
         name: "outDir",
         type: "input",
-        message: "Where would you like the generated artifacts to be written to?",
+        message: "Where would you like to write the generated artifacts?",
         default: () => "./"
       },
       {

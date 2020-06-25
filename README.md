@@ -11,7 +11,6 @@
   </span>
 </center>
 
-
 A Generator tool for [open-rpc](https://github.com/open-rpc/spec) APIs.
 
 ## Features:
