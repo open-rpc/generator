@@ -19,44 +19,25 @@ A Generator tool for [open-rpc](https://github.com/open-rpc/spec) APIs.
 
 ## Features:
 
-- Multi-language
-  - typescript
-  - rust
-- Can generate:
-  - clients for accessing your service
-  - server scaffolding
+- Built in components for:
+  - Clients
+  - Server
+- Easy to create new components
 
-## Install
-
-```shell
-$ npm install -g @open-rpc/generator
-```
 
 ## Usage
 
-### Using it in your project
+The generator CLI has a generate command which takes a config to run. The config specifies what components you want to make, as well as the configuration for each component.
 
-Create a generator config file
+Using the CLI's `init` command, you can walk though an interactive config builder.
 
-```shell
-$ open-rpc-generator init
-```
+### Quick start
 
-Generate artifacts based on your config
+```sh
+npm install -g @open-rpc/generator
 
-```shell
-$ open-rpc-generator generate -c open-rpc-generator-config.json
-```
-
-Usage: open-rpc-generator [options]
-
-Options:
-  -v, --version                      output the version number
-  -d, --document [openrpcDocument]   JSON string or a Path/Url pointing to an open rpc schema (default: "./openrpc.json")
-  -o, --outputDir [outputDirectory]  output directory that the clients will be generated into (default: "./")
-  --ts-name [packageName]            Name that will go in the package.json for the typescript client (default: "template-client")
-  --rs-name [crateName]              Name that will go in the crate name for the rust client (default: "template-client")
-  -h, --help                         output usage information
+open-rpc-generator init
+open-rpc-generator generate -c open-rpc-generator-config.json
 ```
 
 ### Generating an individual component
@@ -69,8 +50,6 @@ $ open-rpc-generator-client generate
   -d https://raw.githubusercontent.com/open-rpc/examples/master/service-descriptions/petstore-openrpc.json
   -o ./generated
 ```
-
-In this example the generated client is written to `./generated`
 
 ## Resources
 
