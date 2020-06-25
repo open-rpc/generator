@@ -1,3 +1,10 @@
+# [1.17.0](https://github.com/open-rpc/generator/compare/1.16.0...1.17.0) (2020-06-25)
+
+
+### Features
+
+* update wording ([b655f6b](https://github.com/open-rpc/generator/commit/b655f6b166894cb79d89f05829d031cbdf3cc18e))
+
 # [1.16.0](https://github.com/open-rpc/generator/compare/1.15.5...1.16.0) (2020-06-25)
 
 
