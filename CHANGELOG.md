@@ -3,6 +3,15 @@
 
 ### Features
 
+* slight improvements to readme ([8c1a55d](https://github.com/open-rpc/generator/commit/8c1a55d95a26afc00b7a6afb12248472fa9fe4d0))
+* **typescript:** add postmessage iframe and window support ([9b0eca2](https://github.com/open-rpc/generator/commit/9b0eca2499cb8a9951615b72b3fc31072afbf570))
+* add typescript client postmessage support ([e015c34](https://github.com/open-rpc/generator/commit/e015c343e303ca76854bdb44223ca5acd2d650b9))
+
+# [1.16.0](https://github.com/open-rpc/generator/compare/1.15.5...1.16.0) (2020-06-25)
+
+
+### Features
+
 * **typescript:** add postmessage iframe and window support ([9b0eca2](https://github.com/open-rpc/generator/commit/9b0eca2499cb8a9951615b72b3fc31072afbf570))
 * add typescript client postmessage support ([e015c34](https://github.com/open-rpc/generator/commit/e015c343e303ca76854bdb44223ca5acd2d650b9))
 
