@@ -45,7 +45,17 @@ program
         choices: [
           { name: "client" },
           { name: "server" },
+          { name: "docs" },
         ]
+      },
+      {
+        name: "docsLanguages",
+        type: "checkbox",
+        message: "What type of documentation do you want to generate?",
+        choices: [
+          { name: "gatsby" }
+        ],
+        when: (answers: any) => answers.componentTypes && answers.componentTypes.find((ct: string) => ct === "docs") !== undefined
       },
       {
         name: "clientLanguages",
@@ -65,6 +75,12 @@ program
           { name: "typescript" }
         ],
         when: (answers: any) => answers.componentTypes && answers.componentTypes.find((ct: string) => ct === "server") !== undefined
+      },
+      {
+        name: "gatsbyDocsName",
+        type: "input",
+        message: "What would you like the gatsby based docs package to be named?",
+        when: (answers: any) => answers.clientLanguages && answers.clientLanguages.find((ct: string) => ct === "typescript") !== undefined
       },
       {
         name: "typescriptClientName",

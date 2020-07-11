@@ -10,6 +10,7 @@ import MethodTypings from "@open-rpc/typings";
 
 import clientComponent from "./components/client";
 import serverComponent from "./components/server";
+import docsComponent from "./components/docs";
 
 const writeFile = promisify(fs.writeFile);
 
@@ -49,6 +50,7 @@ interface IComponentHooks {
 const componentHooks: IComponentHooks = {
   client: clientComponent,
   server: serverComponent,
+  docs: docsComponent,
 };
 
 const getComponentTemplatePath = (component: TComponentConfig) => {
@@ -113,7 +115,13 @@ interface IServerConfig {
   language: "typescript";
 }
 
-type TComponentConfig = IClientConfig | IServerConfig;
+interface IDocsConfig {
+  type: "docs";
+  name: string;
+  language: "typescript";
+}
+
+type TComponentConfig = IClientConfig | IServerConfig | IDocsConfig;
 
 export interface IGeneratorOptions {
   outDir: string;
