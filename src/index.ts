@@ -118,7 +118,7 @@ interface IServerConfig {
 interface IDocsConfig {
   type: "docs";
   name: string;
-  language: "typescript";
+  language: "gatsby";
 }
 
 type TComponentConfig = IClientConfig | IServerConfig | IDocsConfig;
