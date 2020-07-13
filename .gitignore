@@ -4,7 +4,6 @@
 **/docs
 **/.idea
 coverage
-docs
 .DS_Store
 test
 generated

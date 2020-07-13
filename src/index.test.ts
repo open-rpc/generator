@@ -76,6 +76,7 @@ describe(`Examples to generate Js clients`, () => {
           { type: "client", language: "rust", name: "testclient-rs" },
           { type: "client", language: "typescript", name: "testclient-ts" },
           { type: "server", language: "typescript", name: "testserver-ts" },
+          { type: "docs", language: "gatsby", name: "testserver-gatsby" },
         ],
       });
 
@@ -88,6 +89,7 @@ describe(`Examples to generate Js clients`, () => {
           { type: "client", language: "rust", name: "testclient-rs" },
           { type: "client", language: "typescript", name: "testclient-ts" },
           { type: "server", language: "typescript", name: "testserver-ts" },
+          { type: "docs", language: "gatsby", name: "testserver-gatsby" },
         ],
       });
 
