@@ -1,3 +1,17 @@
+# [1.18.0](https://github.com/open-rpc/generator/compare/1.17.0...1.18.0) (2020-07-13)
+
+
+### Bug Fixes
+
+* add docs test ([259e407](https://github.com/open-rpc/generator/commit/259e4079b9625caca973d123442adc5852a18ef8))
+* add templates docs dir ([991979b](https://github.com/open-rpc/generator/commit/991979bd848df444ba84bba79318fe5229810f7f))
+* remove changelog ([c74fd8d](https://github.com/open-rpc/generator/commit/c74fd8d690632bcca097e7723a9e605d53b44b6e))
+
+
+### Features
+
+* add docs generator ([4ef3c92](https://github.com/open-rpc/generator/commit/4ef3c92ef7d3532b545b16390bb62a6696fba951))
+
 # [1.17.0](https://github.com/open-rpc/generator/compare/1.16.0...1.17.0) (2020-06-25)
 
 
