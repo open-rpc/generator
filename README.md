@@ -18,6 +18,7 @@ A Generator tool for [open-rpc](https://github.com/open-rpc/spec) APIs.
 - Built in components for:
   - Clients
   - Server
+  - Documentation
 - Easy to create new components
 
 
