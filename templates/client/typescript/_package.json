@@ -4,7 +4,7 @@
   "description": "",
   "main": "build/index.js",
   "scripts": {
-    "build": "tsc && typedoc --out docs",
+    "build": "tsc && typedoc --out docs --includeDeclarations --excludeExternals  --excludeNotExported --excludePrivate --hideGenerator --mode file --readme none",
     "lint": "tslint --fix -c tslint.json 'src/index.ts'"
   },
   "files": [
