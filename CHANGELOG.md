@@ -1,3 +1,11 @@
+## [1.18.1](https://github.com/open-rpc/generator/compare/1.18.0...1.18.1) (2020-07-15)
+
+
+### Bug Fixes
+
+* **README:** add documentation to list of features ([89a8c10](https://github.com/open-rpc/generator/commit/89a8c10777269be584bf7289323d45023141822c))
+* add typedoc configs to clean ui ([c98a93a](https://github.com/open-rpc/generator/commit/c98a93aa39d5d4d36464805b235d846b730587c8))
+
 # [1.18.0](https://github.com/open-rpc/generator/compare/1.17.0...1.18.0) (2020-07-13)
 
 
