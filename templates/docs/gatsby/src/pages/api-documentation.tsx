@@ -13,12 +13,15 @@ import PlaygroundSplitPane from "../components/PlaygroundSplitPane";
 const $RefParser = require("json-schema-ref-parser"); //tslint:disable-line
 import { useTheme } from "@material-ui/core/styles";
 import useInspectorActionStore from "../stores/inspectorActionStore";
-
+import "monaco-editor/esm/vs/language/json/json.worker.js";
 
 const ApiDocumentation: React.FC = () => {
+  if (typeof window === "undefined") {
+    return null;
+  }
   const currentTheme = useTheme();
   const [horizontalSplit, setHorizontalSplit] = useState(false);
-  const [inspectorContents] = useInspectorActionStore();
+  const [inspectorContents] = useInspectorActionStore<any>();
 
   useEffect(() => {
     if (inspectorContents) {
@@ -62,8 +65,7 @@ const ApiDocumentation: React.FC = () => {
     if (openrpcQueryData.openrpcDocument) {
       $RefParser.dereference(JSON.parse(openrpcQueryData.openrpcDocument.openrpcDocument)).then(setOpenrpcDocument);
     }
-  }, [openrpcQueryData])
-
+  }, [openrpcQueryData]);
 
   return (
     <PlaygroundSplitPane
@@ -81,12 +83,14 @@ const ApiDocumentation: React.FC = () => {
         height: "100%",
       }}
       right={
-        <Inspector
-          hideToggleTheme={true}
-          openrpcDocument={openrpcDocument}
-          darkMode={darkmode.value}
-          request={inspectorContents && inspectorContents.request}
-        />
+        openrpcDocument ?
+          <Inspector
+            hideToggleTheme={true}
+            openrpcDocument={openrpcDocument}
+            darkMode={darkmode.value}
+            request={inspectorContents && inspectorContents.request}
+          />
+          : null
       }
       left={
         <>
