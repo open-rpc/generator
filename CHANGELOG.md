@@ -1,3 +1,11 @@
+## [1.18.2](https://github.com/open-rpc/generator/compare/1.18.1...1.18.2) (2020-07-21)
+
+
+### Bug Fixes
+
+* **docs:** default to first server if exists for inspector ([b6b1fe9](https://github.com/open-rpc/generator/commit/b6b1fe9c92b6b9f0e7251fcf758f2cfd3dc2fce7))
+* docs build issue with monaco ([5d1fe22](https://github.com/open-rpc/generator/commit/5d1fe22c6d571b02a743ab358bfab4774370e1a1))
+
 ## [1.18.1](https://github.com/open-rpc/generator/compare/1.18.0...1.18.1) (2020-07-15)
 
 
