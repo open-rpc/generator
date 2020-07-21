@@ -14,6 +14,7 @@ const $RefParser = require("json-schema-ref-parser"); //tslint:disable-line
 import { useTheme } from "@material-ui/core/styles";
 import useInspectorActionStore from "../stores/inspectorActionStore";
 import "monaco-editor/esm/vs/language/json/json.worker.js";
+import { OpenrpcDocument } from "@open-rpc/meta-schema";
 
 const ApiDocumentation: React.FC = () => {
   if (typeof window === "undefined") {
@@ -59,13 +60,20 @@ const ApiDocumentation: React.FC = () => {
       }
     }
   `);
-  const [openrpcDocument, setOpenrpcDocument] = useState();
+  const [openrpcDocument, setOpenrpcDocument] = useState<OpenrpcDocument>();
+  const [inspectorUrl, setInspectorUrl] = useState<string>();
 
   useEffect(() => {
     if (openrpcQueryData.openrpcDocument) {
       $RefParser.dereference(JSON.parse(openrpcQueryData.openrpcDocument.openrpcDocument)).then(setOpenrpcDocument);
     }
   }, [openrpcQueryData]);
+
+  useEffect(() => {
+    if (openrpcDocument && openrpcDocument.servers && openrpcDocument.servers[0]) {
+      setInspectorUrl(openrpcDocument.servers[0].url);
+    }
+  }, [openrpcDocument])
 
   return (
     <PlaygroundSplitPane
@@ -83,14 +91,13 @@ const ApiDocumentation: React.FC = () => {
         height: "100%",
       }}
       right={
-        openrpcDocument ?
-          <Inspector
-            hideToggleTheme={true}
-            openrpcDocument={openrpcDocument}
-            darkMode={darkmode.value}
-            request={inspectorContents && inspectorContents.request}
-          />
-          : null
+        <Inspector
+          url={inspectorUrl}
+          hideToggleTheme={true}
+          openrpcDocument={openrpcDocument}
+          darkMode={darkmode.value}
+          request={inspectorContents && inspectorContents.request}
+        />
       }
       left={
         <>
