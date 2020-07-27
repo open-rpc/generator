@@ -62,6 +62,7 @@ const ApiDocumentation: React.FC = () => {
   `);
   const [openrpcDocument, setOpenrpcDocument] = useState<OpenrpcDocument>();
   const [inspectorUrl, setInspectorUrl] = useState<string>();
+  const [inspectorTransport, setInspectorTransport] = useState<string>();
 
   useEffect(() => {
     if (openrpcQueryData.openrpcDocument) {
@@ -70,8 +71,14 @@ const ApiDocumentation: React.FC = () => {
   }, [openrpcQueryData]);
 
   useEffect(() => {
-    if (openrpcDocument && openrpcDocument.servers && openrpcDocument.servers[0]) {
+    if (!openrpcDocument) {
+      return;
+    }
+    if (openrpcDocument.servers && openrpcDocument.servers[0]) {
       setInspectorUrl(openrpcDocument.servers[0].url);
+      if (openrpcDocument.servers[0]["x-transport"]) {
+        setInspectorTransport(openrpcDocument.servers[0]["x-transport"]);
+      }
     }
   }, [openrpcDocument])
 
@@ -93,6 +100,7 @@ const ApiDocumentation: React.FC = () => {
       right={
         <Inspector
           url={inspectorUrl}
+          transport={inspectorTransport}
           hideToggleTheme={true}
           openrpcDocument={openrpcDocument}
           darkMode={darkmode.value}

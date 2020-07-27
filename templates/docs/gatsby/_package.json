@@ -4,7 +4,7 @@
   "description": "",
   "version": "0.0.0-development",
   "dependencies": {
-    "@open-rpc/inspector": "^1.4.2",
+    "@open-rpc/inspector": "^1.4.7",
     "react-split-pane": "^0.1.87",
     "monaco-editor": "0.18.1",
     "@apidevtools/json-schema-ref-parser": "^9.0.1",
