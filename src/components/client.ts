@@ -143,9 +143,9 @@ export class <%= className %> {
       rpcParams = params;
     }
     if (notification) {
-      return this.rpc.notify(methodName, rpcParams);
+      return this.rpc.notify({method: methodName, params: rpcParams});
     }
-    return this.rpc.request(methodName, rpcParams, this.timeout);
+    return this.rpc.request({method: methodName, params: rpcParams}, this.timeout);
   }
 
   <% openrpcDocument.methods.forEach((method) => { %>
