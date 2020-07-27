@@ -1,3 +1,11 @@
+## [1.18.3](https://github.com/open-rpc/generator/compare/1.18.2...1.18.3) (2020-07-27)
+
+
+### Bug Fixes
+
+* update client-js interface ([bed242a](https://github.com/open-rpc/generator/commit/bed242a07755ae8b8e546fafed542caaffcc8156))
+* **gatsby docs:** add x-transport on servers to default inspector transport ([128a24d](https://github.com/open-rpc/generator/commit/128a24dddda1dd2f30aa6f2b706502ab3eae0a36))
+
 ## [1.18.2](https://github.com/open-rpc/generator/compare/1.18.1...1.18.2) (2020-07-21)
 
 
