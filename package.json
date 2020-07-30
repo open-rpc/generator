@@ -45,13 +45,17 @@
     "@open-rpc/server-js": "^1.6.2",
     "@types/connect": "^3.4.33",
     "@types/cors": "^2.8.6",
+<<<<<<< HEAD
     "@types/fs-extra": "9.0.1",
 <<<<<<< HEAD
     "@types/jest": "26.0.8",
 =======
 >>>>>>> fix: upgrade deps
+=======
+    "@types/fs-extra": "^9.0.1",
+>>>>>>> fix: more deps
     "@types/inquirer": "^7.3.0",
-    "@types/jest": "26.0.7",
+    "@types/jest": "^26.0.7",
     "@types/lodash": "4.14.158",
 <<<<<<< HEAD
     "jest": "^25.1.0",
