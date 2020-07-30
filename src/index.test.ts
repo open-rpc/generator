@@ -4,7 +4,7 @@ import fsx, { emptyDir } from "fs-extra";
 import examples from "@open-rpc/examples";
 import { promisify } from "util";
 import { forEach } from "lodash";
-import { parseOpenRPCDocument, OpenRPCDocumentValidationError } from "@open-rpc/schema-utils-js";
+import { parseOpenRPCDocument, OpenRPCDocumentDereferencingError } from "@open-rpc/schema-utils-js";
 import { OpenrpcDocument as OpenRPC } from "@open-rpc/meta-schema";
 
 const stat = promisify(fs.stat);
@@ -61,7 +61,7 @@ describe(`Examples to generate Js clients`, () => {
     };
     const genProm = clientGen(testDocument);
 
-    return expect(genProm).rejects.toBeInstanceOf(OpenRPCDocumentValidationError);
+    return expect(genProm).rejects.toBeInstanceOf(OpenRPCDocumentDereferencingError);
   });
 
   forEach(examples, (example: OpenRPC, exampleName: string) => {
