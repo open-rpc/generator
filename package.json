@@ -46,7 +46,7 @@
     "@types/connect": "^3.4.33",
     "@types/cors": "^2.8.6",
     "@types/fs-extra": "9.0.1",
-    "@types/jest": "26.0.7",
+    "@types/jest": "26.0.8",
     "@types/inquirer": "^7.3.0",
     "@types/lodash": "4.14.158",
     "jest": "^25.1.0",
