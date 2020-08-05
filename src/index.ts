@@ -6,7 +6,7 @@ import { startCase, TemplateExecutor } from "lodash";
 import { OpenrpcDocument as OpenRPC } from "@open-rpc/meta-schema";
 import { parseOpenRPCDocument } from "@open-rpc/schema-utils-js";
 
-import MethodTypings from "@open-rpc/typings";
+import Typings from "@open-rpc/typings";
 
 import clientComponent from "./components/client";
 import serverComponent from "./components/server";
@@ -14,11 +14,11 @@ import docsComponent from "./components/docs";
 
 const writeFile = promisify(fs.writeFile);
 
-const moveFiles = async (dirName: string, file1: string, file2: string) => {
+const moveFiles = async (dirName: string, file1: string, file2: string): Promise<any> => {
   try {
-    await move(path.join(dirName, file1), path.join(dirName, file2));
+    return await move(path.join(dirName, file1), path.join(dirName, file2));
   } catch (error) {
-    // do nothing
+    return;
   }
 };
 
@@ -27,7 +27,7 @@ type FHook = (
   fromDir: string,
   component: TComponentConfig,
   openrpcDocument: OpenRPC,
-  methodTypings: MethodTypings,
+  Typings: Typings,
 ) => Promise<any>;
 
 export interface IHooks {
@@ -62,24 +62,23 @@ const copyStaticForComponent = async (
   destinationDirectoryName: string,
   component: TComponentConfig,
   dereffedDocument: OpenRPC,
-  methodTypings: MethodTypings,
+  typings: Typings,
 ) => {
   const staticPath = getComponentTemplatePath(component);
 
   const hooks = componentHooks[component.type];
   const { beforeCopyStatic, afterCopyStatic } = hooks;
+
   if (beforeCopyStatic && beforeCopyStatic.length && beforeCopyStatic.length > 0) {
-    await Promise.all(
-      beforeCopyStatic.map(
-        (hookFn: any) => hookFn(
-          destinationDirectoryName,
-          staticPath,
-          component,
-          dereffedDocument,
-          methodTypings,
-        ),
-      ),
-    );
+    for (const hookFn of beforeCopyStatic) {
+      await hookFn(
+        destinationDirectoryName,
+        staticPath,
+        component,
+        dereffedDocument,
+        typings,
+      );
+    }
   }
 
   await copy(staticPath, destinationDirectoryName, { overwrite: true });
@@ -91,15 +90,15 @@ const copyStaticForComponent = async (
 
   // this is where we would do things like move _package.json to package.json, etc, etc
   if (afterCopyStatic && afterCopyStatic.length && afterCopyStatic.length > 0) {
-    await Promise.all(
-      afterCopyStatic.map((hookFn: any) => hookFn(
+    for (const hookFn of afterCopyStatic) {
+      await hookFn(
         destinationDirectoryName,
         staticPath,
         component,
         dereffedDocument,
-        methodTypings,
-      )),
-    );
+        typings,
+      );
+    }
   }
 };
 
@@ -129,12 +128,7 @@ export interface IGeneratorOptions {
   components: TComponentConfig[];
 }
 
-const languageFilenameMap: any = {
-  rust: "lib.rs",
-  typescript: "index.ts",
-};
-
-const prepareOutputDirectory = async (outDir: string, component: TComponentConfig) => {
+const prepareOutputDirectory = async (outDir: string, component: TComponentConfig): Promise<string> => {
   const destinationDirectoryName = `${outDir}/${component.type}/${component.language}`;
   await ensureDir(destinationDirectoryName);
   return destinationDirectoryName;
@@ -144,7 +138,7 @@ const writeOpenRpcDocument = async (
   outDir: string,
   doc: OpenRPC | string,
   component: TComponentConfig,
-) => {
+): Promise<string> => {
   const toWrite = typeof doc === "string" ? await parseOpenRPCDocument(doc, { dereference: false }) : doc;
   const destinationDirectoryName = `${outDir}/${component.type}/${component.language}/src/openrpc.json`;
   await writeFile(destinationDirectoryName, JSON.stringify(toWrite, undefined, "  "), "utf8");
@@ -155,43 +149,39 @@ const compileTemplate = async (
   destDir: string,
   component: TComponentConfig,
   dereffedDocument: OpenRPC,
-  methodTypings: MethodTypings,
-) => {
+  typings: Typings,
+): Promise<boolean> => {
   const templatedPath = `${getComponentTemplatePath(component)}/templated`;
 
   const hooks = componentHooks[component.type];
   const { beforeCompileTemplate, afterCompileTemplate } = hooks;
 
   if (beforeCompileTemplate && beforeCompileTemplate.length && beforeCompileTemplate.length > 0) {
-    await Promise.all(
-      beforeCompileTemplate.map(
-        (hookFn: any) => hookFn(destDir, templatedPath, component, dereffedDocument, methodTypings),
-      ),
-    );
+    for (const hookFn of beforeCompileTemplate) {
+      await hookFn(destDir, templatedPath, component, dereffedDocument, typings);
+    }
   }
 
   // 1. read files in the templated directory,
   // 2. for each one, pass in the template params
   const templates = hooks.templateFiles[component.language];
-  await Promise.all(
-    templates.map(async (t) => {
-      const result = t.template({
-        className: startCase(dereffedDocument.info.title).replace(/\s/g, ""),
-        methodTypings,
-        openrpcDocument: dereffedDocument,
-      });
+  for (const t of templates) {
+    const result = t.template({
+      className: startCase(dereffedDocument.info.title).replace(/\s/g, ""),
+      methodTypings: typings,
+      openrpcDocument: dereffedDocument,
+    });
 
-      await writeFile(`${destDir}/${t.path}`, result, "utf8");
-    }),
-  );
+    await writeFile(`${destDir}/${t.path}`, result, "utf8");
+  }
 
   if (afterCompileTemplate && afterCompileTemplate.length && afterCompileTemplate.length > 0) {
-    await Promise.all(
-      afterCompileTemplate.map(
-        (hookFn: any) => hookFn(destDir, templatedPath, component, dereffedDocument, methodTypings),
-      ),
-    );
+    for (const hookFn of afterCompileTemplate) {
+      await hookFn(destDir, templatedPath, component, dereffedDocument, typings);
+    }
   }
+
+  return true;
 };
 
 export default async (generatorOptions: IGeneratorOptions) => {
@@ -206,14 +196,12 @@ export default async (generatorOptions: IGeneratorOptions) => {
     throw e;
   }
 
-  const methodTypings = new MethodTypings(dereffedDocument);
+  const methodTypings = new Typings(dereffedDocument);
 
-  const componentGeneratorPromises = generatorOptions.components.map(async (component) => {
+  for (const component of generatorOptions.components) {
     const destDir = await prepareOutputDirectory(outDir, component);
     await copyStaticForComponent(destDir, component, dereffedDocument, methodTypings);
     await writeOpenRpcDocument(outDir, openrpcDocument, component);
     await compileTemplate(destDir, component, dereffedDocument, methodTypings);
-  });
-
-  await Promise.all(componentGeneratorPromises);
+  }
 };
