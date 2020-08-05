@@ -1,13 +1,11 @@
 import * as path from "path";
-import { move, ensureDir, remove } from "fs-extra";
+import { remove } from "fs-extra";
 import { IHooks } from "..";
 import * as fs from "fs";
 import { promisify } from "util";
 import { template, startCase } from "lodash";
-import { ContentDescriptorObject, ExamplePairingObject, ExampleObject, MethodObject } from "@open-rpc/meta-schema";
 const writeFile = promisify(fs.writeFile);
 const readFile = promisify(fs.readFile);
-const access = promisify(fs.access);
 
 const indexTemplate = template(`import React, { useEffect } from "react";
 import { Grid, Typography, Box, Button } from "@material-ui/core";
@@ -88,7 +86,7 @@ module.exports = {
 
 const hooks: IHooks = {
   afterCopyStatic: [
-    async (dest, frm, component, openrpcDocument) => {
+    async (dest, frm, component, openrpcDocument): Promise<void> => {
       const destPath = path.join(dest, "package.json");
       const tmplPath = path.join(dest, "_package.json");
 

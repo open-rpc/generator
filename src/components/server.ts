@@ -1,10 +1,10 @@
 import * as path from "path";
-import { move, ensureDir, remove } from "fs-extra";
+import { ensureDir, remove } from "fs-extra";
 import { IHooks } from "..";
 import * as fs from "fs";
 import { promisify } from "util";
 import { template } from "lodash";
-import { ContentDescriptorObject, ExamplePairingObject, ExampleObject, MethodObject } from "@open-rpc/meta-schema";
+import { ContentDescriptorObject, ExamplePairingObject, ExampleObject } from "@open-rpc/meta-schema";
 const writeFile = promisify(fs.writeFile);
 const readFile = promisify(fs.readFile);
 const access = promisify(fs.access);
@@ -31,7 +31,7 @@ const generatedTypingsTemplate = template(`<%= methodTypings.toString("typescrip
 
 const hooks: IHooks = {
   afterCopyStatic: [
-    async (dest, frm, component, openrpcDocument) => {
+    async (dest, frm, component, openrpcDocument): Promise<void> => {
       onlyHandleTS(component);
       const destPath = path.join(dest, "package.json");
       const tmplPath = path.join(dest, "_package.json");
@@ -67,14 +67,14 @@ const hooks: IHooks = {
     },
   ],
   afterCompileTemplate: [
-    async (dest, frm, component, openrpcDocument, typings) => {
+    async (dest, frm, component, openrpcDocument, typings): Promise<void> => {
       onlyHandleTS(component);
 
       const methodsFolder = `${dest}/src/methods/`;
       await ensureDir(methodsFolder);
 
       // Only write new one if there isnt one already.
-      await Promise.all(openrpcDocument.methods.map(async (method) => {
+      for (const method of openrpcDocument.methods) {
         const methodFileName = `${methodsFolder}/${method.name}.ts`;
 
         const functionAliasName = typings.getTypingNames("typescript", method).method;
@@ -117,7 +117,7 @@ const hooks: IHooks = {
         }
 
         await writeFile(methodFileName, codeToWrite, "utf8");
-      }));
+      }
 
       const imports = openrpcDocument.methods.map(({ name }) => `import ${name} from "./${name}";`);
       const methodMappingStr = [
