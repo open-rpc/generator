@@ -1,3 +1,17 @@
+## [1.18.4](https://github.com/open-rpc/generator/compare/1.18.3...1.18.4) (2020-08-05)
+
+
+### Bug Fixes
+
+* bump bump ([5d169a3](https://github.com/open-rpc/generator/commit/5d169a36c7e1d761f1eb5001ee98322c1b4e6ba7))
+* get tests passing again ([a34b635](https://github.com/open-rpc/generator/commit/a34b635505655c378ce1f4e7d4c6c25edf8043bf))
+* more deps ([8017b3f](https://github.com/open-rpc/generator/commit/8017b3f3f6aff37b21d4a2e82e42403a9c37308e))
+* rebase ([f9e9d45](https://github.com/open-rpc/generator/commit/f9e9d45b5e9c1d38625af7b6182c37684315180c))
+* update deps ([50f25da](https://github.com/open-rpc/generator/commit/50f25da246a9372261fdbaab1a33f5607493c627))
+* update more deps ([993d16c](https://github.com/open-rpc/generator/commit/993d16cdc0a7ba32a74a85062a07a0b1a545e9dd))
+* update more deps ([473b830](https://github.com/open-rpc/generator/commit/473b830782e2f4b0668432105feec6bb970f21c0))
+* upgrade deps ([8be5abb](https://github.com/open-rpc/generator/commit/8be5abb8834a1eaa64f8a8bd265dde47cff55e3f))
+
 ## [1.18.3](https://github.com/open-rpc/generator/compare/1.18.2...1.18.3) (2020-07-27)
 
 
