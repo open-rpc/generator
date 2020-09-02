@@ -1,3 +1,11 @@
+## [1.18.5](https://github.com/open-rpc/generator/compare/1.18.4...1.18.5) (2020-09-02)
+
+
+### Bug Fixes
+
+* **deps:** lock @types/fs-extra ([2aff98e](https://github.com/open-rpc/generator/commit/2aff98eb28b9ef9825ad57624671958a76e965df))
+* **gatsby docs:** lock @open-rpc/inspector version ([181476f](https://github.com/open-rpc/generator/commit/181476f69b277eec49ba15e4630fbf20928d3f1a))
+
 ## [1.18.4](https://github.com/open-rpc/generator/compare/1.18.3...1.18.4) (2020-08-05)
 
 
