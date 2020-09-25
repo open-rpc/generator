@@ -1,3 +1,10 @@
+## [1.18.6](https://github.com/open-rpc/generator/compare/1.18.5...1.18.6) (2020-09-25)
+
+
+### Bug Fixes
+
+* bump client js version ([e32a5c5](https://github.com/open-rpc/generator/commit/e32a5c506d67e7dd76b0de5f7511b6f03c54a0a2))
+
 ## [1.18.5](https://github.com/open-rpc/generator/compare/1.18.4...1.18.5) (2020-09-02)
 
 
