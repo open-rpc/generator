@@ -1,3 +1,10 @@
+## [1.18.7](https://github.com/open-rpc/generator/compare/1.18.6...1.18.7) (2020-10-16)
+
+
+### Bug Fixes
+
+* **docs:** update to latest inspector ([9253b96](https://github.com/open-rpc/generator/commit/9253b9679d8fe5671dd9bb2f31abc35037b702b2))
+
 ## [1.18.6](https://github.com/open-rpc/generator/compare/1.18.5...1.18.6) (2020-09-25)
 
 
