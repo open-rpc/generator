@@ -39,7 +39,7 @@ const PlaygroundSplitPane: React.FC<IProps> = (props) => {
   const dir = props.direction || "vertical";
   const defaultSize = !props.split
     ? dir === "horizontal" ? window.innerHeight : window.innerWidth
-    : dir === "horizontal" ? window.innerHeight / 2 : window.innerWidth / 2;
+    : dir === "horizontal" ? window.innerHeight * .35 : window.innerWidth / 2;
   return (
     <SplitPane split={dir}
       style={props.style}
