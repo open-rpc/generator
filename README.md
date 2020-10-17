@@ -13,6 +13,8 @@
 
 A Generator tool for [open-rpc](https://github.com/open-rpc/spec) APIs.
 
+Need help or have a question? Join us on [Discord](https://discord.gg/gREUKuF)!
+
 ## Features:
 
 - Built in components for:
