@@ -1,3 +1,10 @@
+## [1.18.8](https://github.com/open-rpc/generator/compare/1.18.7...1.18.8) (2020-10-19)
+
+
+### Bug Fixes
+
+* lock material-ui versions ([4fca162](https://github.com/open-rpc/generator/commit/4fca162f36adb1051f170b131291ef819d2ce340))
+
 ## [1.18.7](https://github.com/open-rpc/generator/compare/1.18.6...1.18.7) (2020-10-16)
 
 
