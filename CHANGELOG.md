@@ -1,3 +1,10 @@
+## [1.18.9](https://github.com/open-rpc/generator/compare/1.18.8...1.18.9) (2020-11-14)
+
+
+### Bug Fixes
+
+* **docs:** bump inspector version ([cf4c776](https://github.com/open-rpc/generator/commit/cf4c77640bdd9733880f7ae36ef019adcf2cb825))
+
 ## [1.18.8](https://github.com/open-rpc/generator/compare/1.18.7...1.18.8) (2020-10-19)
 
 
