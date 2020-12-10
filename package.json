@@ -45,7 +45,7 @@
     "@open-rpc/server-js": "^1.8.0",
     "@types/connect": "^3.4.33",
     "@types/cors": "^2.8.6",
-    "@types/fs-extra": "9.0.4",
+    "@types/fs-extra": "9.0.5",
     "@types/inquirer": "^7.3.0",
     "@types/jest": "26.0.14",
     "@types/lodash": "^4.14.158",
