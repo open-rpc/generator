@@ -1,3 +1,10 @@
+## [1.18.10](https://github.com/open-rpc/generator/compare/1.18.9...1.18.10) (2020-12-17)
+
+
+### Bug Fixes
+
+* update clientjs ([be2eaf9](https://github.com/open-rpc/generator/commit/be2eaf9db4e3c2a65e858fc9de0b0ebdb63cb660))
+
 ## [1.18.9](https://github.com/open-rpc/generator/compare/1.18.8...1.18.9) (2020-11-14)
 
 
