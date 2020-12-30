@@ -1,3 +1,10 @@
+## [1.18.11](https://github.com/open-rpc/generator/compare/1.18.10...1.18.11) (2020-12-30)
+
+
+### Bug Fixes
+
+* update docs-react for better paramStructure by-name support ([264bbd9](https://github.com/open-rpc/generator/commit/264bbd9d210a42ae23ec764d4c62c26830121efc))
+
 ## [1.18.10](https://github.com/open-rpc/generator/compare/1.18.9...1.18.10) (2020-12-17)
 
 
