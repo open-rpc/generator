@@ -14,7 +14,7 @@
     "@material-ui/styles": "4.9.13",
     "@mdx-js/mdx": "^1.5.4",
     "@mdx-js/react": "^1.5.4",
-    "@open-rpc/docs-react": "1.2.5",
+    "@open-rpc/docs-react": "1.2.6",
     "gatsby": "^2.18.25",
     "lodash": "^4.17.15",
     "mermaid": "^8.4.5",
