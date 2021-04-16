@@ -1,3 +1,18 @@
+## [1.18.12](https://github.com/open-rpc/generator/compare/1.18.11...1.18.12) (2021-04-16)
+
+
+### Bug Fixes
+
+* force types to be methodobjects ([0fe3cd9](https://github.com/open-rpc/generator/commit/0fe3cd9427dc4cf604da9b3ad0a9c0583ea2209a))
+* remove extra deps ([ecf6262](https://github.com/open-rpc/generator/commit/ecf62628604cfbea04fdb5fb4b12869a9375d05e))
+* typedoc generation fixed ([77f6d24](https://github.com/open-rpc/generator/commit/77f6d24af1bd90eaecf8d1114040664ad4693a3d))
+* update inquirer ([e769c12](https://github.com/open-rpc/generator/commit/e769c12dfc23e8725d45acf8e293f199f6ac9f1f))
+* update lodash and fs-extra ([cbcab8b](https://github.com/open-rpc/generator/commit/cbcab8b0738e187cdfb204efd7bbeb47c7c445d8))
+* update meta schema nd jest dev deps ([c52c18a](https://github.com/open-rpc/generator/commit/c52c18a1cf69ea9c81b28e3874dccdc82b5bb8a1))
+* update open-rpc/typings ([c6584ba](https://github.com/open-rpc/generator/commit/c6584ba4f64ed35d1f3e3ec0ad1b546670111143))
+* update to lts nodejs and regenerate packagelock ([08a79d7](https://github.com/open-rpc/generator/commit/08a79d766b3785ad3e345eeb637923183690fa48))
+* **gatsby docs:** bump docs-react to get syntax-highlighting ([4baf3d3](https://github.com/open-rpc/generator/commit/4baf3d3a9437178ed2285ab0cb83d2ca9db419ca))
+
 ## [1.18.11](https://github.com/open-rpc/generator/compare/1.18.10...1.18.11) (2020-12-30)
 
 
