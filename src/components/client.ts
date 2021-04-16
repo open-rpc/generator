@@ -14,9 +14,7 @@ import { RequestManager, PostMessageWindowTransport, PostMessageIframeTransport,
 import _ from "lodash";
 import { OpenrpcDocument as OpenRPC, MethodObject, ContentDescriptorObject } from "@open-rpc/meta-schema";
 import { MethodCallValidator, MethodNotFoundError } from "@open-rpc/schema-utils-js";
-
 <%= methodTypings.toString("typescript") %>
-
 export interface Options {
   transport: {
     type: "websocket" | "http" | "https" | "postmessagewindow" | "postmessageiframe";
@@ -26,16 +24,13 @@ export interface Options {
     protocol?: string;
   },
 }
-
 export class <%= className %> {
   public rpc: Client;
   public static openrpcDocument: OpenRPC = <%= JSON.stringify(openrpcDocument) %> ;
   public transport: HTTPTransport | WebSocketTransport | PostMessageWindowTransport | PostMessageIframeTransport;
   private validator: MethodCallValidator;
   private timeout: number | undefined;
-
   constructor(options: Options) {
-
     if (options.transport === undefined || options.transport.type === undefined) {
       throw new Error("Invalid constructor params");
     }
@@ -73,7 +68,6 @@ export class <%= className %> {
   public onNotification(callback: (data: any) => void) {
     this.rpc.onNotification(callback);
   }
-
   /**
    * Adds an optional JSONRPCError handler to handle receiving errors that cannot be resolved to a specific request
    * @example
@@ -82,7 +76,6 @@ export class <%= className %> {
   public onError(callback: (data: JSONRPCError) => void) {
      this.rpc.onError(callback);
   }
-
   /**
    * Sets a default timeout in ms for all requests excluding notifications.
    * @example
@@ -94,7 +87,6 @@ export class <%= className %> {
    public setDefaultTimeout(ms?: number) {
     this.timeout = ms;
   }
-
   /**
    * Initiates [[<%= className %>.startBatch]] in order to build a batch call.
    *
@@ -111,7 +103,6 @@ export class <%= className %> {
   public startBatch(): void {
     return this.rpc.startBatch();
   }
-
   /**
    * Initiates [[Client.stopBatch]] in order to finalize and send the batch to the underlying transport.
    *
@@ -127,15 +118,13 @@ export class <%= className %> {
   public stopBatch(): void {
     return this.rpc.stopBatch();
   }
-
   private request(methodName: string, params: any[]): Promise<any> {
-    const methodObject = _.find((<%= className %>.openrpcDocument.methods as MethodObject[]), ({name}) => name === methodName) as MethodObject;
+    const methodObject = _.find(<%= className %>.openrpcDocument.methods, ({name}:MethodObject) => name === methodName) as MethodObject;
     const notification = methodObject.result ? false : true;
     const openRpcMethodValidationErrors = this.validator.validate(methodName, params);
     if ( openRpcMethodValidationErrors instanceof MethodNotFoundError || openRpcMethodValidationErrors.length > 0) {
       return Promise.reject(openRpcMethodValidationErrors);
     }
-
     let rpcParams;
     if (methodObject.paramStructure && methodObject.paramStructure === "by-name") {
       rpcParams = _.zipObject(params, _.map(methodObject.params, "name"));
@@ -147,8 +136,7 @@ export class <%= className %> {
     }
     return this.rpc.request({method: methodName, params: rpcParams}, this.timeout);
   }
-
-  <% openrpcDocument.methods.forEach((method) => { %>
+  <% openrpcDocument.methods.filter((m)=>!m.namespace).forEach((method) => { %>
   /**
    * <%= method.summary %>
    */
@@ -156,6 +144,21 @@ export class <%= className %> {
   public <%= method.name %>: <%= methodTypings.getTypingNames("typescript", method).method %> = (...params) => {
     return this.request("<%= method.name %>", params);
   }
+  <% }); %>
+  <% openrpcDocument.namespaces.forEach((namespace) => { %>
+  public <%= namespace.name %> = new class{
+    constructor(public _parent: <%= className %>) {
+    }
+    <% namespace.methods.forEach((method) => { %>
+    /**
+     * <%= method.summary %>
+     */
+    // tslint:disable-next-line:max-line-length
+    public <%= method.validName %>: <%= methodTypings.getTypingNames("typescript", method).method %> = (...params) => {
+      return this._parent.request("<%= method.name %>", params);
+    }
+    <% }); %>
+  }(this);
   <% }); %>
 }
 export default <%= className %>;
@@ -179,6 +182,36 @@ const hooks: IHooks = {
         return await move(path.join(dest, "_package.json"), path.join(dest, "package.json"), { overwrite: true });
       }
     },
+  ],
+  beforeCompileTemplate:[
+    async (dest, frm, component, openrpcDocument,typings): Promise<void> => {
+      if (component.language === "typescript") {
+        // search and group up methods which have namespace prefix
+        let namespaceCollection:any = {};
+        for(let method of openrpcDocument.methods){
+          if(method.name.includes(".")){
+            let [ namespace , methodName ] = method.name.split(/\.(.+)/)
+            method.namespace = namespace;
+            method.validName = methodName;
+            if(!namespaceCollection[namespace]){
+              namespaceCollection[namespace] = [];
+            }
+            namespaceCollection[namespace].push(method)
+          }
+        }
+        // generate extra namespaces extension property
+        openrpcDocument.namespaces = [];
+        for(const  key in namespaceCollection){
+          if (namespaceCollection.hasOwnProperty(key)) {
+            openrpcDocument.namespaces.push({
+              name:key,
+              methods:namespaceCollection[key]
+            })
+          }
+        }
+      }
+      // console.log(dest, frm, component, openrpcDocument,typings);
+    }
   ],
   afterCompileTemplate: [
     async (dest, frm, component, openrpcDocument): Promise<void> => {
