@@ -183,17 +183,20 @@ const hooks: IHooks = {
       }
     },
   ],
-  beforeCompileTemplate:[
-    async (dest, frm, component, openrpcDocument,typings): Promise<void> => {
+  beforeCompileTemplate: [
+    async (dest, frm, component, openrpcDocument, typings): Promise<void> => {
       if (component.language === "typescript") {
         // search and group up methods which have namespace prefix
-        let namespaceCollection:any = {};
-        for(let method of openrpcDocument.methods){
-          if(method.name.includes(".")){
-            let [ namespace , methodName ] = method.name.split(/\.(.+)/)
+        let namespaceCollection: any = {};
+        for (let method of openrpcDocument.methods) {
+          if ('$ref' in method) {
+            continue;
+          }
+          if (method.name.includes(".")) {
+            let [namespace, methodName] = method.name.split(/\.(.+)/)
             method.namespace = namespace;
             method.validName = methodName;
-            if(!namespaceCollection[namespace]){
+            if (!namespaceCollection[namespace]) {
               namespaceCollection[namespace] = [];
             }
             namespaceCollection[namespace].push(method)
@@ -201,11 +204,11 @@ const hooks: IHooks = {
         }
         // generate extra namespaces extension property
         openrpcDocument.namespaces = [];
-        for(const  key in namespaceCollection){
+        for (const key in namespaceCollection) {
           if (namespaceCollection.hasOwnProperty(key)) {
             openrpcDocument.namespaces.push({
-              name:key,
-              methods:namespaceCollection[key]
+              name: key,
+              methods: namespaceCollection[key]
             })
           }
         }
