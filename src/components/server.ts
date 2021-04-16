@@ -4,7 +4,7 @@ import { IHooks } from "..";
 import * as fs from "fs";
 import { promisify } from "util";
 import { template } from "lodash";
-import { ContentDescriptorObject, ExamplePairingObject, ExampleObject } from "@open-rpc/meta-schema";
+import { ContentDescriptorObject, ExamplePairingObject, ExampleObject, MethodObject } from "@open-rpc/meta-schema";
 const writeFile = promisify(fs.writeFile);
 const readFile = promisify(fs.readFile);
 const access = promisify(fs.access);
@@ -74,7 +74,7 @@ const hooks: IHooks = {
       await ensureDir(methodsFolder);
 
       // Only write new one if there isnt one already.
-      for (const method of openrpcDocument.methods) {
+      for (const method of openrpcDocument.methods as MethodObject[]) {
         const methodFileName = `${methodsFolder}/${method.name}.ts`;
 
         const functionAliasName = typings.getTypingNames("typescript", method).method;
@@ -119,10 +119,11 @@ const hooks: IHooks = {
         await writeFile(methodFileName, codeToWrite, "utf8");
       }
 
-      const imports = openrpcDocument.methods.map(({ name }) => `import ${name} from "./${name}";`);
+      const methods = openrpcDocument.methods as MethodObject[];
+      const imports = methods.map(({ name }) => `import ${name} from "./${name}";`);
       const methodMappingStr = [
         "const methods = {",
-        ...openrpcDocument.methods.map(({ name }) => `  ${name},`),
+        ...methods.map(({ name }) => `  ${name},`),
         "};",
       ];
 
