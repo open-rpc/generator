@@ -129,7 +129,7 @@ export class <%= className %> {
   }
 
   private request(methodName: string, params: any[]): Promise<any> {
-    const methodObject = _.find(<%= className %>.openrpcDocument.methods, ({name}) => name === methodName) as MethodObject;
+    const methodObject = _.find((<%= className %>.openrpcDocument.methods as MethodObject[]), ({name}) => name === methodName) as MethodObject;
     const notification = methodObject.result ? false : true;
     const openRpcMethodValidationErrors = this.validator.validate(methodName, params);
     if ( openRpcMethodValidationErrors instanceof MethodNotFoundError || openRpcMethodValidationErrors.length > 0) {
