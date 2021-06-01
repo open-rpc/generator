@@ -81,7 +81,7 @@ const copyStaticForComponent = async (
     }
   }
 
-  await copy(staticPath, destinationDirectoryName, { overwrite: true });
+  await copy(staticPath, destinationDirectoryName, { overwrite: true, dereference: true });
 
   // ignores errors incase there is no gitignore...
   // gets around an issue with the copy function whereby hidden dotfiles are not copied.

@@ -13,9 +13,9 @@
   "author": "",
   "license": "Apache-2.0",
   "dependencies": {
-    "@open-rpc/client-js": "1.6.2",
-    "@open-rpc/meta-schema": "^1.6.0",
-    "@open-rpc/schema-utils-js": "^1.12.0",
+    "@open-rpc/client-js": "1.7.0",
+    "@open-rpc/meta-schema": "^1.14.2",
+    "@open-rpc/schema-utils-js": "1.15.0",
     "@types/json-schema": "7.0.3",
     "@types/lodash": "^4.14.149",
     "@types/ws": "^6.0.1",
@@ -24,6 +24,6 @@
   "devDependencies": {
     "tslint": "^5.13.1",
     "typedoc": "^0.20.35",
-    "typescript": "^4.2.4"
+    "typescript": "4.2.4"
   }
 }
