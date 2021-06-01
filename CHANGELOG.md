@@ -1,3 +1,10 @@
+## [1.18.13](https://github.com/open-rpc/generator/compare/1.18.12...1.18.13) (2021-06-01)
+
+
+### Bug Fixes
+
+* package version updates for client and server ([d248e4a](https://github.com/open-rpc/generator/commit/d248e4aee4ce59860560239274a390d620b6bb19))
+
 ## [1.18.12](https://github.com/open-rpc/generator/compare/1.18.11...1.18.12) (2021-04-16)
 
 
