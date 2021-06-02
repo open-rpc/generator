@@ -38,7 +38,7 @@
     "lodash": "^4.17.21"
   },
   "devDependencies": {
-    "@open-rpc/examples": "1.6.0",
+    "@open-rpc/examples": "1.6.1",
     "@open-rpc/meta-schema": "1.14.2",
     "@open-rpc/schema-utils-js": "1.15.0",
     "@open-rpc/server-js": "1.8.5",
