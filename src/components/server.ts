@@ -1,6 +1,6 @@
 import * as path from "path";
 import { ensureDir, remove } from "fs-extra";
-import { IHooks } from "..";
+import { IHooks } from "./types";
 import * as fs from "fs";
 import { promisify } from "util";
 import { template } from "lodash";
