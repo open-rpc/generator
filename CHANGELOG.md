@@ -1,3 +1,10 @@
+# [1.19.0](https://github.com/open-rpc/generator/compare/1.18.13...1.19.0) (2021-06-03)
+
+
+### Features
+
+* add support for custom generators ([b1b99de](https://github.com/open-rpc/generator/commit/b1b99de8267f53177e913fd4e799620fb99b9893))
+
 ## [1.18.13](https://github.com/open-rpc/generator/compare/1.18.12...1.18.13) (2021-06-01)
 
 
