@@ -77,6 +77,7 @@ describe(`Examples to generate Js clients`, () => {
           { type: "client", language: "typescript", name: "testclient-ts" },
           { type: "server", language: "typescript", name: "testserver-ts" },
           { type: "docs", language: "gatsby", name: "testserver-gatsby" },
+          { type: "custom", language: "typescript", name: "custom-stuff", "customComponent":"./custom-test-component.js", customType:"client"}
         ],
       });
 
@@ -90,6 +91,7 @@ describe(`Examples to generate Js clients`, () => {
           { type: "client", language: "typescript", name: "testclient-ts" },
           { type: "server", language: "typescript", name: "testserver-ts" },
           { type: "docs", language: "gatsby", name: "testserver-gatsby" },
+          { type: "custom", language: "typescript", name: "custom-stuff", "customComponent":"./custom-test-component.js", customType:"client"}
         ],
       });
 

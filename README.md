@@ -49,7 +49,24 @@ $ open-rpc-generator-client generate
   -d https://raw.githubusercontent.com/open-rpc/examples/master/service-descriptions/petstore-openrpc.json
   -o ./generated
 ```
-
+### Custom Component Generation Configuration
+Here for customComponent we specify the module that exports as 
+default the type IComponentModule see custom-test-component.js as an example. It is easy to also refer to an npm package as well as a plain js file. customType is can be anything , it is not restricted to client | server | doc naming.
+```
+{
+  "openrpcDocument": "./src/awesome-custom-client_openrpc.json",
+  "outDir": "generated-client",
+  "components": [
+      {
+          "type": "custom",
+          "name": "awesome-custom-client",
+          "language": "typescript",
+          "customComponent": "./custom-test-component.js",
+          "customType": "client"
+      } 
+  ]
+}
+```
 ## Resources
 
 - [@open-rpc/generator package](https://www.npmjs.com/package/@open-rpc/generator)

@@ -2,15 +2,21 @@ import * as fs from "fs";
 import { ensureDir, copy, move, remove } from "fs-extra";
 import * as path from "path";
 import { promisify } from "util";
-import { startCase, TemplateExecutor } from "lodash";
+import { startCase } from "lodash";
 import { OpenrpcDocument as OpenRPC } from "@open-rpc/meta-schema";
 import { parseOpenRPCDocument } from "@open-rpc/schema-utils-js";
-
+import { TComponentConfig } from "./config"
 import Typings from "@open-rpc/typings";
 
-import clientComponent from "./components/client";
-import serverComponent from "./components/server";
-import docsComponent from "./components/docs";
+import {
+  defaultClientComponent,
+  defaultDocComponent,
+  defaultServerComponent,
+  IComponentModule,
+  IHooks,
+  FHook
+} from "./components";
+export * as components from "./components";
 
 const writeFile = promisify(fs.writeFile);
 
@@ -22,65 +28,66 @@ const moveFiles = async (dirName: string, file1: string, file2: string): Promise
   }
 };
 
-type FHook = (
-  destDir: string,
-  fromDir: string,
-  component: TComponentConfig,
-  openrpcDocument: OpenRPC,
-  Typings: Typings,
-) => Promise<any>;
-
-export interface IHooks {
-  beforeCopyStatic?: FHook[];
-  afterCopyStatic?: FHook[];
-  beforeCompileTemplate?: FHook[];
-  afterCompileTemplate?: FHook[];
-  templateFiles: {
-    [key: string]: {
-      path: string;
-      template: TemplateExecutor;
-    }[];
-  };
+interface IComponentModules {
+  [k: string]: IComponentModule;
 }
 
-interface IComponentHooks {
-  [k: string]: IHooks;
+const componentModules: IComponentModules = {
+  client: defaultClientComponent,
+  server: defaultServerComponent,
+  docs: defaultDocComponent
 }
 
-const componentHooks: IComponentHooks = {
-  client: clientComponent,
-  server: serverComponent,
-  docs: docsComponent,
-};
+interface IComponent {
+  hooks: IHooks;
+  type: string;
+  name: string;
+  language: string;
+  staticPath?: string;
+}
 
-const getComponentTemplatePath = (component: TComponentConfig) => {
-  const d = `/templates/${component.type}/${component.language}/`;
-  return path.join(__dirname, "../", d);
-};
+const getComponentFromConfig = async (componentConfig: TComponentConfig): Promise<IComponent> => {
+  const {language, name, type} = componentConfig;
+  if(componentConfig.type === "custom"){
+      const compModule: IComponentModule = (await import(componentConfig.customComponent)).default;
+      if(compModule.hooks === undefined) throw new Error("Hooks interface not exported or defined")
+      return { hooks: compModule.hooks, staticPath: compModule.staticPath(language, componentConfig.customType), language, name, type }
+  }
+  const componentModule = componentModules[type]
+  return { hooks: componentModule.hooks, staticPath: componentModule.staticPath(language, type), language, name, type }
+}
 
-const copyStaticForComponent = async (
-  destinationDirectoryName: string,
-  component: TComponentConfig,
-  dereffedDocument: OpenRPC,
-  typings: Typings,
-) => {
-  const staticPath = getComponentTemplatePath(component);
-
-  const hooks = componentHooks[component.type];
-  const { beforeCopyStatic, afterCopyStatic } = hooks;
-
-  if (beforeCopyStatic && beforeCopyStatic.length && beforeCopyStatic.length > 0) {
-    for (const hookFn of beforeCopyStatic) {
+const makeApplyHooks = (hooks: FHook[] | undefined, dereffedDocument: OpenRPC, typings: Typings) => {
+  return async (destDir: string, srcDir: string | undefined, component: IComponent) => {
+    if (hooks === undefined) return
+    if (hooks.length === 0) return
+    for (const hookFn of hooks) {
       await hookFn(
-        destinationDirectoryName,
-        staticPath,
+        destDir,
+        srcDir,
         component,
         dereffedDocument,
         typings,
       );
     }
   }
+}
 
+const copyStaticForComponent = async (
+  destinationDirectoryName: string,
+  component: IComponent,
+  dereffedDocument: OpenRPC,
+  typings: Typings,
+) => {
+
+  const {staticPath, hooks} = component;
+  if(staticPath === undefined) return
+
+  const { beforeCopyStatic, afterCopyStatic } = hooks;
+  const applyBeforeCopyStatic = makeApplyHooks(beforeCopyStatic, dereffedDocument, typings)
+  const applyAfterCopyStatic = makeApplyHooks(afterCopyStatic, dereffedDocument, typings)
+
+  await applyBeforeCopyStatic(destinationDirectoryName, staticPath, component)
   await copy(staticPath, destinationDirectoryName, { overwrite: true, dereference: true });
 
   // ignores errors incase there is no gitignore...
@@ -89,38 +96,9 @@ const copyStaticForComponent = async (
   await remove(`${destinationDirectoryName}/gitignore`);
 
   // this is where we would do things like move _package.json to package.json, etc, etc
-  if (afterCopyStatic && afterCopyStatic.length && afterCopyStatic.length > 0) {
-    for (const hookFn of afterCopyStatic) {
-      await hookFn(
-        destinationDirectoryName,
-        staticPath,
-        component,
-        dereffedDocument,
-        typings,
-      );
-    }
-  }
+  await applyAfterCopyStatic(destinationDirectoryName, staticPath, component)
+
 };
-
-interface IClientConfig {
-  type: "client";
-  name: string;
-  language: "typescript" | "rust";
-}
-
-interface IServerConfig {
-  type: "server";
-  name: string;
-  language: "typescript";
-}
-
-interface IDocsConfig {
-  type: "docs";
-  name: string;
-  language: "gatsby";
-}
-
-type TComponentConfig = IClientConfig | IServerConfig | IDocsConfig;
 
 export interface IGeneratorOptions {
   outDir: string;
@@ -128,7 +106,7 @@ export interface IGeneratorOptions {
   components: TComponentConfig[];
 }
 
-const prepareOutputDirectory = async (outDir: string, component: TComponentConfig): Promise<string> => {
+const prepareOutputDirectory = async (outDir: string, component: IComponent): Promise<string> => {
   const destinationDirectoryName = `${outDir}/${component.type}/${component.language}`;
   await ensureDir(destinationDirectoryName);
   return destinationDirectoryName;
@@ -137,7 +115,7 @@ const prepareOutputDirectory = async (outDir: string, component: TComponentConfi
 const writeOpenRpcDocument = async (
   outDir: string,
   doc: OpenRPC | string,
-  component: TComponentConfig,
+  component: IComponent,
 ): Promise<string> => {
   const toWrite = typeof doc === "string" ? await parseOpenRPCDocument(doc, { dereference: false }) : doc;
   const destinationDirectoryName = `${outDir}/${component.type}/${component.language}/src/openrpc.json`;
@@ -147,20 +125,18 @@ const writeOpenRpcDocument = async (
 
 const compileTemplate = async (
   destDir: string,
-  component: TComponentConfig,
+  component: IComponent,
   dereffedDocument: OpenRPC,
   typings: Typings,
 ): Promise<boolean> => {
-  const templatedPath = `${getComponentTemplatePath(component)}/templated`;
 
-  const hooks = componentHooks[component.type];
+  const { hooks } = component;
   const { beforeCompileTemplate, afterCompileTemplate } = hooks;
 
-  if (beforeCompileTemplate && beforeCompileTemplate.length && beforeCompileTemplate.length > 0) {
-    for (const hookFn of beforeCompileTemplate) {
-      await hookFn(destDir, templatedPath, component, dereffedDocument, typings);
-    }
-  }
+  const applyBeforeCompileTemplate = makeApplyHooks(beforeCompileTemplate, dereffedDocument, typings)
+  const applyAfterCompileTemplate = makeApplyHooks(afterCompileTemplate, dereffedDocument, typings)
+
+  await applyBeforeCompileTemplate(destDir, undefined, component)
 
   // 1. read files in the templated directory,
   // 2. for each one, pass in the template params
@@ -175,11 +151,7 @@ const compileTemplate = async (
     await writeFile(`${destDir}/${t.path}`, result, "utf8");
   }
 
-  if (afterCompileTemplate && afterCompileTemplate.length && afterCompileTemplate.length > 0) {
-    for (const hookFn of afterCompileTemplate) {
-      await hookFn(destDir, templatedPath, component, dereffedDocument, typings);
-    }
-  }
+  await applyAfterCompileTemplate(destDir, undefined, component)
 
   return true;
 };
@@ -198,7 +170,8 @@ export default async (generatorOptions: IGeneratorOptions) => {
 
   const methodTypings = new Typings(dereffedDocument);
 
-  for (const component of generatorOptions.components) {
+  for (const componentConfig of generatorOptions.components) {
+    const component = await getComponentFromConfig(componentConfig)
     const destDir = await prepareOutputDirectory(outDir, component);
     await copyStaticForComponent(destDir, component, dereffedDocument, methodTypings);
     await writeOpenRpcDocument(outDir, openrpcDocument, component);
