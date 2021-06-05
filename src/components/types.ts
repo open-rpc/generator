@@ -31,7 +31,7 @@ export interface IHooks {
 }
 
 
-export type IStaticPath = (language: string, type?: string) => string;
+export type IStaticPath = (language: string, type?: string) => string | undefined;
 
 export interface IComponentModule {
   hooks: IHooks;

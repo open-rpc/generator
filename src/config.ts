@@ -1,3 +1,4 @@
+
 export interface IClientConfig {
   type: "client";
   name: string;
@@ -22,6 +23,7 @@ export interface ICustomConfig {
   name: string;
   customComponent: string;
   customType?: string;
+  openRPCPath?: string | null;
   language: "typescript" | "rust";
 }
 

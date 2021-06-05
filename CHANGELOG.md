@@ -1,3 +1,11 @@
+## [1.19.1](https://github.com/open-rpc/generator/compare/1.19.0...1.19.1) (2021-06-04)
+
+
+### Bug Fixes
+
+* lock metaschema version for default client ([fbffc78](https://github.com/open-rpc/generator/commit/fbffc78a59c092174622bafe9641308e4bdd6794))
+* type on static path interface can be undefined ([c805051](https://github.com/open-rpc/generator/commit/c8050518c338058079097a3273d289845c70cb64))
+
 # [1.19.0](https://github.com/open-rpc/generator/compare/1.18.13...1.19.0) (2021-06-03)
 
 
