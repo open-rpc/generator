@@ -44,17 +44,20 @@ interface IComponent {
   name: string;
   language: string;
   staticPath?: string;
+  openRPCPath?: string;
 }
 
 const getComponentFromConfig = async (componentConfig: TComponentConfig): Promise<IComponent> => {
-  const {language, name, type} = componentConfig;
+  const { language, name, type} = componentConfig;
+  let openRPCPath: string | undefined = "src";
   if(componentConfig.type === "custom"){
       const compModule: IComponentModule = (await import(componentConfig.customComponent)).default;
       if(compModule.hooks === undefined) throw new Error("Hooks interface not exported or defined")
-      return { hooks: compModule.hooks, staticPath: compModule.staticPath(language, componentConfig.customType), language, name, type }
+      openRPCPath = componentConfig.openRPCPath === null ? undefined : componentConfig.openRPCPath || "src" ;
+      return { hooks: compModule.hooks, staticPath: compModule.staticPath(language, componentConfig.customType), language, name, type, openRPCPath }
   }
   const componentModule = componentModules[type]
-  return { hooks: componentModule.hooks, staticPath: componentModule.staticPath(language, type), language, name, type }
+  return { hooks: componentModule.hooks, staticPath: componentModule.staticPath(language, type), language, name, type, openRPCPath }
 }
 
 const makeApplyHooks = (hooks: FHook[] | undefined, dereffedDocument: OpenRPC, typings: Typings) => {
@@ -108,7 +111,8 @@ export interface IGeneratorOptions {
 
 const prepareOutputDirectory = async (outDir: string, component: IComponent): Promise<string> => {
   const destinationDirectoryName = `${outDir}/${component.type}/${component.language}`;
-  await ensureDir(destinationDirectoryName);
+  const openRPCDefaultLocation = "src";
+  await ensureDir(`${destinationDirectoryName}/${openRPCDefaultLocation}`);
   return destinationDirectoryName;
 };
 
@@ -116,9 +120,12 @@ const writeOpenRpcDocument = async (
   outDir: string,
   doc: OpenRPC | string,
   component: IComponent,
-): Promise<string> => {
+): Promise<string | undefined> => {
+  if(component.openRPCPath === undefined) return;
   const toWrite = typeof doc === "string" ? await parseOpenRPCDocument(doc, { dereference: false }) : doc;
-  const destinationDirectoryName = `${outDir}/${component.type}/${component.language}/src/openrpc.json`;
+  const openRPCPath = `${outDir}/${component.type}/${component.language}/${component.openRPCPath}`
+  await ensureDir(openRPCPath);
+  const destinationDirectoryName = `${openRPCPath}/openrpc.json`;
   await writeFile(destinationDirectoryName, JSON.stringify(toWrite, undefined, "  "), "utf8");
   return destinationDirectoryName;
 };
