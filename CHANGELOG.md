@@ -1,3 +1,10 @@
+# [1.20.0](https://github.com/open-rpc/generator/compare/1.19.1...1.20.0) (2021-06-05)
+
+
+### Features
+
+* add optional field for custom configs to write openrpc doc to disk ([79f9249](https://github.com/open-rpc/generator/commit/79f92498523774272013e51fd938d71044c4bd57))
+
 ## [1.19.1](https://github.com/open-rpc/generator/compare/1.19.0...1.19.1) (2021-06-04)
 
 
