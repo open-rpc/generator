@@ -138,7 +138,7 @@ export class <%= className %> {
 
     let rpcParams;
     if (methodObject.paramStructure && methodObject.paramStructure === "by-name") {
-      rpcParams = _.zipObject(params, _.map(methodObject.params, "name"));
+      rpcParams = _.zipObject(_.map(methodObject.params, "name"), params);
     } else {
       rpcParams = params;
     }
