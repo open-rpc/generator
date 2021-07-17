@@ -1,3 +1,10 @@
+## [1.20.1](https://github.com/open-rpc/generator/compare/1.20.0...1.20.1) (2021-07-17)
+
+
+### Bug Fixes
+
+* lodash zipObject wrong order ([5c1a1ef](https://github.com/open-rpc/generator/commit/5c1a1ef2ce651485c8d092cf11b0efab6d8de80a)), closes [#670](https://github.com/open-rpc/generator/issues/670)
+
 # [1.20.0](https://github.com/open-rpc/generator/compare/1.19.1...1.20.0) (2021-06-05)
 
 
