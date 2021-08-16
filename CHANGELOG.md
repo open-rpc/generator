@@ -1,3 +1,10 @@
+# [1.21.0](https://github.com/open-rpc/generator/compare/1.20.1...1.21.0) (2021-08-16)
+
+
+### Features
+
+* bump typings and lock version ([c356e65](https://github.com/open-rpc/generator/commit/c356e6530034e98a4845e350a97535cc99c617ca))
+
 ## [1.20.1](https://github.com/open-rpc/generator/compare/1.20.0...1.20.1) (2021-07-17)
 
 
