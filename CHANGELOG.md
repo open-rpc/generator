@@ -1,3 +1,10 @@
+## [1.21.1](https://github.com/open-rpc/generator/compare/1.21.0...1.21.1) (2021-08-20)
+
+
+### Bug Fixes
+
+* bump versions of client and lock typings version to latest ([a1645e9](https://github.com/open-rpc/generator/commit/a1645e9df06424ed0d87d1d7489610e06c252238))
+
 # [1.21.0](https://github.com/open-rpc/generator/compare/1.20.1...1.21.0) (2021-08-16)
 
 
