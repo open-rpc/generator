@@ -1,3 +1,15 @@
+# [1.22.0](https://github.com/open-rpc/generator/compare/1.21.2...1.22.0) (2021-08-27)
+
+
+### Bug Fixes
+
+* update component in README ([1f708f5](https://github.com/open-rpc/generator/commit/1f708f51770b134cd7e1270150663d8423cadedf))
+
+
+### Features
+
+* refactor code to support an override output directory ([6e7937e](https://github.com/open-rpc/generator/commit/6e7937e464b52994feb12f98a95cbd8c78e8e2d3)), closes [#655](https://github.com/open-rpc/generator/issues/655)
+
 ## [1.21.2](https://github.com/open-rpc/generator/compare/1.21.1...1.21.2) (2021-08-27)
 
 
