@@ -1,3 +1,11 @@
+## [1.21.2](https://github.com/open-rpc/generator/compare/1.21.1...1.21.2) (2021-08-27)
+
+
+### Bug Fixes
+
+* custom component relative urls ([b28b205](https://github.com/open-rpc/generator/commit/b28b2059935f0232fc31744f31278714194996f9))
+* customComponent test paths ([8389a87](https://github.com/open-rpc/generator/commit/8389a87a741957c1565394a0222526c9fcb26a8c))
+
 ## [1.21.1](https://github.com/open-rpc/generator/compare/1.21.0...1.21.1) (2021-08-20)
 
 
