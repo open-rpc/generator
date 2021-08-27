@@ -1,3 +1,32 @@
+## [1.21.2](https://github.com/open-rpc/generator/compare/1.21.1...1.21.2) (2021-08-27)
+
+
+### Bug Fixes
+
+* custom component relative urls ([b28b205](https://github.com/open-rpc/generator/commit/b28b2059935f0232fc31744f31278714194996f9))
+* customComponent test paths ([8389a87](https://github.com/open-rpc/generator/commit/8389a87a741957c1565394a0222526c9fcb26a8c))
+
+## [1.21.1](https://github.com/open-rpc/generator/compare/1.21.0...1.21.1) (2021-08-20)
+
+
+### Bug Fixes
+
+* bump versions of client and lock typings version to latest ([a1645e9](https://github.com/open-rpc/generator/commit/a1645e9df06424ed0d87d1d7489610e06c252238))
+
+# [1.21.0](https://github.com/open-rpc/generator/compare/1.20.1...1.21.0) (2021-08-16)
+
+
+### Features
+
+* bump typings and lock version ([c356e65](https://github.com/open-rpc/generator/commit/c356e6530034e98a4845e350a97535cc99c617ca))
+
+## [1.20.1](https://github.com/open-rpc/generator/compare/1.20.0...1.20.1) (2021-07-17)
+
+
+### Bug Fixes
+
+* lodash zipObject wrong order ([5c1a1ef](https://github.com/open-rpc/generator/commit/5c1a1ef2ce651485c8d092cf11b0efab6d8de80a)), closes [#670](https://github.com/open-rpc/generator/issues/670)
+
 # [1.20.0](https://github.com/open-rpc/generator/compare/1.19.1...1.20.0) (2021-06-05)
 
 

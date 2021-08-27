@@ -77,9 +77,9 @@ describe(`Examples to generate Js clients`, () => {
           { type: "client", language: "typescript", name: "testclient-ts" },
           { type: "server", language: "typescript", name: "testserver-ts" },
           { type: "docs", language: "gatsby", name: "testserver-gatsby" },
-          { type: "custom", language: "typescript", name: "custom-stuff", "customComponent":"./custom-test-component.js", customType:"client"},
-          { type: "custom", language: "typescript", name: "custom-stuff2", "customComponent":"./custom-test-component.js", customType:"client", openRPCPath: null},
-          { type: "custom", language: "typescript", name: "custom-stuff3", "customComponent":"./custom-test-component.js", customType:"client", openRPCPath: "tmpz"}
+          { type: "custom", language: "typescript", name: "custom-stuff", "customComponent":"./src/custom-test-component.js", customType:"client"},
+          { type: "custom", language: "typescript", name: "custom-stuff2", "customComponent":"./src/custom-test-component.js", customType:"client", openRPCPath: null},
+          { type: "custom", language: "typescript", name: "custom-stuff3", "customComponent":"./src/custom-test-component.js", customType:"client", openRPCPath: "tmpz"}
         ],
       });
 
@@ -93,9 +93,9 @@ describe(`Examples to generate Js clients`, () => {
           { type: "client", language: "typescript", name: "testclient-ts" },
           { type: "server", language: "typescript", name: "testserver-ts" },
           { type: "docs", language: "gatsby", name: "testserver-gatsby" },
-          { type: "custom", language: "typescript", name: "custom-stuff", "customComponent":"./custom-test-component.js", customType:"client"},
-          { type: "custom", language: "typescript", name: "custom-stuff2", "customComponent":"./custom-test-component.js", customType:"client", openRPCPath: null},
-          { type: "custom", language: "typescript", name: "custom-stuff3", "customComponent":"./custom-test-component.js", customType:"client", openRPCPath: "tmpz"}
+          { type: "custom", language: "typescript", name: "custom-stuff", "customComponent":"./src/custom-test-component.js", customType:"client"},
+          { type: "custom", language: "typescript", name: "custom-stuff2", "customComponent":"./src/custom-test-component.js", customType:"client", openRPCPath: null},
+          { type: "custom", language: "typescript", name: "custom-stuff3", "customComponent":"./src/custom-test-component.js", customType:"client", openRPCPath: "tmpz"}
         ],
       });
 

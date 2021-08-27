@@ -50,11 +50,12 @@ interface IComponent {
 const getComponentFromConfig = async (componentConfig: TComponentConfig): Promise<IComponent> => {
   const { language, name, type} = componentConfig;
   let openRPCPath: string | undefined = "src";
-  if(componentConfig.type === "custom"){
-      const compModule: IComponentModule = (await import(componentConfig.customComponent)).default;
-      if(compModule.hooks === undefined) throw new Error("Hooks interface not exported or defined")
-      openRPCPath = componentConfig.openRPCPath === null ? undefined : componentConfig.openRPCPath || "src" ;
-      return { hooks: compModule.hooks, staticPath: compModule.staticPath(language, componentConfig.customType), language, name, type, openRPCPath }
+  if (componentConfig.type === "custom"){
+    const componentPath = componentConfig.customComponent.startsWith("./") ? path.resolve(process.cwd(), componentConfig.customComponent) : componentConfig.customComponent
+    const compModule: IComponentModule = (await import(componentPath)).default;
+    if(compModule.hooks === undefined) throw new Error("Hooks interface not exported or defined")
+    openRPCPath = componentConfig.openRPCPath === null ? undefined : componentConfig.openRPCPath || "src" ;
+    return { hooks: compModule.hooks, staticPath: compModule.staticPath(language, componentConfig.customType), language, name, type, openRPCPath }
   }
   const componentModule = componentModules[type]
   return { hooks: componentModule.hooks, staticPath: componentModule.staticPath(language, type), language, name, type, openRPCPath }
