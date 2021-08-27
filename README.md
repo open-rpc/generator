@@ -61,7 +61,7 @@ default the type IComponentModule see custom-test-component.js as an example. It
           "type": "custom",
           "name": "awesome-custom-client",
           "language": "typescript",
-          "customComponent": "./custom-test-component.js",
+          "customComponent": "./src/custom-test-component.js",
           "customType": "client"
       } 
   ]
