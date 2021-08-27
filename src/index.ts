@@ -105,7 +105,7 @@ const copyStaticForComponent = async (
 };
 
 export interface IGeneratorOptions {
-  outDir: string;
+  outDir?: string;
   openrpcDocument: OpenRPC | string;
   components: TComponentConfig[];
 }
@@ -124,7 +124,7 @@ const writeOpenRpcDocument = async (
 ): Promise<string | undefined> => {
   if(component.openRPCPath === undefined) return;
   const toWrite = typeof doc === "string" ? await parseOpenRPCDocument(doc, { dereference: false }) : doc;
-  const openRPCPath = `${outDir}/${component.type}/${component.language}/${component.openRPCPath}`
+  const openRPCPath = `${outDir}/${component.openRPCPath}`
   await ensureDir(openRPCPath);
   const destinationDirectoryName = `${openRPCPath}/openrpc.json`;
   await writeFile(destinationDirectoryName, JSON.stringify(toWrite, undefined, "  "), "utf8");
@@ -179,10 +179,20 @@ export default async (generatorOptions: IGeneratorOptions) => {
   const methodTypings = new Typings(dereffedDocument);
 
   for (const componentConfig of generatorOptions.components) {
+    const outPath = componentConfig.outPath;
+    if(outPath === undefined && outDir === undefined){
+      console.error("No output path specified");
+      throw new Error("No output path specified");
+    }
     const component = await getComponentFromConfig(componentConfig)
-    const destDir = await prepareOutputDirectory(outDir, component);
-    await copyStaticForComponent(destDir, component, dereffedDocument, methodTypings);
-    await writeOpenRpcDocument(outDir, openrpcDocument, component);
-    await compileTemplate(destDir, component, dereffedDocument, methodTypings);
+    let destDir = outPath;
+    if(!outPath){
+      destDir = await prepareOutputDirectory(outDir!, component);
+    }else {
+      await ensureDir(outPath);
+    }
+    await copyStaticForComponent(destDir!, component, dereffedDocument, methodTypings);
+    await writeOpenRpcDocument(destDir!, openrpcDocument, component);
+    await compileTemplate(destDir!, component, dereffedDocument, methodTypings);
   }
 };

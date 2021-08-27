@@ -64,10 +64,21 @@ describe(`Examples to generate Js clients`, () => {
     return expect(genProm).rejects.toBeInstanceOf(OpenRPCDocumentDereferencingError);
   });
 
+
   forEach(examples, (example: OpenRPC, exampleName: string) => {
+    it(`rejects configurations without outDir or outPath`, async ()=>{
+        const promGen = clientGen({
+          openrpcDocument: await parseOpenRPCDocument(example),
+          components: [
+            { type: "client", language: "typescript", name: "testclient-ts" },
+          ]
+        });
+        expect(promGen).rejects.toBeInstanceOf(Error);
+    });
+
     it(`creates a new client for example: ${exampleName} and regenerates after`, async () => {
       const exampleOutDir = `${testDir}/${exampleName}`;
-      expect.assertions(2);
+      expect.assertions(5);
 
       await clientGen({
         openrpcDocument: await parseOpenRPCDocument(example),
@@ -79,11 +90,14 @@ describe(`Examples to generate Js clients`, () => {
           { type: "docs", language: "gatsby", name: "testserver-gatsby" },
           { type: "custom", language: "typescript", name: "custom-stuff", "customComponent":"./src/custom-test-component.js", customType:"client"},
           { type: "custom", language: "typescript", name: "custom-stuff2", "customComponent":"./src/custom-test-component.js", customType:"client", openRPCPath: null},
-          { type: "custom", language: "typescript", name: "custom-stuff3", "customComponent":"./src/custom-test-component.js", customType:"client", openRPCPath: "tmpz"}
+          { type: "custom", language: "typescript", name: "custom-stuff3", "customComponent":"./src/custom-test-component.js", customType:"client", openRPCPath: "tmpz"},
+          { type: "custom", language: "typescript", name: "custom-stuff4", "customComponent":"./src/custom-test-component.js", customType:"client",
+          openRPCPath: "tmpy", outPath: `${exampleOutDir}/special`}
         ],
       });
 
       await expect(stat(exampleOutDir)).resolves.toBeTruthy();
+      await expect(stat(`${exampleOutDir}/special`)).resolves.toBeTruthy();
 
       await clientGen({
         openrpcDocument: await parseOpenRPCDocument(example),
@@ -95,9 +109,13 @@ describe(`Examples to generate Js clients`, () => {
           { type: "docs", language: "gatsby", name: "testserver-gatsby" },
           { type: "custom", language: "typescript", name: "custom-stuff", "customComponent":"./src/custom-test-component.js", customType:"client"},
           { type: "custom", language: "typescript", name: "custom-stuff2", "customComponent":"./src/custom-test-component.js", customType:"client", openRPCPath: null},
-          { type: "custom", language: "typescript", name: "custom-stuff3", "customComponent":"./src/custom-test-component.js", customType:"client", openRPCPath: "tmpz"}
+          { type: "custom", language: "typescript", name: "custom-stuff3", "customComponent":"./src/custom-test-component.js", customType:"client", openRPCPath: "tmpz"},
+          { type: "custom", language: "typescript", name: "custom-stuff4", "customComponent":"./src/custom-test-component.js", customType:"client",
+          openRPCPath: "tmpy", outPath: `${exampleOutDir}/special`}
         ],
       });
+
+      await expect(stat(`${exampleOutDir}/special`)).resolves.toBeTruthy();
 
       await expect(stat(exampleOutDir)).resolves.toBeTruthy();
     }, 100000);
