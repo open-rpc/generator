@@ -47,15 +47,15 @@ const hooks: IHooks = {
         currPkgStr = await readFile(destPath, "utf8");
         const currPkg = JSON.parse(currPkgStr);
         tmplPkg = {
-          ...currPkg,
           ...tmplPkg,
+          ...currPkg,
           dependencies: {
-            ...currPkg.dependencies,
             ...tmplPkg.dependencies,
+            ...currPkg.dependencies,
           },
           devDependencies: {
-            ...currPkg.devDependencies,
             ...tmplPkg.devDependencies,
+            ...currPkg.devDependencies,
           },
         };
       } catch (e) {
