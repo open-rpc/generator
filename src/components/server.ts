@@ -49,6 +49,10 @@ const hooks: IHooks = {
         tmplPkg = {
           ...tmplPkg,
           ...currPkg,
+          scripts: {
+            ...tmplPkg.scripts,
+            ...currPkg.scripts,
+          },
           dependencies: {
             ...tmplPkg.dependencies,
             ...currPkg.dependencies,
