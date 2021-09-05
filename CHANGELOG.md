@@ -1,3 +1,10 @@
+## [1.22.1](https://github.com/open-rpc/generator/compare/1.22.0...1.22.1) (2021-09-05)
+
+
+### Bug Fixes
+
+* server component package scripts merge ([3c21c77](https://github.com/open-rpc/generator/commit/3c21c77e3b66f8e8e5db475b4149aa34d05f2eae))
+
 # [1.22.0](https://github.com/open-rpc/generator/compare/1.21.2...1.22.0) (2021-08-27)
 
 
