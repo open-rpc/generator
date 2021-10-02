@@ -1,3 +1,10 @@
+## [1.22.2](https://github.com/open-rpc/generator/compare/1.22.1...1.22.2) (2021-10-02)
+
+
+### Bug Fixes
+
+* add package lock file and lock semi ver on a few packages ([1a0d8d7](https://github.com/open-rpc/generator/commit/1a0d8d75e2544eaae43054e4125c7c8a64d3099b))
+
 ## [1.22.1](https://github.com/open-rpc/generator/compare/1.22.0...1.22.1) (2021-09-05)
 
 
