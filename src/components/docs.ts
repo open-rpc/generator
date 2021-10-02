@@ -87,8 +87,10 @@ module.exports = {
 const hooks: IHooks = {
   afterCopyStatic: [
     async (dest, frm, component, openrpcDocument): Promise<void> => {
-      const destPath = path.join(dest, "package.json");
-      const tmplPath = path.join(dest, "_package.json");
+
+      const replacePackageJsonContent = async (fileName: string)=> {
+      const destPath = path.join(dest, fileName);
+      const tmplPath = path.join(dest, `_${fileName}`);
 
       const tmplPkgStr = await readFile(tmplPath, "utf8");
       let tmplPkg = JSON.parse(tmplPkgStr);
@@ -118,6 +120,9 @@ const hooks: IHooks = {
 
       await writeFile(destPath, JSON.stringify(tmplPkg, undefined, "  "));
       await remove(tmplPath);
+    }
+    await replacePackageJsonContent("package.json");
+    await replacePackageJsonContent("package-lock.json");
     },
   ],
   templateFiles: {
