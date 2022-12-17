@@ -51,9 +51,9 @@ export class <%= className %> {
       throw new Error("Invalid constructor params");
     }
     
-    const {type, host, port, protocol} = options.transport;
+    const {type, host, port, protocol, injected} = options.transport;
 
-    if (type === "injected" && options.transport.injected === undefined) {
+    if (type === "injected" && injected === undefined) {
       throw new Error("Missing injected transport");
     }
 
@@ -63,7 +63,7 @@ export class <%= className %> {
     }
     switch (type) {
       case 'injected':
-        this.transport = options.transport.injected;
+        this.transport = injected;
         break;
       case 'http':
       case 'https':
