@@ -33,15 +33,17 @@ export class <%= className %> {
   private timeout: number | undefined;
 
   constructor(options: Options) {
-    
-    if (type === "injected" && options.transport.injected === undefined) {
-      throw new Error("Missing injected transport");
-    }
 
     if (options.transport === undefined || options.transport.type === undefined) {
       throw new Error("Invalid constructor params");
     }
+    
     const {type, host, port, protocol} = options.transport;
+
+    if (type === "injected" && options.transport.injected === undefined) {
+      throw new Error("Missing injected transport");
+    }
+
     let path = options.transport.path || "";
     if(path && path[0] !== "/") {
         path = "/" + path;
