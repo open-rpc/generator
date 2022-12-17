@@ -37,14 +37,16 @@ export class <%= className %> {
 
   constructor(options: Options) {
 
+    if (options.transport === undefined || options.transport.type === undefined) {
+      throw new Error("Invalid constructor params");
+    }
+    
+    const {type, host, port, protocol} = options.transport;
+
     if (type === "injected" && options.transport.injected === undefined) {
       throw new Error("Missing injected transport");
     }
 
-    if (options.transport === undefined || options.transport.type === undefined) {
-      throw new Error("Invalid constructor params");
-    }
-    const {type, host, port, protocol} = options.transport;
     let path = options.transport.path || "";
     if(path && path[0] !== "/") {
         path = "/" + path;
