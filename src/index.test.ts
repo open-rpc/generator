@@ -9,7 +9,6 @@ import {
   OpenRPCDocumentDereferencingError,
 } from "@open-rpc/schema-utils-js";
 import { OpenrpcDocument as OpenRPC } from "@open-rpc/meta-schema";
-import { HTTPTransport } from "@open-rpc/client-js";
 
 const stat = promisify(fs.stat);
 const rmdir = promisify(fs.rmdir);
