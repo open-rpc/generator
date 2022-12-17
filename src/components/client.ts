@@ -47,6 +47,10 @@ export class <%= className %> {
 
   constructor(options: Options) {
 
+    if (type === "injected" && options.transport.injected === undefined) {
+      throw new Error("Missing injected transport");
+    }
+
     if (options.transport === undefined || options.transport.type === undefined) {
       throw new Error("Invalid constructor params");
     }
