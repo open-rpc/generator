@@ -34,7 +34,7 @@
     "@open-rpc/typings": "1.12.1",
     "commander": "^7.2.0",
     "fs-extra": "^10.0.0",
-    "inquirer": "^8.0.0",
+    "inquirer": "^8.2.5",
     "lodash": "^4.17.21"
   },
   "devDependencies": {
@@ -45,7 +45,7 @@
     "@types/connect": "^3.4.33",
     "@types/cors": "^2.8.6",
     "@types/fs-extra": "^9.0.1",
-    "@types/inquirer": "^7.3.0",
+    "@types/inquirer": "^9.0.3",
     "@types/jest": "^26.0.22",
     "@types/lodash": "^4.14.158",
     "jest": "^26.2.1",

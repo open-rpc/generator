@@ -24,7 +24,7 @@
   "author": "",
   "license": "Apache-2.0",
   "dependencies": {
-    "@open-rpc/server-js": "^1.6.2",
+    "@open-rpc/server-js": "^1.9.3",
     "@open-rpc/schema-utils-js": "^1.12.0"
   },
   "devDependencies": {
@@ -35,6 +35,6 @@
     "jest": "^25.1.0",
     "ts-jest": "25.0.0",
     "tslint": "6.0.0",
-    "typescript": "3.7.5"
+    "typescript": "^4.0.2"
   }
 }
