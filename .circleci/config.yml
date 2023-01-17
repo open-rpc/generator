@@ -28,7 +28,7 @@ aliases:
 defaults: &defaults
   working_directory: ~/generator
   docker:
-    - image: circleci/node:14
+    - image: cimg/node:18.13.0
 
 jobs:
   test:
