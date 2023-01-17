@@ -31,7 +31,7 @@
   "license": "Apache-2.0",
   "dependencies": {
     "@iarna/toml": "^2.2.5",
-    "@open-rpc/typings": "1.12.1",
+    "@open-rpc/typings": "^1.12.3",
     "commander": "^7.2.0",
     "fs-extra": "^10.0.0",
     "inquirer": "^8.2.5",
