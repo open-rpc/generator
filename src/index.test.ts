@@ -4,7 +4,10 @@ import fsx, { emptyDir } from "fs-extra";
 import examples from "@open-rpc/examples";
 import { promisify } from "util";
 import { forEach } from "lodash";
-import { parseOpenRPCDocument, OpenRPCDocumentDereferencingError } from "@open-rpc/schema-utils-js";
+import {
+  parseOpenRPCDocument,
+  OpenRPCDocumentDereferencingError,
+} from "@open-rpc/schema-utils-js";
 import { OpenrpcDocument as OpenRPC } from "@open-rpc/meta-schema";
 
 const stat = promisify(fs.stat);
@@ -34,9 +37,7 @@ describe(`Examples to generate Js clients`, () => {
         methods: [
           {
             name: "foo",
-            params: [
-              { $ref: "#/components/contentDescriptors/LeFoo" },
-            ],
+            params: [{ $ref: "#/components/contentDescriptors/LeFoo" }],
             result: {
               name: "bar",
               schema: { $ref: "#/components/contentDescriptors/LeFoo" },
@@ -61,19 +62,20 @@ describe(`Examples to generate Js clients`, () => {
     };
     const genProm = clientGen(testDocument);
 
-    return expect(genProm).rejects.toBeInstanceOf(OpenRPCDocumentDereferencingError);
+    return expect(genProm).rejects.toBeInstanceOf(
+      OpenRPCDocumentDereferencingError
+    );
   });
 
-
   forEach(examples, (example: OpenRPC, exampleName: string) => {
-    it(`rejects configurations without outDir or outPath`, async ()=>{
-        const promGen = clientGen({
-          openrpcDocument: await parseOpenRPCDocument(example),
-          components: [
-            { type: "client", language: "typescript", name: "testclient-ts" },
-          ]
-        });
-        expect(promGen).rejects.toBeInstanceOf(Error);
+    it(`rejects configurations without outDir or outPath`, async () => {
+      const promGen = clientGen({
+        openrpcDocument: await parseOpenRPCDocument(example),
+        components: [
+          { type: "client", language: "typescript", name: "testclient-ts" },
+        ],
+      });
+      expect(promGen).rejects.toBeInstanceOf(Error);
     });
 
     it(`creates a new client for example: ${exampleName} and regenerates after`, async () => {
@@ -88,11 +90,38 @@ describe(`Examples to generate Js clients`, () => {
           { type: "client", language: "typescript", name: "testclient-ts" },
           { type: "server", language: "typescript", name: "testserver-ts" },
           { type: "docs", language: "gatsby", name: "testserver-gatsby" },
-          { type: "custom", language: "typescript", name: "custom-stuff", "customComponent":"./src/custom-test-component.js", customType:"client"},
-          { type: "custom", language: "typescript", name: "custom-stuff2", "customComponent":"./src/custom-test-component.js", customType:"client", openRPCPath: null},
-          { type: "custom", language: "typescript", name: "custom-stuff3", "customComponent":"./src/custom-test-component.js", customType:"client", openRPCPath: "tmpz"},
-          { type: "custom", language: "typescript", name: "custom-stuff4", "customComponent":"./src/custom-test-component.js", customType:"client",
-          openRPCPath: "tmpy", outPath: `${exampleOutDir}/special`}
+          {
+            type: "custom",
+            language: "typescript",
+            name: "custom-stuff",
+            customComponent: "./src/custom-test-component.js",
+            customType: "client",
+          },
+          {
+            type: "custom",
+            language: "typescript",
+            name: "custom-stuff2",
+            customComponent: "./src/custom-test-component.js",
+            customType: "client",
+            openRPCPath: null,
+          },
+          {
+            type: "custom",
+            language: "typescript",
+            name: "custom-stuff3",
+            customComponent: "./src/custom-test-component.js",
+            customType: "client",
+            openRPCPath: "tmpz",
+          },
+          {
+            type: "custom",
+            language: "typescript",
+            name: "custom-stuff4",
+            customComponent: "./src/custom-test-component.js",
+            customType: "client",
+            openRPCPath: "tmpy",
+            outPath: `${exampleOutDir}/special`,
+          },
         ],
       });
 
@@ -107,11 +136,38 @@ describe(`Examples to generate Js clients`, () => {
           { type: "client", language: "typescript", name: "testclient-ts" },
           { type: "server", language: "typescript", name: "testserver-ts" },
           { type: "docs", language: "gatsby", name: "testserver-gatsby" },
-          { type: "custom", language: "typescript", name: "custom-stuff", "customComponent":"./src/custom-test-component.js", customType:"client"},
-          { type: "custom", language: "typescript", name: "custom-stuff2", "customComponent":"./src/custom-test-component.js", customType:"client", openRPCPath: null},
-          { type: "custom", language: "typescript", name: "custom-stuff3", "customComponent":"./src/custom-test-component.js", customType:"client", openRPCPath: "tmpz"},
-          { type: "custom", language: "typescript", name: "custom-stuff4", "customComponent":"./src/custom-test-component.js", customType:"client",
-          openRPCPath: "tmpy", outPath: `${exampleOutDir}/special`}
+          {
+            type: "custom",
+            language: "typescript",
+            name: "custom-stuff",
+            customComponent: "./src/custom-test-component.js",
+            customType: "client",
+          },
+          {
+            type: "custom",
+            language: "typescript",
+            name: "custom-stuff2",
+            customComponent: "./src/custom-test-component.js",
+            customType: "client",
+            openRPCPath: null,
+          },
+          {
+            type: "custom",
+            language: "typescript",
+            name: "custom-stuff3",
+            customComponent: "./src/custom-test-component.js",
+            customType: "client",
+            openRPCPath: "tmpz",
+          },
+          {
+            type: "custom",
+            language: "typescript",
+            name: "custom-stuff4",
+            customComponent: "./src/custom-test-component.js",
+            customType: "client",
+            openRPCPath: "tmpy",
+            outPath: `${exampleOutDir}/special`,
+          },
         ],
       });
 
