@@ -4,7 +4,6 @@
   <span>
     <img alt="CircleCI branch" src="https://img.shields.io/circleci/project/github/open-rpc/generator/master.svg">
     <img src="https://codecov.io/gh/open-rpc/generator/branch/master/graph/badge.svg" />
-    <img alt="Dependabot status" src="https://api.dependabot.com/badges/status?host=github&repo=open-rpc/generator" />
     <img alt="npm" src="https://img.shields.io/npm/dt/@open-rpc/generator.svg" />
     <img alt="GitHub release" src="https://img.shields.io/github/release/open-rpc/generator.svg" />
     <img alt="GitHub commits since latest release" src="https://img.shields.io/github/commits-since/open-rpc/generator/latest.svg" />
