@@ -1,3 +1,12 @@
+## [1.22.3](https://github.com/open-rpc/generator/compare/1.22.2...1.22.3) (2023-01-18)
+
+
+### Bug Fixes
+
+* bump @open-rpc/typings which will handle leading numbers in titles ([7229170](https://github.com/open-rpc/generator/commit/722917001db071c0ff9dc93b65717cfd0d848cad))
+* update deps that were causing tests to fail ([7e55cfc](https://github.com/open-rpc/generator/commit/7e55cfc5ca3b516e7133ec1cdee69ec9b96fc282))
+* update node version and add circle ci context ([acd2d73](https://github.com/open-rpc/generator/commit/acd2d73b4bc44e54b34a66ef59148296fc76c6b0))
+
 ## [1.22.2](https://github.com/open-rpc/generator/compare/1.22.1...1.22.2) (2021-10-02)
 
 
