@@ -24,7 +24,7 @@ const MyApp: React.FC = () => {
           <%= openrpcDocument.info.description %>
         </Typography>
         <br/>
-        <Button variant="contained" color="primary" href="/api-documentation">
+        <Button variant="contained" color="primary" href="api-documentation">
           API Reference Documentation
         </Button>
         <br />
