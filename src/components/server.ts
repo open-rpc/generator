@@ -97,6 +97,7 @@ const hooks: IHooks = {
         let codeToWrite = "";
         if (exists) {
           const existingMethod = await readFile(methodFileName, "utf8");
+          /* eslint-disable-next-line */
           const methodRegExp = new RegExp(`const ${method.name}: ${functionAliasName} = \(.*\) =>`, "gm");
           existingMethod.replace(methodRegExp, newFunctionInterface);
           codeToWrite = existingMethod;

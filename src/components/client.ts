@@ -202,7 +202,7 @@ const hooks: IHooks = {
         const updatedCargo = TOML.stringify({
           ...cargoTOML,
           package: {
-            ...cargoTOML.package as object,
+            ...cargoTOML.package as any,
             name: component.name,
             version: openrpcDocument.info.version,
           },
