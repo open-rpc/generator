@@ -10,5 +10,21 @@
     "declarationDir": "build",
     "declaration": true,
     "resolveJsonModule": true
+  },
+  "typedocOptions": {
+    "name": "generated client",
+    "entryPoints": [
+      "./src/index.ts"
+    ],
+    "out": "docs",
+    "readme": "./README.md",
+    "exclude": [
+      "node_modules",
+      "docs",
+      "build",
+      "jest.config.js",
+      "src/*.test.ts",
+      "src/**/*.test.ts"
+    ]
   }
 }

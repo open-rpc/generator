@@ -27,7 +27,7 @@ program
         validate: async (d: any) => {
           try {
             await parseOpenRPCDocument(d);
-          } catch (e) {
+          } catch (e: any) {
             return `Invalid document. The error recieved: ${e.message}`
           }
           return true;

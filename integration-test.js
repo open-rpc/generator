@@ -6,7 +6,11 @@ const client = new SimpleMathClient({
   transport: { type: "http", port: 4441, host: "localhost" }
 });
 
-client.addition(2, 2).then((result) => {
+const go = async () => {
+  await client.initialize();
+  const result = await client.addition(2, 2);
   if (result !== 4) { process.exit(1); }
   console.log("finished with result: ", result);
-});
+}
+
+go();

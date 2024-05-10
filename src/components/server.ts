@@ -71,14 +71,14 @@ const hooks: IHooks = {
     },
   ],
   afterCompileTemplate: [
-    async (dest, frm, component, openrpcDocument, typings): Promise<void> => {
+    async (dest, frm, component, openrpcDocument, typings, dereffedDocument): Promise<void> => {
       onlyHandleTS(component);
 
       const methodsFolder = `${dest}/src/methods/`;
       await ensureDir(methodsFolder);
 
       // Only write new one if there isnt one already.
-      for (const method of openrpcDocument.methods as MethodObject[]) {
+      for (const method of dereffedDocument.methods as MethodObject[]) {
         const methodFileName = `${methodsFolder}/${method.name}.ts`;
 
         const functionAliasName = typings.getTypingNames("typescript", method).method;
