@@ -16,6 +16,7 @@ import {
   PostMessageIframeTransport,
   WebSocketTransport,
   HTTPTransport,
+  Transport,
   Client,
   JSONRPCError
 } from "@open-rpc/client-js";
@@ -27,19 +28,20 @@ import { MethodCallValidator, MethodNotFoundError, parseOpenRPCDocument } from "
 
 export interface Options {
   transport: {
-    type: "websocket" | "http" | "https" | "postmessagewindow" | "postmessageiframe";
+    type: "websocket" | "http" | "https" | "postmessagewindow" | "postmessageiframe" | "injected";
     host: string;
     port: number;
     path?: string;
     protocol?: string;
+    injected: Transport;
   },
 }
 
 export class <%= className %> {
   public rpc: Client;
-  public static openrpcDocument: OpenRPC = <%= JSON.stringify(openrpcDocument) %>;
-public dereffedDocument: OpenRPC | undefined;
-  public transport: HTTPTransport | WebSocketTransport | PostMessageWindowTransport | PostMessageIframeTransport;
+  public dereffedDocument: OpenRPC | undefined;
+  public static openrpcDocument: OpenRPC = <%= JSON.stringify(openrpcDocument) %> ;
+  public transport: HTTPTransport | WebSocketTransport | PostMessageWindowTransport | PostMessageIframeTransport | Transport;
   private validator: MethodCallValidator | undefined;
   private timeout: number | undefined;
 
@@ -48,12 +50,21 @@ public dereffedDocument: OpenRPC | undefined;
     if (options.transport === undefined || options.transport.type === undefined) {
       throw new Error("Invalid constructor params");
     }
-    const {type, host, port, protocol} = options.transport;
+
+    const {type, host, port, protocol, injected} = options.transport;
+
+    if (type === "injected" && injected === undefined) {
+      throw new Error("Missing injected transport");
+    }
+
     let path = options.transport.path || "";
     if(path && path[0] !== "/") {
         path = "/" + path;
     }
     switch (type) {
+      case 'injected':
+        this.transport = injected;
+        break;
       case 'http':
       case 'https':
         this.transport = new HTTPTransport((protocol || type) + "://" + host + ":" + port + path);
@@ -198,7 +209,11 @@ const hooks: IHooks = {
   afterCopyStatic: [
     async (dest, frm, component): Promise<void> => {
       if (component.language === "typescript") {
-        return await move(path.join(dest, "_package.json"), path.join(dest, "package.json"), { overwrite: true });
+        return await move(
+          path.join(dest, "_package.json"),
+          path.join(dest, "package.json"),
+          { overwrite: true }
+        );
       }
     },
   ],
@@ -224,7 +239,7 @@ const hooks: IHooks = {
         const updatedCargo = TOML.stringify({
           ...cargoTOML,
           package: {
-            ...cargoTOML.package as any,
+            ...(cargoTOML.package as any),
             name: component.name,
             version: openrpcDocument.info.version,
           },
