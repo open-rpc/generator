@@ -48,20 +48,20 @@ interface IComponent {
 }
 
 const getComponentFromConfig = async (componentConfig: TComponentConfig): Promise<IComponent> => {
-  const { language, name, type} = componentConfig;
+  const { language, name, type } = componentConfig;
   let openRPCPath: string | undefined = "src";
-  if (componentConfig.type === "custom"){
+  if (componentConfig.type === "custom") {
     const componentPath = componentConfig.customComponent.startsWith("./") ? path.resolve(process.cwd(), componentConfig.customComponent) : componentConfig.customComponent
     const compModule: IComponentModule = (await import(componentPath)).default;
-    if(compModule.hooks === undefined) throw new Error("Hooks interface not exported or defined")
-    openRPCPath = componentConfig.openRPCPath === null ? undefined : componentConfig.openRPCPath || "src" ;
+    if (compModule.hooks === undefined) throw new Error("Hooks interface not exported or defined")
+    openRPCPath = componentConfig.openRPCPath === null ? undefined : componentConfig.openRPCPath || "src";
     return { hooks: compModule.hooks, staticPath: compModule.staticPath(language, componentConfig.customType), language, name, type, openRPCPath }
   }
   const componentModule = componentModules[type]
   return { hooks: componentModule.hooks, staticPath: componentModule.staticPath(language, type), language, name, type, openRPCPath }
 }
 
-const makeApplyHooks = (hooks: FHook[] | undefined, dereffedDocument: OpenRPC, typings: Typings) => {
+const makeApplyHooks = (hooks: FHook[] | undefined, openrpcDocument: OpenRPC, typings: Typings, dereffedDocument: OpenRPC) => {
   return async (destDir: string, srcDir: string | undefined, component: IComponent) => {
     if (hooks === undefined) return
     if (hooks.length === 0) return
@@ -70,8 +70,9 @@ const makeApplyHooks = (hooks: FHook[] | undefined, dereffedDocument: OpenRPC, t
         destDir,
         srcDir,
         component,
-        dereffedDocument,
+        openrpcDocument,
         typings,
+        dereffedDocument
       );
     }
   }
@@ -80,16 +81,17 @@ const makeApplyHooks = (hooks: FHook[] | undefined, dereffedDocument: OpenRPC, t
 const copyStaticForComponent = async (
   destinationDirectoryName: string,
   component: IComponent,
-  dereffedDocument: OpenRPC,
+  openrpcDocument: OpenRPC,
   typings: Typings,
+  dereffedDocument: OpenRPC,
 ) => {
 
-  const {staticPath, hooks} = component;
-  if(staticPath === undefined) return
+  const { staticPath, hooks } = component;
+  if (staticPath === undefined) return
 
   const { beforeCopyStatic, afterCopyStatic } = hooks;
-  const applyBeforeCopyStatic = makeApplyHooks(beforeCopyStatic, dereffedDocument, typings)
-  const applyAfterCopyStatic = makeApplyHooks(afterCopyStatic, dereffedDocument, typings)
+  const applyBeforeCopyStatic = makeApplyHooks(beforeCopyStatic, openrpcDocument, typings, dereffedDocument)
+  const applyAfterCopyStatic = makeApplyHooks(afterCopyStatic, openrpcDocument, typings, dereffedDocument)
 
   await applyBeforeCopyStatic(destinationDirectoryName, staticPath, component)
   await copy(staticPath, destinationDirectoryName, { overwrite: true, dereference: true });
@@ -122,7 +124,7 @@ const writeOpenRpcDocument = async (
   doc: OpenRPC | string,
   component: IComponent,
 ): Promise<string | undefined> => {
-  if(component.openRPCPath === undefined) return;
+  if (component.openRPCPath === undefined) return;
   const toWrite = typeof doc === "string" ? await parseOpenRPCDocument(doc, { dereference: false }) : doc;
   const openRPCPath = `${outDir}/${component.openRPCPath}`
   await ensureDir(openRPCPath);
@@ -134,15 +136,16 @@ const writeOpenRpcDocument = async (
 const compileTemplate = async (
   destDir: string,
   component: IComponent,
-  dereffedDocument: OpenRPC,
+  openrpcDocument: OpenRPC,
   typings: Typings,
+  dereffedDocument: OpenRPC,
 ): Promise<boolean> => {
 
   const { hooks } = component;
   const { beforeCompileTemplate, afterCompileTemplate } = hooks;
 
-  const applyBeforeCompileTemplate = makeApplyHooks(beforeCompileTemplate, dereffedDocument, typings)
-  const applyAfterCompileTemplate = makeApplyHooks(afterCompileTemplate, dereffedDocument, typings)
+  const applyBeforeCompileTemplate = makeApplyHooks(beforeCompileTemplate, openrpcDocument, typings, dereffedDocument);
+  const applyAfterCompileTemplate = makeApplyHooks(afterCompileTemplate, openrpcDocument, typings, dereffedDocument);
 
   await applyBeforeCompileTemplate(destDir, undefined, component)
 
@@ -151,9 +154,9 @@ const compileTemplate = async (
   const templates = hooks.templateFiles[component.language];
   for (const t of templates) {
     const result = t.template({
-      className: startCase(dereffedDocument.info.title).replace(/\s/g, ""),
+      className: startCase(openrpcDocument.info.title).replace(/\s/g, ""),
       methodTypings: typings,
-      openrpcDocument: dereffedDocument,
+      openrpcDocument: openrpcDocument,
     });
 
     await writeFile(`${destDir}/${t.path}`, result, "utf8");
@@ -164,12 +167,15 @@ const compileTemplate = async (
   return true;
 };
 
+const clone = (x: any) => JSON.parse(JSON.stringify(x))
+
 export default async (generatorOptions: IGeneratorOptions) => {
   const { openrpcDocument, outDir } = generatorOptions;
   let dereffedDocument: OpenRPC;
+  const doc = await parseOpenRPCDocument(openrpcDocument, { dereference: false });
 
   try {
-    dereffedDocument = await parseOpenRPCDocument(openrpcDocument);
+    dereffedDocument = await parseOpenRPCDocument(clone(doc));
   } catch (e) {
     console.error("Invalid OpenRPC document. Please revise the validation errors below:"); // tslint:disable-line
     console.error(e);
@@ -180,19 +186,19 @@ export default async (generatorOptions: IGeneratorOptions) => {
 
   for (const componentConfig of generatorOptions.components) {
     const outPath = componentConfig.outPath;
-    if(outPath === undefined && outDir === undefined){
+    if (outPath === undefined && outDir === undefined) {
       console.error("No output path specified");
       throw new Error("No output path specified");
     }
     const component = await getComponentFromConfig(componentConfig)
     let destDir = outPath;
-    if(!outPath){
+    if (!outPath) {
       destDir = await prepareOutputDirectory(outDir!, component);
-    }else {
+    } else {
       await ensureDir(outPath);
     }
-    await copyStaticForComponent(destDir!, component, dereffedDocument, methodTypings);
-    await writeOpenRpcDocument(destDir!, openrpcDocument, component);
-    await compileTemplate(destDir!, component, dereffedDocument, methodTypings);
+    await copyStaticForComponent(destDir!, component, doc, methodTypings, dereffedDocument);
+    await writeOpenRpcDocument(destDir!, doc, component);
+    await compileTemplate(destDir!, component, doc, methodTypings, dereffedDocument);
   }
 };
