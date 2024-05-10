@@ -28,7 +28,7 @@ aliases:
 defaults: &defaults
   working_directory: ~/generator
   docker:
-    - image: cimg/node:18.13.0
+    - image: cimg/node:20.12.1
 jobs:
   test:
     <<: *defaults
