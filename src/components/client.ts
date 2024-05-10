@@ -79,7 +79,8 @@ public dereffedDocument: OpenRPC | undefined;
    * @example
    * myClient.onNotification((data)=>console.log(data));
    */
-  public async initialize() {
+  private async initialize() {
+    if (this.validator) { return; }
     this.dereffedDocument = await parseOpenRPCDocument(<%= className %>.openrpcDocument);
     this.validator = new MethodCallValidator(this.dereffedDocument);
   }
@@ -147,8 +148,9 @@ public dereffedDocument: OpenRPC | undefined;
     return this.rpc.stopBatch();
   }
 
-  private request(methodName: string, params: any[]): Promise<any> {
-    if (this.validator === undefined) { throw new Error('You must first call client.initialize'); }
+  private async request(methodName: string, params: any[]): Promise<any> {
+    await this.initialize();
+    if (this.validator === undefined) { throw new Error('internal error'); }
     const methodObject = _.find((<%= className %>.openrpcDocument.methods as MethodObject[]), ({name}) => name === methodName) as MethodObject;
     const notification = methodObject.result ? false : true;
     const openRpcMethodValidationErrors = this.validator.validate(methodName, params);
