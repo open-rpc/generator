@@ -50,7 +50,7 @@ export class <%= className %> {
     if (options.transport === undefined || options.transport.type === undefined) {
       throw new Error("Invalid constructor params");
     }
-    
+
     const {type, host, port, protocol, injected} = options.transport;
 
     if (type === "injected" && injected === undefined) {
@@ -239,7 +239,7 @@ const hooks: IHooks = {
         const updatedCargo = TOML.stringify({
           ...cargoTOML,
           package: {
-            ...(cargoTOML.package as object),
+            ...(cargoTOML.package as any),
             name: component.name,
             version: openrpcDocument.info.version,
           },
