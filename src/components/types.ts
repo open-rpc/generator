@@ -15,6 +15,7 @@ export type FHook = (
   component: IComponent,
   openrpcDocument: OpenRPC,
   Typings: Typings,
+  dereffedDocument: OpenRPC,
 ) => Promise<any>;
 
 export interface IHooks {
