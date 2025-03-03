@@ -1,9 +1,9 @@
-import * as path from "path";
-import { remove } from "fs-extra";
-import { IHooks } from "./types";
-import * as fs from "fs";
-import { promisify } from "util";
-import { template, startCase } from "lodash";
+import * as path from 'path';
+import { remove } from 'fs-extra';
+import { IHooks } from './types';
+import * as fs from 'fs';
+import { promisify } from 'util';
+import { template, startCase } from 'lodash';
 const writeFile = promisify(fs.writeFile);
 const readFile = promisify(fs.readFile);
 
@@ -87,52 +87,52 @@ module.exports = {
 const hooks: IHooks = {
   afterCopyStatic: [
     async (dest, frm, component, openrpcDocument): Promise<void> => {
+      const replacePackageJsonContent = async (fileName: string) => {
+        const destPath = path.join(dest, fileName);
+        const tmplPath = path.join(dest, `_${fileName}`);
 
-      const replacePackageJsonContent = async (fileName: string)=> {
-      const destPath = path.join(dest, fileName);
-      const tmplPath = path.join(dest, `_${fileName}`);
+        const tmplPkgStr = await readFile(tmplPath, 'utf8');
+        let tmplPkg = JSON.parse(tmplPkgStr);
 
-      const tmplPkgStr = await readFile(tmplPath, "utf8");
-      let tmplPkg = JSON.parse(tmplPkgStr);
+        tmplPkg.name = component.name || startCase(openrpcDocument.info.title).replace(/\s/g, '');
+        tmplPkg.version = openrpcDocument.info.version;
 
-      tmplPkg.name = component.name || startCase(openrpcDocument.info.title).replace(/\s/g, "");
-      tmplPkg.version = openrpcDocument.info.version;
+        let currPkgStr;
+        try {
+          currPkgStr = await readFile(destPath, 'utf8');
+          const currPkg = JSON.parse(currPkgStr);
+          tmplPkg = {
+            ...currPkg,
+            ...tmplPkg,
+            dependencies: {
+              ...currPkg.dependencies,
+              ...tmplPkg.dependencies,
+            },
+            devDependencies: {
+              ...currPkg.devDependencies,
+              ...tmplPkg.devDependencies,
+            },
+          };
+          // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        } catch (e) {
+          // do nothing
+        }
 
-      let currPkgStr;
-      try {
-        currPkgStr = await readFile(destPath, "utf8");
-        const currPkg = JSON.parse(currPkgStr);
-        tmplPkg = {
-          ...currPkg,
-          ...tmplPkg,
-          dependencies: {
-            ...currPkg.dependencies,
-            ...tmplPkg.dependencies,
-          },
-          devDependencies: {
-            ...currPkg.devDependencies,
-            ...tmplPkg.devDependencies,
-          },
-        };
-      } catch (e) {
-        // do nothing
-      }
-
-      await writeFile(destPath, JSON.stringify(tmplPkg, undefined, "  "));
-      await remove(tmplPath);
-    }
-    await replacePackageJsonContent("package.json");
-    await replacePackageJsonContent("package-lock.json");
+        await writeFile(destPath, JSON.stringify(tmplPkg, undefined, '  '));
+        await remove(tmplPath);
+      };
+      await replacePackageJsonContent('package.json');
+      await replacePackageJsonContent('package-lock.json');
     },
   ],
   templateFiles: {
     gatsby: [
       {
-        path: "src/pages/index.tsx",
+        path: 'src/pages/index.tsx',
         template: indexTemplate,
       },
       {
-        path: "gatsby-config.js",
+        path: 'gatsby-config.js',
         template: gatsbyConfigTemplate,
       },
     ],

@@ -1,6 +1,6 @@
 import React from "react";
-import { Button, Tooltip } from "@material-ui/core";
-import { IMethodPluginProps } from "@open-rpc/docs-react/build/Methods/Methods";
+import { Button, Tooltip } from "@mui/material";
+import { IMethodPluginProps } from "@open-rpc/docs-react";
 import { ExamplePairingObject, ExampleObject } from "@open-rpc/meta-schema";
 import useInspectorActionStore from "../stores/inspectorActionStore";
 

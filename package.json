@@ -19,9 +19,9 @@
   "scripts": {
     "start": "npm run build && ./build/cli.js",
     "test": "npm run test:lint && npm run test:unit && npm run test:integration",
+    "lint": "eslint 'src/**/*.{ts,tsx}'",
     "test:unit": "jest --coverage",
     "test:integration": "npm run build && ./build/cli.js generate -c test-generator-config.json && ((cd ./generated/server/typescript/ && npm install && npm start) & (cd ./generated/client/typescript && npm install && npm run build && cd - && sleep 15 && node ./integration-test.js))",
-    "test:lint": "eslint . --ext .ts --fix",
     "build": "npm run build:clean && tsc && chmod +x build/cli.js",
     "build:clean": "rm -rf build",
     "watch:build": "tsc --watch",
@@ -48,10 +48,13 @@
     "@types/inquirer": "^9.0.3",
     "@types/jest": "^29.5.12",
     "@types/lodash": "^4.17.1",
-    "@typescript-eslint/eslint-plugin": "^4.33.0",
-    "@typescript-eslint/parser": "^4.33.0",
-    "eslint": "^7.17.0",
-    "jest": "^29.7.0",
+    "@typescript-eslint/eslint-plugin": "^8.25.0",
+    "@eslint/js": "9.21.0",
+    "eslint-config-prettier": "^10.0.1",
+    "eslint-plugin-prettier": "^5.2.3",
+    "eslint-plugin-react": "^7.37.4",
+    "jest": "29.7.0",
+    "prettier": "^3.5.2",
     "ts-jest": "^29.1.2",
     "typescript": "^4.9.5"
   }

@@ -6,12 +6,11 @@ import "./api-documentation.css";
 import InspectorPlugin from "../docs-react-plugins";
 import Inspector from "@open-rpc/inspector";
 import * as monaco from "monaco-editor";
-import { Button, Grid, Typography, InputBase, Container, Tab, Tabs, IconButton, Tooltip } from "@material-ui/core";
-import ExpandMore from "@material-ui/icons/ExpandMore";
-import ExpandLess from "@material-ui/icons/ExpandLess";
+import { Button, Grid, Typography, InputBase, Container, Tab, Tabs, IconButton, Tooltip } from "@mui/material";
+import ExpandMore from "@mui/icons-material/ExpandMore";
+import ExpandLess from "@mui/icons-material/ExpandLess";
 import PlaygroundSplitPane from "../components/PlaygroundSplitPane";
-const $RefParser = require("json-schema-ref-parser"); //tslint:disable-line
-import { useTheme } from "@material-ui/core/styles";
+import { useTheme } from "@mui/material/styles";
 import useInspectorActionStore from "../stores/inspectorActionStore";
 import "monaco-editor/esm/vs/language/json/json.worker.js";
 import { OpenrpcDocument } from "@open-rpc/meta-schema";
@@ -28,7 +27,6 @@ const ApiDocumentation: React.FC = () => {
     if (inspectorContents) {
       setHorizontalSplit(true);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [inspectorContents]);
 
   const darkmode = useDarkMode();
