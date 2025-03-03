@@ -44,6 +44,7 @@ module.exports = {
   siteMetadata: {
     title: '<%= openrpcDocument.info.title %>',
     description: '<%= openrpcDocument.info.description %>',
+    siteUrl: 'https://open-rpc.org',
     logoUrl: 'https://raw.githubusercontent.com/open-rpc/design/master/icons/open-rpc-logo-noText/open-rpc-logo-noText%20(PNG)/256x256.png',
     primaryColor: '#3f51b5', //material-ui primary color
     secondaryColor: '#f50057', //material-ui secondary color
@@ -67,7 +68,7 @@ module.exports = {
     ]
   },
   plugins: [
-    "@xops.net/gatsby-openrpc-theme",
+    "gatsby-openrpc-theme",
     {
       resolve: 'gatsby-plugin-manifest',
       options: {
@@ -79,7 +80,17 @@ module.exports = {
         display: 'minimal-ui',
         icon: 'src/images/gatsby-icon.png', // This path is relative to the root of the site.
       },
-    }
+    },
+    "gatsby-plugin-image",
+    "gatsby-plugin-sharp",
+    "gatsby-transformer-sharp",
+    {
+      resolve: "gatsby-source-filesystem",
+      options: {
+        name: "images",
+        path: \`\${__dirname}/src/images\`,
+      },
+    },
   ],
 }
 `);
