@@ -1,15 +1,18 @@
 {
-  "lib": [ "ES2015" ],
+  "lib": [
+    "ES2015"
+  ],
   "compilerOptions": {
-    "module": "commonjs",
+    "module": "ESNext",
     "esModuleInterop": true,
-    "target": "es6",
+    "target": "ES2022",
     "strict": true,
     "sourceMap": true,
     "outDir": "build",
     "declarationDir": "build",
     "declaration": true,
-    "resolveJsonModule": true
+    "resolveJsonModule": true,
+    "moduleResolution": "bundler"
   },
   "typedocOptions": {
     "name": "generated client",

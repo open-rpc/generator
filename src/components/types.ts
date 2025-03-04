@@ -1,6 +1,6 @@
-import { TemplateExecutor } from "lodash";
-import { OpenrpcDocument as OpenRPC } from "@open-rpc/meta-schema";
-import Typings from "@open-rpc/typings";
+import { TemplateExecutor } from 'lodash';
+import { OpenrpcDocument as OpenRPC } from '@open-rpc/meta-schema';
+import Typings from '@open-rpc/typings';
 
 interface IComponent {
   hooks: IHooks;
@@ -15,7 +15,8 @@ export type FHook = (
   component: IComponent,
   openrpcDocument: OpenRPC,
   Typings: Typings,
-  dereffedDocument: OpenRPC,
+  dereffedDocument: OpenRPC
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
 ) => Promise<any>;
 
 export interface IHooks {
@@ -30,7 +31,6 @@ export interface IHooks {
     }[];
   };
 }
-
 
 export type IStaticPath = (language: string, type?: string) => string | undefined;
 

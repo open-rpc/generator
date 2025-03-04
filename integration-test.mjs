@@ -1,5 +1,5 @@
+import SimpleMathClient from "./generated/client/typescript/build/index.js";
 console.log("Running client test");
-const SimpleMathClient = require("./generated/client/typescript/build").default;
 console.log("imported client: ", SimpleMathClient);
 
 const client = new SimpleMathClient({

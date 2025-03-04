@@ -1,41 +1,56 @@
-import * as path from "path";
-import { remove } from "fs-extra";
-import { IHooks } from "./types";
-import * as fs from "fs";
-import { promisify } from "util";
-import { template, startCase } from "lodash";
+import * as path from 'path';
+import { remove } from 'fs-extra';
+import { IHooks } from './types';
+import * as fs from 'fs';
+import { promisify } from 'util';
+import { template, startCase } from 'lodash';
 const writeFile = promisify(fs.writeFile);
 const readFile = promisify(fs.readFile);
 
-const indexTemplate = template(`import React, { useEffect } from "react";
-import { Grid, Typography, Box, Button } from "@material-ui/core";
-import { Link as GatsbyLink } from "gatsby";
-import Link from "@material-ui/core/Link";
-import { grey } from "@material-ui/core/colors";
+const indexTemplate = template(`import React from 'react';
+import { Typography, Box, Button } from '@mui/material';
+import Grid from '@mui/material/Grid2';
+import { Link } from 'gatsby';
+import 'monaco-editor/esm/vs/language/json/json.worker.js';
 
-const MyApp: React.FC = () => {
-  return (
-    <>
-      <Grid container alignContent="center" alignItems="center" justify="center" direction="column">
-        <img className="logo" alt="logo" src={"https://raw.githubusercontent.com/open-rpc/design/master/icons/open-rpc-logo-noText/open-rpc-logo-noText%20(PNG)/256x256.png"} style={{ paddingTop: "10%" }} />
-        <br/>
+const IndexPage = () => {
+  // For SSR, we need a simpler version
+  if (typeof window === 'undefined') {
+    return (
+      <Grid container alignItems="center" justifyContent="center" direction="column">
         <Typography variant="h1"><%= openrpcDocument.info.title %></Typography>
-        <Typography gutterBottom style={{ paddingTop: "100px", paddingBottom: "20px" }} variant="inherit">
-          <%= openrpcDocument.info.description %>
-        </Typography>
-        <br/>
-        <Button variant="contained" color="primary" href="api-documentation">
+        <Typography>Loading...</Typography>
+      </Grid>
+    );
+  }
+
+  // For client-side rendering, we show the full content
+  return (
+    <Grid container alignItems="center" justifyContent="center" direction="column">
+      <img
+        className="logo"
+        alt="logo"
+        src={
+          'https://raw.githubusercontent.com/open-rpc/design/master/icons/open-rpc-logo-noText/open-rpc-logo-noText%20(PNG)/256x256.png'
+        }
+        style={{ paddingTop: '10%' }}
+      />
+      <Typography variant="h1"><%= openrpcDocument.info.title %></Typography>
+      <% if (openrpcDocument.info.description) { %>
+      <Box sx={{ paddingTop: '20px', paddingBottom: '20px' }}>
+        <Typography variant="body1"><%= openrpcDocument.info.description %></Typography>
+      </Box>
+      <% } %>
+      <Box sx={{ paddingTop: '100px', paddingBottom: '20px' }}>
+        <Button variant="contained" color="primary" component={Link} to="/api-documentation">
           API Reference Documentation
         </Button>
-        <br />
-        <br />
-        <br />
-      </Grid>
-    </>
+      </Box>
+    </Grid>
   );
 };
 
-export default MyApp;
+export default IndexPage;
 `);
 
 const gatsbyConfigTemplate = template(`
@@ -44,6 +59,7 @@ module.exports = {
   siteMetadata: {
     title: '<%= openrpcDocument.info.title %>',
     description: '<%= openrpcDocument.info.description %>',
+    siteUrl: 'https://open-rpc.org',
     logoUrl: 'https://raw.githubusercontent.com/open-rpc/design/master/icons/open-rpc-logo-noText/open-rpc-logo-noText%20(PNG)/256x256.png',
     primaryColor: '#3f51b5', //material-ui primary color
     secondaryColor: '#f50057', //material-ui secondary color
@@ -67,7 +83,7 @@ module.exports = {
     ]
   },
   plugins: [
-    "@xops.net/gatsby-openrpc-theme",
+    "gatsby-openrpc-theme",
     {
       resolve: 'gatsby-plugin-manifest',
       options: {
@@ -79,7 +95,17 @@ module.exports = {
         display: 'minimal-ui',
         icon: 'src/images/gatsby-icon.png', // This path is relative to the root of the site.
       },
-    }
+    },
+    "gatsby-plugin-image",
+    "gatsby-plugin-sharp",
+    "gatsby-transformer-sharp",
+    {
+      resolve: "gatsby-source-filesystem",
+      options: {
+        name: "images",
+        path: __dirname + '/src/images',
+      },
+    },
   ],
 }
 `);
@@ -87,52 +113,52 @@ module.exports = {
 const hooks: IHooks = {
   afterCopyStatic: [
     async (dest, frm, component, openrpcDocument): Promise<void> => {
+      const replacePackageJsonContent = async (fileName: string) => {
+        const destPath = path.join(dest, fileName);
+        const tmplPath = path.join(dest, `_${fileName}`);
 
-      const replacePackageJsonContent = async (fileName: string)=> {
-      const destPath = path.join(dest, fileName);
-      const tmplPath = path.join(dest, `_${fileName}`);
+        const tmplPkgStr = await readFile(tmplPath, 'utf8');
+        let tmplPkg = JSON.parse(tmplPkgStr);
 
-      const tmplPkgStr = await readFile(tmplPath, "utf8");
-      let tmplPkg = JSON.parse(tmplPkgStr);
+        tmplPkg.name = component.name || startCase(openrpcDocument.info.title).replace(/\s/g, '');
+        tmplPkg.version = openrpcDocument.info.version;
 
-      tmplPkg.name = component.name || startCase(openrpcDocument.info.title).replace(/\s/g, "");
-      tmplPkg.version = openrpcDocument.info.version;
+        let currPkgStr;
+        try {
+          currPkgStr = await readFile(destPath, 'utf8');
+          const currPkg = JSON.parse(currPkgStr);
+          tmplPkg = {
+            ...currPkg,
+            ...tmplPkg,
+            dependencies: {
+              ...currPkg.dependencies,
+              ...tmplPkg.dependencies,
+            },
+            devDependencies: {
+              ...currPkg.devDependencies,
+              ...tmplPkg.devDependencies,
+            },
+          };
+          // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        } catch (e) {
+          // do nothing
+        }
 
-      let currPkgStr;
-      try {
-        currPkgStr = await readFile(destPath, "utf8");
-        const currPkg = JSON.parse(currPkgStr);
-        tmplPkg = {
-          ...currPkg,
-          ...tmplPkg,
-          dependencies: {
-            ...currPkg.dependencies,
-            ...tmplPkg.dependencies,
-          },
-          devDependencies: {
-            ...currPkg.devDependencies,
-            ...tmplPkg.devDependencies,
-          },
-        };
-      } catch (e) {
-        // do nothing
-      }
-
-      await writeFile(destPath, JSON.stringify(tmplPkg, undefined, "  "));
-      await remove(tmplPath);
-    }
-    await replacePackageJsonContent("package.json");
-    await replacePackageJsonContent("package-lock.json");
+        await writeFile(destPath, JSON.stringify(tmplPkg, undefined, '  '));
+        await remove(tmplPath);
+      };
+      await replacePackageJsonContent('package.json');
+      await replacePackageJsonContent('package-lock.json');
     },
   ],
   templateFiles: {
     gatsby: [
       {
-        path: "src/pages/index.tsx",
+        path: 'src/pages/index.tsx',
         template: indexTemplate,
       },
       {
-        path: "gatsby-config.js",
+        path: 'gatsby-config.js',
         template: gatsbyConfigTemplate,
       },
     ],

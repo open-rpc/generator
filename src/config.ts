@@ -1,34 +1,33 @@
-
 export interface IClientConfig {
-  type: "client";
+  type: 'client';
   name: string;
-  language: "typescript" | "rust";
+  language: 'typescript' | 'rust';
   outPath?: string;
 }
 
 export interface IServerConfig {
-  type: "server";
+  type: 'server';
   name: string;
-  language: "typescript";
+  language: 'typescript';
   outPath?: string;
 }
 
 export interface IDocsConfig {
-  type: "docs";
+  type: 'docs';
   name: string;
-  language: "gatsby";
+  language: 'gatsby';
   outPath?: string;
 }
 
 // Experimental
 export interface ICustomConfig {
-  type: "custom";
+  type: 'custom';
   name: string;
   customComponent: string;
   customType?: string;
   openRPCPath?: string | null;
   outPath?: string;
-  language: "typescript" | "rust";
+  language: 'typescript' | 'rust';
 }
 
 export type TComponentConfig = IClientConfig | IServerConfig | IDocsConfig | ICustomConfig;

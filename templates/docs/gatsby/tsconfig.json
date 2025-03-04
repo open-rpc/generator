@@ -20,6 +20,7 @@
       "allowJs": true
     },
     "include": [
-      "src"
+      "src",
+      "worker.d.ts"
     ]
   }
