@@ -62,7 +62,6 @@ describe(`Examples to generate Js clients`, () => {
 
     return expect(genProm).rejects.toBeInstanceOf(OpenRPCDocumentDereferencingError);
   });
-
   forEach(examples, (example: OpenRPC, exampleName: string) => {
     it(`rejects configurations without outDir or outPath`, async () => {
       const promGen = clientGen({
