@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 import program from 'commander';
-import orpcGenerator, { IGeneratorOptions } from './';
-import inquirer from 'inquirer';
+import orpcGenerator, { IGeneratorOptions } from './index';
+import { input, checkbox } from '@inquirer/prompts';
 import { parseOpenRPCDocument } from '@open-rpc/schema-utils-js';
 import { capitalize } from 'lodash';
 import * as fs from 'fs';
@@ -17,93 +17,108 @@ program
   .version(version, '-v, --version')
   .command('init')
   .action(async () => {
-    const initAnswers = await inquirer.prompt([
-      {
-        name: 'document',
-        type: 'input',
-        message: 'Where is your OpenRPC document? May be a file path or url.',
-        default: () => 'openrpc.json',
-        validate: async (d: any) => {
-          try {
-            await parseOpenRPCDocument(d);
-          } catch (e: any) {
-            return `Invalid document. The error recieved: ${e.message}`;
-          }
-          return true;
-        },
+    // Define a proper type for our answers
+    interface InitAnswers {
+      document: string;
+      outDir: string;
+      componentTypes: string[];
+      docsLanguages: string[];
+      clientLanguages: string[];
+      serverLanguages: string[];
+      gatsbyDocsName?: string;
+      typescriptClientName?: string;
+      rustClientName?: string;
+      typescriptServerName?: string;
+      [key: string]: any; // Allow dynamic access with string indices
+    }
+
+    // Use sequential prompts instead of an array
+    const document = await input({
+      message: 'Where is your OpenRPC document? May be a file path or url.',
+      default: 'openrpc.json',
+      validate: async (d: string) => {
+        try {
+          await parseOpenRPCDocument(d);
+        } catch (e: any) {
+          return `Invalid document. The error recieved: ${e.message}`;
+        }
+        return true;
       },
-      {
-        name: 'outDir',
-        type: 'input',
-        message: 'Where would you like to write the generated artifacts?',
-        default: () => './',
-      },
-      {
-        name: 'componentTypes',
-        type: 'checkbox',
-        message: 'Which components would you like to generate?',
-        choices: [{ name: 'client' }, { name: 'server' }, { name: 'docs' }],
-      },
-      {
-        name: 'docsLanguages',
-        type: 'checkbox',
+    });
+
+    const outDir = await input({
+      message: 'Where would you like to write the generated artifacts?',
+      default: './',
+    });
+
+    const componentTypes = await checkbox({
+      message: 'Which components would you like to generate?',
+      choices: [
+        { name: 'client', value: 'client' },
+        { name: 'server', value: 'server' },
+        { name: 'docs', value: 'docs' }
+      ],
+    });
+
+    // Initialize the answers object
+    const initAnswers: InitAnswers = {
+      document,
+      outDir,
+      componentTypes,
+      docsLanguages: [],
+      clientLanguages: [],
+      serverLanguages: [],
+    };
+
+    // Conditional prompts based on component types
+    if (componentTypes.includes('docs')) {
+      initAnswers.docsLanguages = await checkbox({
         message: 'What type of documentation do you want to generate?',
-        choices: [{ name: 'gatsby' }],
-        when: (answers: any) =>
-          answers.componentTypes &&
-          answers.componentTypes.find((ct: string) => ct === 'docs') !== undefined,
-      },
-      {
-        name: 'clientLanguages',
-        type: 'checkbox',
+        choices: [{ name: 'gatsby', value: 'gatsby' }],
+      });
+      
+      if (initAnswers.docsLanguages.includes('gatsby')) {
+        initAnswers.gatsbyDocsName = await input({
+          message: 'What would you like the gatsby based docs package to be named?',
+        });
+      }
+    }
+
+    if (componentTypes.includes('client')) {
+      initAnswers.clientLanguages = await checkbox({
         message: 'What language(s) would you like to generate a client for?',
-        choices: [{ name: 'typescript' }, { name: 'rust' }],
-        when: (answers: any) =>
-          answers.componentTypes &&
-          answers.componentTypes.find((ct: string) => ct === 'client') !== undefined,
-      },
-      {
-        name: 'serverLanguages',
-        type: 'checkbox',
+        choices: [
+          { name: 'typescript', value: 'typescript' },
+          { name: 'rust', value: 'rust' }
+        ],
+      });
+      
+      if (initAnswers.clientLanguages.includes('typescript')) {
+        initAnswers.typescriptClientName = await input({
+          message: 'What would you like the typescript client package to be named?',
+        });
+      }
+      
+      if (initAnswers.clientLanguages.includes('rust')) {
+        initAnswers.rustClientName = await input({
+          message: 'What would you like the rust client crate to be named?',
+        });
+      }
+    }
+
+    if (componentTypes.includes('server')) {
+      initAnswers.serverLanguages = await checkbox({
         message: 'What language(s) would you like to generate a server for?',
-        choices: [{ name: 'typescript' }],
-        when: (answers: any) =>
-          answers.componentTypes &&
-          answers.componentTypes.find((ct: string) => ct === 'server') !== undefined,
-      },
-      {
-        name: 'gatsbyDocsName',
-        type: 'input',
-        message: 'What would you like the gatsby based docs package to be named?',
-        when: (answers: any) =>
-          answers.clientLanguages &&
-          answers.clientLanguages.find((ct: string) => ct === 'typescript') !== undefined,
-      },
-      {
-        name: 'typescriptClientName',
-        type: 'input',
-        message: 'What would you like the typescript client package to be named?',
-        when: (answers: any) =>
-          answers.clientLanguages &&
-          answers.clientLanguages.find((ct: string) => ct === 'typescript') !== undefined,
-      },
-      {
-        name: 'rustClientName',
-        type: 'input',
-        message: 'What would you like the rust client crate to be named?',
-        when: (answers: any) =>
-          answers.clientLanguages &&
-          answers.clientLanguages.find((ct: string) => ct === 'rust') !== undefined,
-      },
-      {
-        name: 'typescriptServerName',
-        type: 'input',
-        message: 'What would you like the typescript server package to be named?',
-        when: (answers: any) =>
-          answers.serverLanguages &&
-          answers.serverLanguages.find((ct: string) => ct === 'typescript') !== undefined,
-      },
-    ]);
+        choices: [{ name: 'typescript', value: 'typescript' }],
+      });
+      
+      if (initAnswers.serverLanguages.includes('typescript')) {
+        initAnswers.typescriptServerName = await input({
+          message: 'What would you like the typescript server package to be named?',
+        });
+      }
+    }
+
     /* eslint-enable @typescript-eslint/no-explicit-any */
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -115,14 +130,19 @@ program
     console.log(JSON.stringify(initAnswers, undefined, '\t'));
 
     initAnswers.componentTypes.forEach((componentType: string) => {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      initAnswers[`${componentType}Languages`].forEach((language: any) => {
-        components.push({
-          type: componentType,
-          name: initAnswers[`${language}${capitalize(componentType)}Name`],
-          language,
+      const languagesKey = `${componentType}Languages` as keyof InitAnswers;
+      // Add a type guard to ensure the property exists and is an array
+      const languages = initAnswers[languagesKey];
+      if (Array.isArray(languages)) {
+        languages.forEach((language: string) => {
+          const nameKey = `${language}${capitalize(componentType)}Name` as keyof InitAnswers;
+          components.push({
+            type: componentType,
+            name: initAnswers[nameKey],
+            language,
+          });
         });
-      });
+      }
     });
 
     const config = {

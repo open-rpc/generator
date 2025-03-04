@@ -1,58 +1,101 @@
 {
-  "name": "generated-openrpc-docs",
+  "name": "gatsby-openrpc-theme",
   "private": true,
-  "description": "",
+  "description": "A gatsby theme for generated OpenRPC documentation",
   "version": "0.0.0-development",
+  "publishConfig": {
+    "access": "public"
+  },
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist",
+    "src",
+    "gatsby-browser.js",
+    "gatsby-config.js",
+    "gatsby-node.js",
+    "gatsby-ssr.js"
+  ],
   "dependencies": {
-    "@open-rpc/inspector": "1.5.0",
-    "react-split-pane": "^0.1.87",
-    "monaco-editor": "0.18.1",
-    "@apidevtools/json-schema-ref-parser": "^9.0.1",
-    "@xops.net/gatsby-openrpc-theme": "1.1.8",
-    "@material-ui/core": "4.9.8",
-    "@material-ui/icons": "4.9.1",
-    "@material-ui/lab": "4.0.0-alpha.47",
-    "@material-ui/styles": "4.9.6",
-    "@mdx-js/mdx": "^1.5.4",
-    "@mdx-js/react": "^1.5.4",
-    "@open-rpc/docs-react": "1.5.0",
-    "gatsby": "2.32.13",
-    "lodash": "^4.17.15",
-    "mermaid": "^8.4.5",
-    "mermaid.cli": "^0.5.1",
-    "prop-types": "^15.7.2",
-    "postcss": "7.0.35",
-    "react": "18.3.1",
-    "react-dom": "18.3.1",
-    "react-helmet": "6.1.0",
-    "remark-emoji": "^2.0.2",
-    "slash": "^3.0.0",
-    "use-dark-mode": "^2.3.1",
-    "loader-utils": "2.0.0",
-    "reusable": "1.0.1"
+    "@mdx-js/mdx": "3.1.0",
+    "@mdx-js/react": "^2.3.0",
+    "@mui/icons-material": "6.3.1",
+    "@mui/lab": "6.0.0-beta.22",
+    "@mui/material": "6.3.1",
+    "@mui/styles": "6.3.1",
+    "@open-rpc/docs-react": "2.1.1",
+    "@open-rpc/inspector": "2.0.3",
+    "@open-rpc/meta-schema": "1.14.9",
+    "@uiw/react-json-view": "^2.0.0-alpha.30",
+    "buffer": "^6.0.3",
+    "gatsby": "^5.0.0",
+    "gatsby-openrpc-theme": "^1.0.0",
+    "globals": "^16.0.0",
+    "https-browserify": "^1.0.0",
+    "lodash": "^4.17.21",
+    "mermaid": "^10.6.1",
+    "monaco-editor": "^0.52.2",
+    "postcss": "^8.4.31",
+    "process": "^0.11.10",
+    "prop-types": "^15.8.1",
+    "react": "^18.0.0",
+    "react-dom": "^18.0.0",
+    "react-resizable-panels": "^2.1.7",
+    "react-syntax-highlighter": "^15.5.0",
+    "reusable": "^1.1.0",
+    "slash": "^5.1.0",
+    "stream-http": "^3.2.0",
+    "url": "^0.11.4",
+    "util": "^0.12.5"
   },
   "devDependencies": {
-    "monaco-editor-webpack-plugin": "1.7.0",
-    "@types/mdx-js__react": "^1.5.0",
-    "@types/react-helmet": "^5.0.15",
-    "prettier": "^1.19.1",
-    "typescript": "^3.7.4",
-    "json-schema-ref-parser": "^7.1.3",
-    "node-fetch": "^2.6.0"
+    "@apidevtools/json-schema-ref-parser": "11.9.1",
+    "@eslint/js": "9.21.0",
+    "@mdx-js/mdx": "^2.3.0",
+    "@typescript-eslint/eslint-plugin": "^8.25.0",
+    "eslint-config-prettier": "^10.0.1",
+    "eslint-plugin-prettier": "^5.2.3",
+    "eslint-plugin-react": "^7.37.4",
+    "monaco-editor-webpack-plugin": "^7.1.0",
+    "node-fetch": "^3.3.2",
+    "prettier": "^3.5.2",
+    "typescript": "^5.3.3"
+  },
+  "peerDependencies": {
+    "gatsby": "^5.0.0",
+    "react": "^18.0.0",
+    "react-dom": "^18.0.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
   },
   "keywords": [
     "gatsby",
-    "pristine"
+    "pristine",
+    "openrpc",
+    "documentation",
+    "theme"
   ],
   "license": "Apache-2.0",
   "scripts": {
     "build": "gatsby build",
+    "build:ts": "tsc",
     "develop": "gatsby develop",
-    "format": "prettier --write \"**/*.{js,jsx,json,md}\"",
+    "format": "prettier --write \"**/*.{js,jsx,json,md,ts,tsx}\"",
+    "lint": "eslint 'src/**/*.{ts,tsx}'",
     "start": "npm run develop",
     "serve": "gatsby serve",
     "clean": "gatsby clean",
     "test": "exit 0",
-    "type-check": "tsc --noEmit"
+    "type-check": "tsc --noEmit",
+    "example": "yarn --cwd example",
+    "prepare": "npm run build:ts"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/xops/gatsby-openrpc-theme"
+  },
+  "bugs": {
+    "url": "https://github.com/xops/gatsby-openrpc-theme/issues"
   }
 }

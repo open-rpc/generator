@@ -17,11 +17,18 @@ import {
   WebSocketTransport,
   HTTPTransport,
   Client,
-  JSONRPCError
+  JSONRPCError,
 } from "@open-rpc/client-js";
 import _ from "lodash";
-import { OpenrpcDocument as OpenRPC, MethodObject, ContentDescriptorObject } from "@open-rpc/meta-schema";
-import { MethodCallValidator, MethodNotFoundError, parseOpenRPCDocument } from "@open-rpc/schema-utils-js";
+import {
+  OpenrpcDocument as OpenRPC,
+  MethodObject,
+} from "@open-rpc/meta-schema";
+import {
+  MethodCallValidator,
+  MethodNotFoundError,
+  parseOpenRPCDocument,
+} from "@open-rpc/schema-utils-js";
 
 <%= methodTypings.toString("typescript") %>
 
@@ -32,44 +39,57 @@ export interface Options {
     port: number;
     path?: string;
     protocol?: string;
-  },
+  };
 }
 
 export class <%= className %> {
   public rpc: Client;
   public static openrpcDocument: OpenRPC = <%= JSON.stringify(openrpcDocument) %>;
-public dereffedDocument: OpenRPC | undefined;
-  public transport: HTTPTransport | WebSocketTransport | PostMessageWindowTransport | PostMessageIframeTransport;
+  public dereffedDocument: OpenRPC | undefined;
+  public transport:
+    | HTTPTransport
+    | WebSocketTransport
+    | PostMessageWindowTransport
+    | PostMessageIframeTransport;
   private validator: MethodCallValidator | undefined;
   private timeout: number | undefined;
 
   constructor(options: Options) {
-
-    if (options.transport === undefined || options.transport.type === undefined) {
+    if (
+      options.transport === undefined ||
+      options.transport.type === undefined
+    ) {
       throw new Error("Invalid constructor params");
     }
-    const {type, host, port, protocol} = options.transport;
+    const { type, host, port, protocol } = options.transport;
     let path = options.transport.path || "";
-    if(path && path[0] !== "/") {
-        path = "/" + path;
+    if (path && path[0] !== "/") {
+      path = "/" + path;
     }
     switch (type) {
       case 'http':
       case 'https':
-        this.transport = new HTTPTransport((protocol || type) + "://" + host + ":" + port + path);
+        this.transport = new HTTPTransport(
+          (protocol || type) + "://" + host + ":" + port + path
+        );
         break;
       case 'websocket':
-        this.transport = new WebSocketTransport((protocol || "ws://") + host + ":" + port + path);
+        this.transport = new WebSocketTransport(
+          (protocol || "ws://") + host + ":" + port + path
+        );
         break;
       case 'postmessageiframe':
-        this.transport = new PostMessageIframeTransport(protocol + "://" + host + ":" + port + path);
+        this.transport = new PostMessageIframeTransport(
+          protocol + "://" + host + ":" + port + path
+        );
         break;
       case 'postmessagewindow':
-        this.transport = new PostMessageWindowTransport(protocol + "://" + host + ":" + port + path);
+        this.transport = new PostMessageWindowTransport(
+          protocol + "://" + host + ":" + port + path
+        );
         break;
       default:
         throw new Error("unsupported transport");
-        break;
     }
     this.rpc = new Client(new RequestManager([this.transport]));
   }
@@ -80,7 +100,9 @@ public dereffedDocument: OpenRPC | undefined;
    * myClient.onNotification((data)=>console.log(data));
    */
   private async initialize() {
-    if (this.validator) { return; }
+    if (this.validator) {
+      return;
+    }
     this.dereffedDocument = await parseOpenRPCDocument(<%= className %>.openrpcDocument);
     this.validator = new MethodCallValidator(this.dereffedDocument);
   }
@@ -100,7 +122,7 @@ public dereffedDocument: OpenRPC | undefined;
    * myClient.onError((err: JSONRPCError)=>console.log(err.message));
    */
   public onError(callback: (data: JSONRPCError) => void) {
-     this.rpc.onError(callback);
+    this.rpc.onError(callback);
   }
 
   /**
@@ -111,7 +133,7 @@ public dereffedDocument: OpenRPC | undefined;
    * // Removes timeout from request
    * myClient.setDefaultTimeout(undefined);
    */
-   public setDefaultTimeout(ms?: number) {
+  public setDefaultTimeout(ms?: number) {
     this.timeout = ms;
   }
 
@@ -150,24 +172,41 @@ public dereffedDocument: OpenRPC | undefined;
 
   private async request(methodName: string, params: any[]): Promise<any> {
     await this.initialize();
-    if (this.validator === undefined) { throw new Error('internal error'); }
-    const methodObject = _.find((<%= className %>.openrpcDocument.methods as MethodObject[]), ({name}) => name === methodName) as MethodObject;
+    if (this.validator === undefined) {
+      throw new Error("internal error");
+    }
+    const methodObject = _.find(
+      (<%= className %>.openrpcDocument.methods as MethodObject[]),
+      ({ name }) => name === methodName
+    ) as MethodObject;
     const notification = methodObject.result ? false : true;
-    const openRpcMethodValidationErrors = this.validator.validate(methodName, params);
-    if ( openRpcMethodValidationErrors instanceof MethodNotFoundError || openRpcMethodValidationErrors.length > 0) {
+    const openRpcMethodValidationErrors = this.validator.validate(
+      methodName,
+      params
+    );
+    if (
+      openRpcMethodValidationErrors instanceof MethodNotFoundError ||
+      openRpcMethodValidationErrors.length > 0
+    ) {
       return Promise.reject(openRpcMethodValidationErrors);
     }
 
     let rpcParams;
-    if (methodObject.paramStructure && methodObject.paramStructure === "by-name") {
+    if (
+      methodObject.paramStructure &&
+      methodObject.paramStructure === "by-name"
+    ) {
       rpcParams = _.zipObject(_.map(methodObject.params, "name"), params);
     } else {
       rpcParams = params;
     }
     if (notification) {
-      return this.rpc.notify({method: methodName, params: rpcParams});
+      return this.rpc.notify({ method: methodName, params: rpcParams });
     }
-    return this.rpc.request({method: methodName, params: rpcParams}, this.timeout);
+    return this.rpc.request(
+      { method: methodName, params: rpcParams },
+      this.timeout
+    );
   }
 
   <% openrpcDocument.methods.forEach((method) => { %>

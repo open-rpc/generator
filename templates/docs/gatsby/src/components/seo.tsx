@@ -5,84 +5,57 @@
  * See: https://www.gatsbyjs.org/docs/use-static-query/
  */
 
-import React from "react";
-import PropTypes from "prop-types";
-import Helmet from "react-helmet";
-import { useStaticQuery, graphql } from "gatsby";
+import React from 'react';
+import { useStaticQuery, graphql } from 'gatsby';
 
-function SEO({ description, lang, meta, title }: any) {
-  const { site } = useStaticQuery(
-    graphql`
-      query {
-        site {
-          siteMetadata {
-            title
-            description
-            author
-          }
+interface SEOProps {
+  description?: string;
+  lang?: string;
+  meta?: Array<{ name: string; content: string }>;
+  title?: string;
+  image?: string;
+}
+
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export function SEO({ description = '', lang = 'en', meta = [], title, image }: SEOProps) {
+  const { site } = useStaticQuery(graphql`
+    query {
+      site {
+        siteMetadata {
+          title
+          description
+          author
+          siteUrl
         }
       }
-    `,
-  );
+    }
+  `);
 
   const metaDescription = description || site.siteMetadata.description;
+  const defaultTitle = site.siteMetadata?.title;
+  const metaImage =
+    image && site.siteMetadata.siteUrl ? `${site.siteMetadata.siteUrl}${image}` : null;
 
+  // Instead of returning a Helmet component, we directly return the elements
   return (
-    <Helmet
-      htmlAttributes={{
-        lang,
-      }}
-      title={title}
-      titleTemplate={`%s | ${site.siteMetadata.title}`}
-      meta={[
-        {
-          name: `description`,
-          content: metaDescription,
-        },
-        {
-          property: `og:title`,
-          content: title,
-        },
-        {
-          property: `og:description`,
-          content: metaDescription,
-        },
-        {
-          property: `og:type`,
-          content: `website`,
-        },
-        {
-          name: `twitter:card`,
-          content: `summary`,
-        },
-        {
-          name: `twitter:creator`,
-          content: site.siteMetadata.author,
-        },
-        {
-          name: `twitter:title`,
-          content: title,
-        },
-        {
-          name: `twitter:description`,
-          content: metaDescription,
-        },
-      ].concat(meta)}
-    />
+    <>
+      <title>{title ? `${title} | ${defaultTitle}` : defaultTitle}</title>
+      <meta name="description" content={metaDescription} />
+      <meta property="og:title" content={title || defaultTitle} />
+      <meta property="og:description" content={metaDescription} />
+      <meta property="og:type" content="website" />
+      {metaImage && <meta property="og:image" content={metaImage} />}
+      <meta name="twitter:card" content="summary" />
+      <meta name="twitter:creator" content={site.siteMetadata?.author || ''} />
+      <meta name="twitter:title" content={title || defaultTitle} />
+      <meta name="twitter:description" content={metaDescription} />
+      {metaImage && <meta name="twitter:image" content={metaImage} />}
+      {meta.map(({ name, content }, i) => (
+        <meta key={i} name={name} content={content} />
+      ))}
+    </>
   );
 }
 
-SEO.defaultProps = {
-  lang: `en`,
-  meta: [],
-  description: ``,
-};
-
-SEO.propTypes = {
-  description: PropTypes.string,
-  lang: PropTypes.string,
-  meta: PropTypes.arrayOf(PropTypes.object),
-  title: PropTypes.string.isRequired,
-};
-
-export default SEO;
+// This is the component that will be used by Gatsby's Head API
+export const Head = SEO;

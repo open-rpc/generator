@@ -1,16 +1,22 @@
 {
   "compilerOptions": {
-    "target": "es5",
-    "module": "commonjs",
-    "lib": [
-      "ES2015"
-    ],
-    "declaration": true,
     "outDir": "./build",
-    "strict": true,
+    "target": "ESNext",
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "allowSyntheticDefaultImports": true,
     "esModuleInterop": true,
-    "resolveJsonModule": true
+    "strict": true,
+    "declaration": true,
+    "declarationMap": true,
+    "sourceMap": true,
+    "baseUrl": ".",
   },
+  "include": [
+    "src/**/*",
+    "src/**/*.css",
+    "src/**/*/*.css"
+  ],
   "exclude": [
     "node_modules",
     "templates",

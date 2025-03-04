@@ -7,35 +7,50 @@ import { template, startCase } from 'lodash';
 const writeFile = promisify(fs.writeFile);
 const readFile = promisify(fs.readFile);
 
-const indexTemplate = template(`import React, { useEffect } from "react";
-import { Grid, Typography, Box, Button } from "@material-ui/core";
-import { Link as GatsbyLink } from "gatsby";
-import Link from "@material-ui/core/Link";
-import { grey } from "@material-ui/core/colors";
+const indexTemplate = template(`import React from 'react';
+import { Typography, Box, Button } from '@mui/material';
+import Grid from '@mui/material/Grid2';
+import { Link } from 'gatsby';
+import 'monaco-editor/esm/vs/language/json/json.worker.js';
 
-const MyApp: React.FC = () => {
-  return (
-    <>
-      <Grid container alignContent="center" alignItems="center" justify="center" direction="column">
-        <img className="logo" alt="logo" src={"https://raw.githubusercontent.com/open-rpc/design/master/icons/open-rpc-logo-noText/open-rpc-logo-noText%20(PNG)/256x256.png"} style={{ paddingTop: "10%" }} />
-        <br/>
+const IndexPage = () => {
+  // For SSR, we need a simpler version
+  if (typeof window === 'undefined') {
+    return (
+      <Grid container alignItems="center" justifyContent="center" direction="column">
         <Typography variant="h1"><%= openrpcDocument.info.title %></Typography>
-        <Typography gutterBottom style={{ paddingTop: "100px", paddingBottom: "20px" }} variant="inherit">
-          <%= openrpcDocument.info.description %>
-        </Typography>
-        <br/>
-        <Button variant="contained" color="primary" href="api-documentation">
+        <Typography>Loading...</Typography>
+      </Grid>
+    );
+  }
+
+  // For client-side rendering, we show the full content
+  return (
+    <Grid container alignItems="center" justifyContent="center" direction="column">
+      <img
+        className="logo"
+        alt="logo"
+        src={
+          'https://raw.githubusercontent.com/open-rpc/design/master/icons/open-rpc-logo-noText/open-rpc-logo-noText%20(PNG)/256x256.png'
+        }
+        style={{ paddingTop: '10%' }}
+      />
+      <Typography variant="h1"><%= openrpcDocument.info.title %></Typography>
+      <% if (openrpcDocument.info.description) { %>
+      <Box sx={{ paddingTop: '20px', paddingBottom: '20px' }}>
+        <Typography variant="body1"><%= openrpcDocument.info.description %></Typography>
+      </Box>
+      <% } %>
+      <Box sx={{ paddingTop: '100px', paddingBottom: '20px' }}>
+        <Button variant="contained" color="primary" component={Link} to="/api-documentation">
           API Reference Documentation
         </Button>
-        <br />
-        <br />
-        <br />
-      </Grid>
-    </>
+      </Box>
+    </Grid>
   );
 };
 
-export default MyApp;
+export default IndexPage;
 `);
 
 const gatsbyConfigTemplate = template(`
@@ -88,7 +103,7 @@ module.exports = {
       resolve: "gatsby-source-filesystem",
       options: {
         name: "images",
-        path: \`\${__dirname}/src/images\`,
+        path: __dirname + '/src/images',
       },
     },
   ],
