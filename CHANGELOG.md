@@ -1,3 +1,30 @@
+# [2.0.0](https://github.com/open-rpc/generator/compare/1.22.3...2.0.0) (2025-03-04)
+
+
+### Bug Fixes
+
+* 🐛 support gatsby pathPrefix, thus fallback relative ([7ae3278](https://github.com/open-rpc/generator/commit/7ae32788d2d9df3ae7d8cfce9b363e186c6a869c))
+* add updated eslinting and lint ([9b80ceb](https://github.com/open-rpc/generator/commit/9b80ceb5680686934fb540b90e5130327d10552e))
+* bump ([86c4574](https://github.com/open-rpc/generator/commit/86c4574e98a09d9811383e5bb58b64b95b5ee9c1))
+* bump circle ci version ([4f5a65a](https://github.com/open-rpc/generator/commit/4f5a65a12bbf0d6294ca0b602558ea08f5b888b5))
+* dont break generated client interface ([46034ca](https://github.com/open-rpc/generator/commit/46034cafe2789470c271a39734a4a1addea2026b))
+* tests to align with new esm format ([6548914](https://github.com/open-rpc/generator/commit/6548914fb09d110934cd4785be558cc824d122a9))
+* this is how we dooooo ([38d41b1](https://github.com/open-rpc/generator/commit/38d41b19919142e842cbed3321088b542987a4bc))
+* update template for gatsby config ([81c6452](https://github.com/open-rpc/generator/commit/81c64525ef179b70b62def9f4a4feb7590d44105))
+
+
+### Features
+
+* this is a major revision to most packages. The changes support ([7970eaf](https://github.com/open-rpc/generator/commit/7970eafbef683b6432374e45e0bd471401602aa9))
+
+
+### BREAKING CHANGES
+
+* most apis will be ESM except for server, and use
+the latest versions of packages. This will change some of the
+logic or processes you may have been using there is also a bump
+to schema-utiils for most packages and meta-schema.
+
 ## [1.22.3](https://github.com/open-rpc/generator/compare/1.22.2...1.22.3) (2023-01-18)
 
 
