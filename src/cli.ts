@@ -56,7 +56,7 @@ program
       choices: [
         { name: 'client', value: 'client' },
         { name: 'server', value: 'server' },
-        { name: 'docs', value: 'docs' }
+        { name: 'docs', value: 'docs' },
       ],
     });
 
@@ -76,7 +76,7 @@ program
         message: 'What type of documentation do you want to generate?',
         choices: [{ name: 'gatsby', value: 'gatsby' }],
       });
-      
+
       if (initAnswers.docsLanguages.includes('gatsby')) {
         initAnswers.gatsbyDocsName = await input({
           message: 'What would you like the gatsby based docs package to be named?',
@@ -89,16 +89,16 @@ program
         message: 'What language(s) would you like to generate a client for?',
         choices: [
           { name: 'typescript', value: 'typescript' },
-          { name: 'rust', value: 'rust' }
+          { name: 'rust', value: 'rust' },
         ],
       });
-      
+
       if (initAnswers.clientLanguages.includes('typescript')) {
         initAnswers.typescriptClientName = await input({
           message: 'What would you like the typescript client package to be named?',
         });
       }
-      
+
       if (initAnswers.clientLanguages.includes('rust')) {
         initAnswers.rustClientName = await input({
           message: 'What would you like the rust client crate to be named?',
@@ -111,7 +111,7 @@ program
         message: 'What language(s) would you like to generate a server for?',
         choices: [{ name: 'typescript', value: 'typescript' }],
       });
-      
+
       if (initAnswers.serverLanguages.includes('typescript')) {
         initAnswers.typescriptServerName = await input({
           message: 'What would you like the typescript server package to be named?',
