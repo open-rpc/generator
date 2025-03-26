@@ -133,7 +133,7 @@ export class <%= className %> {
    * // Removes timeout from request
    * myClient.setDefaultTimeout(null);
    */
-  public setDefaultTimeout(ms: number | null) {
+  public setDefaultTimeout(ms?: number | null) {
     this.timeout = ms;
   }
 
