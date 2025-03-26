@@ -131,9 +131,9 @@ export class <%= className %> {
    * // 20s timeout
    * myClient.setDefaultTimeout(20000);
    * // Removes timeout from request
-   * myClient.setDefaultTimeout(undefined);
+   * myClient.setDefaultTimeout(null);
    */
-  public setDefaultTimeout(ms?: number) {
+  public setDefaultTimeout(ms: number | null) {
     this.timeout = ms;
   }
 
