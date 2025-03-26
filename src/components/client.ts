@@ -52,7 +52,7 @@ export class <%= className %> {
     | PostMessageWindowTransport
     | PostMessageIframeTransport;
   private validator: MethodCallValidator | undefined;
-  private timeout: number | null;
+  private timeout: number | null | undefined;
 
   constructor(options: Options) {
     if (

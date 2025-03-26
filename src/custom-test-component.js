@@ -29,7 +29,7 @@ export class <%= className %> {
   public static openrpcDocument: OpenRPC = <%= JSON.stringify(openrpcDocument) %> ;
   public transport: HTTPTransport | WebSocketTransport | PostMessageWindowTransport | PostMessageIframeTransport;
   private validator: MethodCallValidator;
-  private timeout: number | null;
+  private timeout: number | null | undefined;
 
   constructor(options: Options) {
 
