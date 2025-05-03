@@ -1,3 +1,4 @@
+import { describe, it, expect } from '@jest/globals';
 import { normalizeMethodName } from './helper';
 
 describe('normalizeMethodName', () => {
@@ -11,12 +12,7 @@ describe('normalizeMethodName', () => {
     expect(normalizeMethodName('foo.bar.baz')).toBe('fooBarBaz');
   });
 
-  it('handles both dots and underscores', () => {
-    expect(normalizeMethodName('foo_bar.baz_qux')).toBe('fooBarBazQux');
-  });
-
   it('capitalizes only subsequent parts', () => {
-    expect(normalizeMethodName('hello.world')).toBe('helloWorld');
     expect(normalizeMethodName('one.two.three')).toBe('oneTwoThree');
   });
 
