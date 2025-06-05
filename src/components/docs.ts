@@ -83,6 +83,20 @@ module.exports = {
     ]
   },
   plugins: [
+   {
+      resolve: 'gatsby-plugin-mdx',
+      options: {
+        extensions: ['.mdx', '.md'],
+        gatsbyRemarkPlugins: [
+          {
+            resolve: 'gatsby-remark-autolink-headers',
+            options: {
+              icon: false,
+            },
+          },
+        ],
+      },
+    },
     "gatsby-openrpc-theme",
     {
       resolve: 'gatsby-plugin-manifest',
@@ -104,6 +118,13 @@ module.exports = {
       options: {
         name: "images",
         path: __dirname + '/src/images',
+      },
+    },
+    {
+      resolve: "gatsby-source-filesystem",
+      options: {
+        name: "docs",
+        path: __dirname + '/src/docs',
       },
     },
   ],
