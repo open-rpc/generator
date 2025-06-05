@@ -1,3 +1,10 @@
+## [2.0.1](https://github.com/open-rpc/generator/compare/2.0.0...2.0.1) (2025-06-05)
+
+
+### Bug Fixes
+
+* documentation rendering bug with gatsby theme ([e9fd09b](https://github.com/open-rpc/generator/commit/e9fd09b37cd7d7e68bfae8d6fc9f538cba8f4631))
+
 # [2.0.0](https://github.com/open-rpc/generator/compare/1.22.3...2.0.0) (2025-03-04)
 
 
