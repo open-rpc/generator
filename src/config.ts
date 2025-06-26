@@ -12,11 +12,18 @@ export interface IServerConfig {
   outPath?: string;
 }
 
+export interface IDocsExtraConfig {
+  docsPath?: string;
+  gatsbyConfigPath?: string;
+  staticPath?: string;
+}
+
 export interface IDocsConfig {
   type: 'docs';
   name: string;
   language: 'gatsby';
   outPath?: string;
+  extraConfig?: IDocsExtraConfig;
 }
 
 // Experimental

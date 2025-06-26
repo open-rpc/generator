@@ -1,19 +1,30 @@
 import * as path from 'path';
-import { remove } from 'fs-extra';
-import { IHooks } from './types';
+import { copy, ensureDir, remove } from 'fs-extra';
+import { IHooks, IComponent } from './types';
+import { IDocsConfig, IDocsExtraConfig } from 'src/config';
 import * as fs from 'fs';
 import { promisify } from 'util';
 import { template, startCase } from 'lodash';
 const writeFile = promisify(fs.writeFile);
 const readFile = promisify(fs.readFile);
+const copyFile = promisify(fs.copyFile);
 
 const indexTemplate = template(`import React from 'react';
 import { Typography, Box, Button } from '@mui/material';
 import Grid from '@mui/material/Grid2';
-import { Link } from 'gatsby';
+import { graphql, Link, useStaticQuery } from 'gatsby';
 import 'monaco-editor/esm/vs/language/json/json.worker.js';
 
 const IndexPage = () => {
+  const data = useStaticQuery(graphql\`
+    {
+      site {
+        siteMetadata {
+          logoUrl
+        }
+      }
+    }
+  \`);
   // For SSR, we need a simpler version
   if (typeof window === 'undefined') {
     return (
@@ -31,7 +42,9 @@ const IndexPage = () => {
         className="logo"
         alt="logo"
         src={
-          'https://raw.githubusercontent.com/open-rpc/design/master/icons/open-rpc-logo-noText/open-rpc-logo-noText%20(PNG)/256x256.png'
+          data.site.siteMetadata.logoUrl
+            ? data.site.siteMetadata.logoUrl
+            : 'https://raw.githubusercontent.com/open-rpc/design/master/icons/open-rpc-logo-noText/open-rpc-logo-noText%20(PNG)/256x256.png'
         }
         style={{ paddingTop: '10%' }}
       />
@@ -184,6 +197,34 @@ const hooks: IHooks = {
       },
     ],
   },
+  afterCompileTemplate: [
+    async (dest, frm, component, openrpcDocument): Promise<void> => {
+      const docsComponent = component as IComponent<IDocsExtraConfig>;
+      if (!docsComponent.extraConfig) {
+        return;
+      }
+      try {
+        if (docsComponent.extraConfig.docsPath) {
+          await remove(path.join(dest, 'src/docs'));
+          await ensureDir(path.join(dest, 'src/docs'));
+          await copy(docsComponent.extraConfig.docsPath, path.join(dest, 'src/docs'));
+        }
+        if (docsComponent.extraConfig.gatsbyConfigPath) {
+          await copyFile(
+            path.join(docsComponent.extraConfig.gatsbyConfigPath, 'gatsby-config.js'),
+            path.join(dest, 'gatsby-config.js')
+          );
+        }
+        if (docsComponent.extraConfig.staticPath) {
+          await remove(path.join(dest, 'static'));
+          await ensureDir(path.join(dest, 'static'));
+          await copy(docsComponent.extraConfig.staticPath, path.join(dest, 'static'));
+        }
+      } catch (error) {
+        throw new Error(`Error with extraDocsConfig: ${error}`);
+      }
+    },
+  ],
 };
 
 export default hooks;

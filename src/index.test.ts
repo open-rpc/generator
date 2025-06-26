@@ -7,6 +7,7 @@ import { forEach } from 'lodash';
 import { OpenRPCDocumentDereferencingError } from '@open-rpc/schema-utils-js';
 import { OpenrpcDocument as OpenRPC } from '@open-rpc/meta-schema';
 import { describe, it, expect, beforeAll, afterAll } from '@jest/globals';
+import { isMapIterator } from 'util/types';
 
 const stat = promisify(fs.stat);
 const rmdir = promisify(fs.rmdir);
@@ -71,10 +72,56 @@ describe(`Examples to generate Js clients`, () => {
       expect(promGen).rejects.toBeInstanceOf(Error);
     });
 
+    it(`rejects configurations with invalid docsPath`, async () => {
+      const promGen = clientGen({
+        openrpcDocument: example,
+        components: [
+          {
+            type: 'docs',
+            language: 'gatsby',
+            name: 'testserver-gatsby',
+            extraConfig: { docsPath: 'invalid' },
+            outPath: `${testDir}/invalid`,
+          },
+        ],
+      });
+      expect(promGen).rejects.toThrow();
+    });
+
+    it(`rejects configurations with invalid staticPath`, async () => {
+      const promGen = clientGen({
+        openrpcDocument: example,
+        components: [
+          {
+            type: 'docs',
+            language: 'gatsby',
+            name: 'testserver-gatsby',
+            extraConfig: { staticPath: 'invalid' },
+            outPath: `${testDir}/invalid`,
+          },
+        ],
+      });
+      expect(promGen).rejects.toThrow();
+    });
+
+    it(`rejects configurations with invalid gatsbyConfigPath`, async () => {
+      const promGen = clientGen({
+        openrpcDocument: example,
+        components: [
+          {
+            type: 'docs',
+            language: 'gatsby',
+            name: 'testserver-gatsby',
+            extraConfig: { gatsbyConfigPath: 'invalid' },
+            outPath: `${testDir}/invalid`,
+          },
+        ],
+      });
+      expect(promGen).rejects.toThrow();
+    });
+
     it(`creates a new client for example: ${exampleName} and regenerates after`, async () => {
       const exampleOutDir = `${testDir}/${exampleName}`;
-      expect.assertions(5);
-
       await clientGen({
         openrpcDocument: example,
         outDir: exampleOutDir,
@@ -129,6 +176,49 @@ describe(`Examples to generate Js clients`, () => {
           { type: 'client', language: 'typescript', name: 'testclient-ts' },
           { type: 'server', language: 'typescript', name: 'testserver-ts' },
           { type: 'docs', language: 'gatsby', name: 'testserver-gatsby' },
+          {
+            type: 'docs',
+            language: 'gatsby',
+            name: 'testserver-gatsby-no-images',
+            extraConfig: {
+              docsPath: './src/fixtures/docs',
+              gatsbyConfigPath: './src/fixtures/test_gatsby_config',
+            },
+          },
+          {
+            type: 'docs',
+            language: 'gatsby',
+            name: 'testserver-gatsby-image-only',
+            extraConfig: {
+              staticPath: './src/fixtures/assets',
+            },
+          },
+          {
+            type: 'docs',
+            language: 'gatsby',
+            name: 'testserver-gatsby-no-docs',
+            extraConfig: {
+              gatsbyConfigPath: './src/fixtures/test_gatsby_config',
+            },
+          },
+          {
+            type: 'docs',
+            language: 'gatsby',
+            name: 'testserver-gatsby-no-config',
+            extraConfig: {
+              docsPath: './src/fixtures/docs',
+            },
+          },
+          {
+            type: 'docs',
+            language: 'gatsby',
+            name: 'testserver-gatsby-full',
+            extraConfig: {
+              docsPath: './src/fixtures/docs',
+              gatsbyConfigPath: './src/fixtures/test_gatsby_config',
+              staticPath: './src/fixtures/assets',
+            },
+          },
           {
             type: 'custom',
             language: 'typescript',

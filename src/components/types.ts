@@ -2,13 +2,16 @@ import { TemplateExecutor } from 'lodash';
 import { OpenrpcDocument as OpenRPC } from '@open-rpc/meta-schema';
 import Typings from '@open-rpc/typings';
 
-interface IComponent {
+export interface IComponent<ConfigType = unknown> {
   hooks: IHooks;
   type: string;
   name: string;
   language: string;
   staticPath?: string;
+  openRPCPath?: string;
+  extraConfig?: ConfigType;
 }
+
 export type FHook = (
   destDir: string,
   fromDir: string | undefined,
