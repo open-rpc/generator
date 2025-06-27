@@ -1,3 +1,10 @@
+# [2.1.0](https://github.com/open-rpc/generator/compare/2.0.1...2.1.0) (2025-06-27)
+
+
+### Features
+
+* add support for additional configuration to docs ([a9e64a6](https://github.com/open-rpc/generator/commit/a9e64a603ebd69618ce6cc5a36131199710f4dc9))
+
 ## [2.0.1](https://github.com/open-rpc/generator/compare/2.0.0...2.0.1) (2025-06-05)
 
 
