@@ -5,7 +5,7 @@ import { promisify } from 'util';
 import { startCase } from 'lodash';
 import { OpenrpcDocument as OpenRPC } from '@open-rpc/meta-schema';
 import { parseOpenRPCDocument } from '@open-rpc/schema-utils-js';
-import { TComponentConfig } from './config';
+import { IDocsConfig, TComponentConfig } from './config';
 import Typings from '@open-rpc/typings';
 
 import {
@@ -15,6 +15,8 @@ import {
   IComponentModule,
   IHooks,
   FHook,
+  getDefaultComponentTemplatePath,
+  IComponent,
 } from './components';
 export * as components from './components';
 
@@ -40,18 +42,13 @@ const componentModules: IComponentModules = {
   docs: defaultDocComponent,
 };
 
-interface IComponent {
-  hooks: IHooks;
-  type: string;
-  name: string;
-  language: string;
-  staticPath?: string;
-  openRPCPath?: string;
-}
-
 const getComponentFromConfig = async (componentConfig: TComponentConfig): Promise<IComponent> => {
   const { language, name, type } = componentConfig;
   let openRPCPath: string | undefined = 'src';
+  let extraConfig = undefined;
+  if (componentConfig.type === 'docs') {
+    extraConfig = componentConfig.extraConfig;
+  }
   if (componentConfig.type === 'custom') {
     const componentPath = componentConfig.customComponent.startsWith('./')
       ? path.resolve(process.cwd(), componentConfig.customComponent)
@@ -77,6 +74,7 @@ const getComponentFromConfig = async (componentConfig: TComponentConfig): Promis
     name,
     type,
     openRPCPath,
+    extraConfig,
   };
 };
 
