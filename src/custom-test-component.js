@@ -29,7 +29,7 @@ export class <%= className %> {
   public static openrpcDocument: OpenRPC = <%= JSON.stringify(openrpcDocument) %> ;
   public transport: HTTPTransport | WebSocketTransport | PostMessageWindowTransport | PostMessageIframeTransport;
   private validator: MethodCallValidator;
-  private timeout: number | undefined;
+  private timeout: number | null | undefined;
 
   constructor(options: Options) {
 
@@ -86,9 +86,9 @@ export class <%= className %> {
    * // 20s timeout
    * myClient.setDefaultTimeout(20000);
    * // Removes timeout from request
-   * myClient.setDefaultTimeout(undefined);
+   * myClient.setDefaultTimeout(null);
    */
-   public setDefaultTimeout(ms?: number) {
+   public setDefaultTimeout(ms?: number | null) {
     this.timeout = ms;
   }
 
