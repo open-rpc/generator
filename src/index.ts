@@ -5,7 +5,7 @@ import { promisify } from 'util';
 import { startCase } from 'lodash';
 import { OpenrpcDocument as OpenRPC } from '@open-rpc/meta-schema';
 import { parseOpenRPCDocument } from '@open-rpc/schema-utils-js';
-import { IDocsConfig, TComponentConfig } from './config';
+import { TComponentConfig } from './config';
 import Typings from '@open-rpc/typings';
 
 import {
@@ -13,9 +13,7 @@ import {
   defaultDocComponent,
   defaultServerComponent,
   IComponentModule,
-  IHooks,
   FHook,
-  getDefaultComponentTemplatePath,
   IComponent,
 } from './components';
 export * as components from './components';

@@ -1,7 +1,7 @@
 import * as path from 'path';
 import { copy, ensureDir, remove } from 'fs-extra';
 import { IHooks, IComponent } from './types';
-import { IDocsConfig, IDocsExtraConfig } from 'src/config';
+import { IDocsExtraConfig } from 'src/config';
 import * as fs from 'fs';
 import { promisify } from 'util';
 import { template, startCase } from 'lodash';
@@ -198,7 +198,7 @@ const hooks: IHooks = {
     ],
   },
   afterCompileTemplate: [
-    async (dest, frm, component, openrpcDocument): Promise<void> => {
+    async (dest, frm, component, _): Promise<void> => {
       const docsComponent = component as IComponent<IDocsExtraConfig>;
       if (!docsComponent.extraConfig) {
         return;

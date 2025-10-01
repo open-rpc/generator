@@ -7,7 +7,6 @@ import { forEach } from 'lodash';
 import { OpenRPCDocumentDereferencingError } from '@open-rpc/schema-utils-js';
 import { OpenrpcDocument as OpenRPC } from '@open-rpc/meta-schema';
 import { describe, it, expect, beforeAll, afterAll } from '@jest/globals';
-import { isMapIterator } from 'util/types';
 
 const stat = promisify(fs.stat);
 const rmdir = promisify(fs.rmdir);
