@@ -1,3 +1,11 @@
+## [2.1.1](https://github.com/open-rpc/generator/compare/2.1.0...2.1.1) (2025-10-22)
+
+
+### Bug Fixes
+
+* bump stale schema utils version which fixes initial notification parsing ([2ce2264](https://github.com/open-rpc/generator/commit/2ce22649d1e9a64dcda041848159475bb792816c))
+* version update typings to support notifications ([2d39399](https://github.com/open-rpc/generator/commit/2d39399818a84cfd1623230393ebb955df1da0f8))
+
 # [2.1.0](https://github.com/open-rpc/generator/compare/2.0.1...2.1.0) (2025-06-27)
 
 
